@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Invitation</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_reservation">Reservation</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="required_permission_title">Required Permission</string>
+    <string name="required_permission_ask_again">Request Again</string>
+    <string name="required_contacts_permission_message">This permission is required in order to get access to your contacts, without it you won\'t be able to send SMS. Request permission again?</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello">Hello</string>
+    <string name="title_activity_contacts_list">Contacts List</string>
+    <string name="loading_contacts">טוען אנשי קשר</string>
+</resources>
