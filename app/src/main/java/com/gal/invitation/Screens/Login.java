@@ -35,12 +35,13 @@ public class Login extends AppCompatActivity {
     private Button btnLogin;
     private TextView lblWelcome;
 
+
     int retryGetUser = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
@@ -48,6 +49,8 @@ public class Login extends AppCompatActivity {
         lblWelcome = (TextView) findViewById(R.id.lblWelcome);
 
         final TextView RegisterLink = (TextView) findViewById(R.id.Register);
+        RegisterLink.setText( getText(R.string.register));
+
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +67,8 @@ public class Login extends AppCompatActivity {
                 Login.this.startActivity(RegisterIntent);
             }
         });
+
+
 
     }
 
@@ -122,7 +127,7 @@ public class Login extends AppCompatActivity {
             if (result && user!=null) {
 //                lblWelcome.setText(user.getEmail()+ " " + user.getUsername());
 //                lblWelcome.setVisibility(View.VISIBLE);
-                Intent loginIntent= new Intent(Login.this,Profile.class);
+                Intent loginIntent= new Intent(Login.this,ContactList.class);
                 loginIntent.putExtra("user", user);
                 Login.this.startActivity(loginIntent);
                 //hide the keyboard
@@ -139,7 +144,7 @@ public class Login extends AppCompatActivity {
                     return;
                 }
                 Toast.makeText(Login.this,
-                        "Error - bad email/password",
+                        (getString(R.string.error_bad_email_password)),
                         Toast.LENGTH_LONG).show();
             }
         }

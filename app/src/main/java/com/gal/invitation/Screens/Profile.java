@@ -1,6 +1,7 @@
 package com.gal.invitation.Screens;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -72,13 +74,21 @@ public class Profile extends AppCompatActivity {
 
         getUserContacts();
 
-        txtName=(TextView)findViewById(R.id.userName);
-        txtName.setText("HELLO "+String.valueOf(user.getUsername()));
+        txtName = (TextView) findViewById(R.id.userName);
+        txtName.setText("HELLO " + String.valueOf(user.getUsername()));
 
-
+        final Button sendInvitationsSms = (Button) findViewById(R.id.profile_send_invitation_btn);
+        sendInvitationsSms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendInvitationLink = new Intent(Profile.this,SendInvitations.class);
+                sendInvitationLink.putExtra("list", new ArrayList<>(userContacts));
+                startActivity(sendInvitationLink);
+            }
+        });
     }
 
-    private void getUserContacts(){
+    private void getUserContacts() {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("UserID", String.valueOf(user.getID()));
@@ -91,13 +101,13 @@ public class Profile extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(TAG_SUCCESS) == 1) {
                             JSONArray ja = jsonObject.getJSONArray("Contacts");
-                            for(int i=0; i<ja.length(); i++){
+                            for (int i = 0; i < ja.length(); i++) {
                                 JSONObject jo = ja.getJSONObject(i);
                                 Contact tempContact = new Contact();
                                 tempContact.setName(jo.getString("Name"));
                                 tempContact.setPhone(jo.getString("Phone"));
                                 tempContact.setImage(ContactUtil.retrieveContactPhoto(
-                                        tempContact.getPhone(),Profile.this));
+                                        tempContact.getPhone(), Profile.this));
 
                                 userContacts.add(tempContact);
                             }
@@ -133,11 +143,16 @@ public class Profile extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Contact contact = ((Contact) listView.getAdapter().getItem(position));
                 LinearLayout rowContainer = (LinearLayout) view.findViewById(R.id.row_container);
-                Toast.makeText(Profile.this,contact.getName(),Toast.LENGTH_LONG).show();
+
+                Toast.makeText(Profile.this, contact.getName(), Toast.LENGTH_LONG).show();
             }
         });
 
         progressDialog.dismiss();
     }
 
+    private void sendInvitationsMessage(final ArrayList<Contact> contactArrayList) {
+
+
+    }
 }

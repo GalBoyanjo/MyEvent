@@ -43,6 +43,7 @@ public class Register extends AppCompatActivity {
         ReName = (EditText) findViewById(R.id.ReName);
         RePassword = (EditText) findViewById(R.id.RePassword);
         btnRegister = (Button) findViewById(R.id.btnRegister);
+        btnRegister.setText(getText(R.string.create));
         //lblWelcome = (TextView) findViewById(R.id.lblWelcome);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +116,7 @@ public class Register extends AppCompatActivity {
         protected void onPostExecute(Boolean result) {
             if (result && user!=null) {
                 Toast.makeText(Register.this,
-                        "WELCOME",
+                        (getText(R.string.welcome)),
                         Toast.LENGTH_LONG).show();
 
 
@@ -129,7 +130,7 @@ public class Register extends AppCompatActivity {
 
             else {
                 Toast.makeText(Register.this,
-                        "Error - bad email/password",
+                        (getText(R.string.error_bad_email_password)),
                         Toast.LENGTH_LONG).show();
             }
         }

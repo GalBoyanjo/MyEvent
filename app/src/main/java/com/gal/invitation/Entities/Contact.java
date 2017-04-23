@@ -2,15 +2,17 @@ package com.gal.invitation.Entities;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by Gal on 11/04/2017.
  */
 
-public class Contact implements Comparable {
+public class Contact implements Comparable, Serializable {
 
     private String phone = "";
     private String name = "";
-    private Bitmap image = null;
+    private transient Bitmap image = null;
     private boolean selected = false;
 
     public Contact(){}

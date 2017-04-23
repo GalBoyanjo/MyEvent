@@ -25,7 +25,14 @@
         android:id="@+id/profile_contact_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="70">
+        android:layout_weight="50">
     </ListView>
+
+    <Button
+        android:id="@+id/profile_send_invitation_btn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:text="SEND"/>
 
 </LinearLayout>

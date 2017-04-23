@@ -15,7 +15,17 @@
     <string name="ok">Ok</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hello">Hello</string>
-    <string name="title_activity_contacts_list">Contacts List</string>
+    <string name="hello">שלום</string>
+    <string name="title_activity_contacts_list">אנשי קשר</string>
     <string name="loading_contacts">טוען אנשי קשר</string>
+    <string name="please_wait">אנא המתן...</string>
+    <string name="contact_saves_in_db">איש קשר נשמר ב-DB</string>
+    <string name="error_saving_contact_in_db">שגיאה לשמור ב-DB</string>
+    <string name="SMS_faild_please_try_again">שליחת SMS נכשלה, אנא נסה שוב.</string>
+    <string name="SMS_sent">SMS נשלח.</string>
+    <string name="error_bad_email_password">שגיאה - סיסמא או אימייל שגויים</string>
+    <string name="register">הרשמה</string>
+    <string name="create">צור משתמש</string>
+    <string name="welcome">"ברוך הבא"</string>
+
 </resources>

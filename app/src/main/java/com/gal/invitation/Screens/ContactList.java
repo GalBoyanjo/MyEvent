@@ -73,7 +73,7 @@ public class ContactList extends AppCompatActivity {
         progressDialog.setTitle(getString(R.string.loading_contacts));
         progressDialog.setCancelable(false);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Please wait...");
+        progressDialog.setMessage((getString(R.string.please_wait)));
         progressDialog.show();
 
         hasContactsPermission = ContextCompat.checkSelfPermission(this,
@@ -105,6 +105,10 @@ public class ContactList extends AppCompatActivity {
             for (Contact contact : selectedContacts) {
                 updateDB(contact);
             }
+            Intent ProfileIntent = new Intent(ContactList.this, Profile.class);
+            ProfileIntent.putExtra("user",user);
+            startActivity(ProfileIntent);
+
             finish();
             return true;
         }
@@ -138,7 +142,7 @@ public class ContactList extends AppCompatActivity {
                     requestContactsPermission();
                 }
             }
-        },500);
+        }, 500);
     }
 
     private void requestContactsPermission() {
@@ -254,13 +258,13 @@ public class ContactList extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(TAG_SUCCESS) == 1) {
                             Toast.makeText(ContactList.this,
-                                    "Contact Saves In DB",
+                                    (getString(R.string.contact_saves_in_db)),
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(ContactList.this,
-                                "Error Saving Contact In DB",
+                                (getString(R.string.error_saving_contact_in_db)),
                                 Toast.LENGTH_LONG).show();
                     }
                 }

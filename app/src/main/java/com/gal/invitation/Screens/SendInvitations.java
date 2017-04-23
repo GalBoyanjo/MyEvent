@@ -13,47 +13,60 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.*;
 
+import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.R;
+
+import java.util.ArrayList;
 
 
 public class SendInvitations extends Activity {
         private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
         Button sendBtn;
-        EditText txtphoneNo;
-        EditText txtMessage;
         String phoneNo;
         String message;
-
+        private ArrayList<Contact> contactArrayList = new ArrayList<>();
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_send_invatations);
 
+            try {
+                contactArrayList = (ArrayList<Contact>) getIntent().getSerializableExtra("list");
+            }catch (Exception e){}
+
             sendBtn = (Button) findViewById(R.id.btnSendSMS);
-            //txtphoneNo = (EditText) findViewById(R.id.editText);
-            txtMessage = (EditText) findViewById(R.id.editText2);
+
             sendBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    sendSMSMessage();
+                    if (ContextCompat.checkSelfPermission(SendInvitations.this,
+                            Manifest.permission.SEND_SMS)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(SendInvitations.this,
+                                Manifest.permission.SEND_SMS)) {
+                            sendSMSMessage();
+                        } else {
+                            ActivityCompat.requestPermissions(SendInvitations.this,
+                                    new String[]{Manifest.permission.SEND_SMS},
+                                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+                        }
+                    }
+
                 }
             });
         }
 
         protected void sendSMSMessage() {
-            phoneNo = txtphoneNo.getText().toString();
-            message = txtMessage.getText().toString();
+            for(Contact contact : contactArrayList) {
 
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.SEND_SMS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.SEND_SMS)) {
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.SEND_SMS},
-                            MY_PERMISSIONS_REQUEST_SEND_SMS);
-                }
+                phoneNo = contact.getPhone();
+                message = contact.getName();
+
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(phoneNo, null, message, null, null);
+
             }
+            Toast.makeText(getApplicationContext(), (getString(R.string.SMS_sent)),
+                    Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -62,13 +75,10 @@ public class SendInvitations extends Activity {
                 case MY_PERMISSIONS_REQUEST_SEND_SMS: {
                     if (grantResults.length > 0
                             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        SmsManager smsManager = SmsManager.getDefault();
-                        smsManager.sendTextMessage(phoneNo, null, message, null, null);
-                        Toast.makeText(getApplicationContext(), "SMS sent.",
-                                Toast.LENGTH_LONG).show();
+                      sendSMSMessage();
                     } else {
                         Toast.makeText(getApplicationContext(),
-                                "SMS faild, please try again.", Toast.LENGTH_LONG).show();
+                                (getString(R.string.SMS_faild_please_try_again)), Toast.LENGTH_LONG).show();
                         return;
                     }
                 }
