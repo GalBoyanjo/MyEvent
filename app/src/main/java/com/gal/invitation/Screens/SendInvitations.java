@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +31,9 @@ public class SendInvitations extends Activity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_send_invatations);
 
+            Log.i("ne","\n\nstarted\n\ngaaggakgagagag");
+
+
             try {
                 contactArrayList = (ArrayList<Contact>) getIntent().getSerializableExtra("list");
             }catch (Exception e){}
@@ -38,13 +42,17 @@ public class SendInvitations extends Activity {
 
             sendBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
+                    Log.i("ne","gaaggakgagagag");
                     if (ContextCompat.checkSelfPermission(SendInvitations.this,
                             Manifest.permission.SEND_SMS)
                             != PackageManager.PERMISSION_GRANTED) {
+                        Log.i("main one","gaaggakgagagag");
                         if (ActivityCompat.shouldShowRequestPermissionRationale(SendInvitations.this,
                                 Manifest.permission.SEND_SMS)) {
+                            Log.i("gagalglagla","gaaggakgagagag");
                             sendSMSMessage();
                         } else {
+                            Log.i("2gagalglagla","gaaggakgagagag");
                             ActivityCompat.requestPermissions(SendInvitations.this,
                                     new String[]{Manifest.permission.SEND_SMS},
                                     MY_PERMISSIONS_REQUEST_SEND_SMS);

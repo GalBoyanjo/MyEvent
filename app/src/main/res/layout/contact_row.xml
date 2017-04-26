@@ -16,12 +16,14 @@
             android:id="@+id/row_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
+
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_margin="1dp"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher" />
+
 
         <TextView
             android:id="@+id/row_name"
@@ -30,7 +32,8 @@
             android:layout_toEndOf="@id/row_image"
             android:layout_centerVertical="true"
             android:text="Name"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/row_remove"
@@ -40,6 +43,17 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="15dp"
             android:src="@drawable/remove"
+            android:background="@android:color/transparent"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/row_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/row_remove"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/edit"
             android:background="@android:color/transparent"
             android:visibility="gone"/>
 

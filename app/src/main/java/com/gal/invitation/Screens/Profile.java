@@ -1,17 +1,27 @@
 package com.gal.invitation.Screens;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +50,7 @@ import java.util.TreeSet;
 public class Profile extends AppCompatActivity {
 
     private RequestQueue netRequestQueue;
+    private final static String url_delete_contact = "http://master1590.a2hosted.com/invitations/deleteContact.php";
     private final static String url_get_contacts = "http://master1590.a2hosted.com/invitations/getUserContacts.php";
     private final static String TAG_SUCCESS = "success";
     private User user = null;
@@ -50,6 +61,7 @@ public class Profile extends AppCompatActivity {
         }
     });
     private ProgressDialog progressDialog;
+    private AlertDialog editor;
 
     private TextView txtName;
 
@@ -86,6 +98,48 @@ public class Profile extends AppCompatActivity {
                 startActivity(sendInvitationLink);
             }
         });
+    }
+
+
+    public Dialog onCreateDialog(Bundle bundle, final Contact contact){
+
+        Toast.makeText(Profile.this, contact.getName()+"  EDIT",
+                Toast.LENGTH_LONG).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+
+        //EditText contactName = (EditText)builder.findViewById(R.id.contact_name);
+        EditText contactPhone = (EditText)findViewById(R.id.contact_phone);
+
+        //contactName.setHint(String.valueOf(contact.getName()));
+        contactPhone.setHint("GAL123");
+
+
+        LayoutInflater inflater = this.getLayoutInflater();
+
+
+
+
+        builder.setView(inflater.inflate(R.layout.contact_edit,null))
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        finish();
+                        startActivity(getIntent());
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        builder.create();
+
+        return builder.show();
+
     }
 
     private void getUserContacts() {
@@ -137,15 +191,52 @@ public class Profile extends AppCompatActivity {
         ContactsAdapter adapter = new ContactsAdapter(Profile.this,
                 R.layout.contact_row, contactsArrayList);
         listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setLongClickable(true);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Contact contact = ((Contact) listView.getAdapter().getItem(position));
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                final Contact contact = ((Contact) listView.getAdapter().getItem(position));
                 LinearLayout rowContainer = (LinearLayout) view.findViewById(R.id.row_container);
 
-                Toast.makeText(Profile.this, contact.getName(), Toast.LENGTH_LONG).show();
+
+
+                ImageButton deleteContactBtn=(ImageButton)rowContainer.findViewById(R.id.row_remove);
+                deleteContactBtn.setVisibility(View.VISIBLE);
+                final ImageButton editContactBtn=(ImageButton)rowContainer.findViewById(R.id.row_edit);
+                editContactBtn.setVisibility(View.VISIBLE);
+
+
+                deleteContactBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        deleteContact(contact);
+                        finish();
+                        startActivity(getIntent());
+
+                    }
+                });
+
+                editContactBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+
+                        onCreateDialog(Bundle.EMPTY,contact);
+
+
+                    }
+                });
+
+
+
+
+                //deleteContact(contact);
+                //Toast.makeText(Profile.this, contact.getName(), Toast.LENGTH_LONG).show();
+                return true;
             }
+
         });
 
         progressDialog.dismiss();
@@ -155,4 +246,78 @@ public class Profile extends AppCompatActivity {
 
 
     }
+    private void deleteContact(final Contact contact){
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("UserID", String.valueOf(user.getID()));
+            params.put("Name", contact.getName());
+            params.put("Phone", contact.getPhone());
+
+            MyStringRequest request = new MyStringRequest(Request.Method.POST,
+                    url_delete_contact, params, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getInt(TAG_SUCCESS) == 1) {
+                            Toast.makeText(Profile.this, contact.getName()+"  DELETED",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(Profile.this,
+                                "error_deleting_contact_in_db",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Error", error.toString());
+                }
+            });
+            netRequestQueue.add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void editContact(final Contact contact,String contactName,String contactPhone){
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("UserID", String.valueOf(user.getID()));
+            params.put("Name", contactName);
+            params.put("Phone", contactPhone);
+
+            MyStringRequest request = new MyStringRequest(Request.Method.POST,
+                    url_get_contacts, params, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getInt(TAG_SUCCESS) == 1) {
+                            Toast.makeText(Profile.this, contact.getName()+"  DELETED",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(Profile.this,
+                                "error_deleting_contact_in_db",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Error", error.toString());
+                }
+            });
+            netRequestQueue.add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
