@@ -50,6 +50,7 @@ import java.util.TreeSet;
 public class Profile extends AppCompatActivity {
 
     private RequestQueue netRequestQueue;
+    private final static String url_update_contact = "http://master1590.a2hosted.com/invitations/updateContact.php";
     private final static String url_delete_contact = "http://master1590.a2hosted.com/invitations/deleteContact.php";
     private final static String url_get_contacts = "http://master1590.a2hosted.com/invitations/getUserContacts.php";
     private final static String TAG_SUCCESS = "success";
@@ -65,6 +66,7 @@ public class Profile extends AppCompatActivity {
 
     private TextView txtName;
 
+    final Context context= this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,46 +103,6 @@ public class Profile extends AppCompatActivity {
     }
 
 
-    public Dialog onCreateDialog(Bundle bundle, final Contact contact){
-
-        Toast.makeText(Profile.this, contact.getName()+"  EDIT",
-                Toast.LENGTH_LONG).show();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-
-        //EditText contactName = (EditText)builder.findViewById(R.id.contact_name);
-        EditText contactPhone = (EditText)findViewById(R.id.contact_phone);
-
-        //contactName.setHint(String.valueOf(contact.getName()));
-        contactPhone.setHint("GAL123");
-
-
-        LayoutInflater inflater = this.getLayoutInflater();
-
-
-
-
-        builder.setView(inflater.inflate(R.layout.contact_edit,null))
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        finish();
-                        startActivity(getIntent());
-
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-        builder.create();
-
-        return builder.show();
-
-    }
 
     private void getUserContacts() {
         try {
@@ -219,11 +181,52 @@ public class Profile extends AppCompatActivity {
 
                 editContactBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onClick(View arg0) {
+
+                        Toast.makeText(Profile.this, contact.getName()+"  EDIT",
+                                Toast.LENGTH_LONG).show();
+
+
+                        LayoutInflater inflater = LayoutInflater.from(context);
+
+                        View contactEditView = inflater.inflate(R.layout.contact_edit,null);
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                        builder.setView(contactEditView);
+
+                        final EditText contactName = (EditText)contactEditView.findViewById(R.id.contact_name);
+                        final EditText contactPhone = (EditText)contactEditView.findViewById(R.id.contact_phone);
+
+                        contactName.setHint(String.valueOf(contact.getName()));
+                        contactPhone.setHint(String.valueOf(contact.getPhone()));
+
+                        builder
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        String setContactName=contactName.getText().toString();
+                                        String setContactPhone=contactPhone.getText().toString();
+                                        editContact(contact,setContactName,setContactPhone);
+                                        finish();
+                                        startActivity(getIntent());
+
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.cancel();
+
+                                    }
+                                });
+                        builder.create();
+
+                        builder.show();
 
 
 
-                        onCreateDialog(Bundle.EMPTY,contact);
+
 
 
                     }
@@ -291,19 +294,19 @@ public class Profile extends AppCompatActivity {
             params.put("Phone", contactPhone);
 
             MyStringRequest request = new MyStringRequest(Request.Method.POST,
-                    url_get_contacts, params, new Response.Listener<String>() {
+                    url_update_contact, params, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(TAG_SUCCESS) == 1) {
-                            Toast.makeText(Profile.this, contact.getName()+"  DELETED",
+                            Toast.makeText(Profile.this, contact.getName()+"  Edited",
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(Profile.this,
-                                "error_deleting_contact_in_db",
+                                "error_editing_contact_in_db",
                                 Toast.LENGTH_LONG).show();
                     }
                 }
