@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -50,7 +51,7 @@ import java.util.TreeSet;
 public class Profile extends AppCompatActivity {
 
     private RequestQueue netRequestQueue;
-    private final static String url_update_contact = "http://master1590.a2hosted.com/invitations/updateContact.php";
+    private final static String url_edit_contact = "http://master1590.a2hosted.com/invitations/editContact.php";
     private final static String url_delete_contact = "http://master1590.a2hosted.com/invitations/deleteContact.php";
     private final static String url_get_contacts = "http://master1590.a2hosted.com/invitations/getUserContacts.php";
     private final static String TAG_SUCCESS = "success";
@@ -206,7 +207,11 @@ public class Profile extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         String setContactName=contactName.getText().toString();
+                                        if(TextUtils.isEmpty(setContactName))
+                                            setContactName=(String.valueOf(contact.getName()));
                                         String setContactPhone=contactPhone.getText().toString();
+                                        if(TextUtils.isEmpty(setContactPhone))
+                                            setContactPhone=(String.valueOf(contact.getPhone()));
                                         editContact(contact,setContactName,setContactPhone);
                                         finish();
                                         startActivity(getIntent());
@@ -223,17 +228,8 @@ public class Profile extends AppCompatActivity {
                         builder.create();
 
                         builder.show();
-
-
-
-
-
-
                     }
                 });
-
-
-
 
                 //deleteContact(contact);
                 //Toast.makeText(Profile.this, contact.getName(), Toast.LENGTH_LONG).show();
@@ -290,11 +286,13 @@ public class Profile extends AppCompatActivity {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("UserID", String.valueOf(user.getID()));
-            params.put("Name", contactName);
-            params.put("Phone", contactPhone);
+            params.put("Name", contact.getName());
+            params.put("NewName", contactName);
+            params.put("Phone", contact.getPhone());
+            params.put("NewPhone", contactPhone);
 
             MyStringRequest request = new MyStringRequest(Request.Method.POST,
-                    url_update_contact, params, new Response.Listener<String>() {
+                    url_edit_contact, params, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
