@@ -66,8 +66,8 @@ public class Profile extends AppCompatActivity {
     private AlertDialog editor;
 
     private TextView txtName;
+    private ContactsAdapter adapter;
 
-    final Context context= this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,13 +96,13 @@ public class Profile extends AppCompatActivity {
         sendInvitationsSms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent sendInvitationLink = new Intent(Profile.this,SendInvitations.class);
+                Intent sendInvitationLink = new Intent(Profile.this, SendInvitations.class);
+                sendInvitationLink.putExtra("user", user);
                 sendInvitationLink.putExtra("list", new ArrayList<>(userContacts));
                 startActivity(sendInvitationLink);
             }
         });
     }
-
 
 
     private void getUserContacts() {
@@ -123,27 +123,39 @@ public class Profile extends AppCompatActivity {
                                 Contact tempContact = new Contact();
                                 tempContact.setName(jo.getString("Name"));
                                 tempContact.setPhone(jo.getString("Phone"));
+                                tempContact.setCode(jo.getString("Code"));
                                 tempContact.setImage(ContactUtil.retrieveContactPhoto(
                                         tempContact.getPhone(), Profile.this));
 
                                 userContacts.add(tempContact);
                             }
-
                             showContact();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        progressDialog.dismiss();
+                        Toast.makeText(Profile.this,
+                                getString(R.string.error_occurred),
+                                Toast.LENGTH_LONG).show();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("Error", error.toString());
+                    progressDialog.dismiss();
+                    Toast.makeText(Profile.this,
+                            getString(R.string.error_occurred),
+                            Toast.LENGTH_LONG).show();
                 }
             });
             netRequestQueue.add(request);
         } catch (Exception e) {
             e.printStackTrace();
+            progressDialog.dismiss();
+            Toast.makeText(Profile.this,
+                    getString(R.string.error_occurred),
+                    Toast.LENGTH_LONG).show();
         }
 
     }
@@ -151,9 +163,10 @@ public class Profile extends AppCompatActivity {
     private void showContact() {
         ArrayList<Contact> contactsArrayList = new ArrayList<>(userContacts);
         final ListView listView = (ListView) findViewById(R.id.profile_contact_list);
-        ContactsAdapter adapter = new ContactsAdapter(Profile.this,
+        adapter = new ContactsAdapter(Profile.this,
                 R.layout.contact_row, contactsArrayList);
         listView.setAdapter(adapter);
+
         listView.setLongClickable(true);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -162,10 +175,9 @@ public class Profile extends AppCompatActivity {
                 LinearLayout rowContainer = (LinearLayout) view.findViewById(R.id.row_container);
 
 
-
-                ImageButton deleteContactBtn=(ImageButton)rowContainer.findViewById(R.id.row_remove);
+                ImageButton deleteContactBtn = (ImageButton) rowContainer.findViewById(R.id.row_remove);
                 deleteContactBtn.setVisibility(View.VISIBLE);
-                final ImageButton editContactBtn=(ImageButton)rowContainer.findViewById(R.id.row_edit);
+                final ImageButton editContactBtn = (ImageButton) rowContainer.findViewById(R.id.row_edit);
                 editContactBtn.setVisibility(View.VISIBLE);
 
 
@@ -184,38 +196,40 @@ public class Profile extends AppCompatActivity {
                     @Override
                     public void onClick(View arg0) {
 
-                        Toast.makeText(Profile.this, contact.getName()+"  EDIT",
+                        Toast.makeText(Profile.this, contact.getName() + "  EDIT",
                                 Toast.LENGTH_LONG).show();
 
 
-                        LayoutInflater inflater = LayoutInflater.from(context);
+                        LayoutInflater inflater = LayoutInflater.from(Profile.this);
 
-                        View contactEditView = inflater.inflate(R.layout.contact_edit,null);
+                        View contactEditView = inflater.inflate(R.layout.contact_edit, null);
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
 
                         builder.setView(contactEditView);
 
-                        final EditText contactName = (EditText)contactEditView.findViewById(R.id.contact_name);
-                        final EditText contactPhone = (EditText)contactEditView.findViewById(R.id.contact_phone);
+                        final EditText contactName = (EditText) contactEditView.findViewById(R.id.contact_name);
+                        final EditText contactPhone = (EditText) contactEditView.findViewById(R.id.contact_phone);
 
                         contactName.setHint(String.valueOf(contact.getName()));
                         contactPhone.setHint(String.valueOf(contact.getPhone()));
 
                         builder
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        String setContactName=contactName.getText().toString();
-                                        if(TextUtils.isEmpty(setContactName))
-                                            setContactName=(String.valueOf(contact.getName()));
-                                        String setContactPhone=contactPhone.getText().toString();
-                                        if(TextUtils.isEmpty(setContactPhone))
-                                            setContactPhone=(String.valueOf(contact.getPhone()));
-                                        editContact(contact,setContactName,setContactPhone);
-                                        finish();
-                                        startActivity(getIntent());
-
+                                        String setContactName = contactName.getText().toString();
+                                        if (TextUtils.isEmpty(setContactName))
+                                            setContactName = (String.valueOf(contact.getName()));
+                                        String setContactPhone = contactPhone.getText().toString();
+                                        if (TextUtils.isEmpty(setContactPhone))
+                                            setContactPhone = (String.valueOf(contact.getPhone()));
+                                        editContact(contact, setContactName, setContactPhone);
+                                        adapter.remove(contact);
+                                        contact.setName(setContactName);
+                                        contact.setPhone(setContactPhone);
+                                        adapter.add(contact);
+                                        adapter.notifyDataSetChanged();
                                     }
                                 })
                                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -245,7 +259,8 @@ public class Profile extends AppCompatActivity {
 
 
     }
-    private void deleteContact(final Contact contact){
+
+    private void deleteContact(final Contact contact) {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("UserID", String.valueOf(user.getID()));
@@ -259,7 +274,7 @@ public class Profile extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(TAG_SUCCESS) == 1) {
-                            Toast.makeText(Profile.this, contact.getName()+"  DELETED",
+                            Toast.makeText(Profile.this, contact.getName() + "  DELETED",
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
@@ -282,7 +297,7 @@ public class Profile extends AppCompatActivity {
 
     }
 
-    private void editContact(final Contact contact,String contactName,String contactPhone){
+    private void editContact(final Contact contact, String contactName, String contactPhone) {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("UserID", String.valueOf(user.getID()));
@@ -298,7 +313,7 @@ public class Profile extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(TAG_SUCCESS) == 1) {
-                            Toast.makeText(Profile.this, contact.getName()+"  Edited",
+                            Toast.makeText(Profile.this, contact.getName() + "  Edited",
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {

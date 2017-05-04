@@ -12,10 +12,12 @@ public class Contact implements Comparable, Serializable {
 
     private String phone = "";
     private String name = "";
+    private String code = "";
     private transient Bitmap image = null;
     private boolean selected = false;
 
-    public Contact(){}
+    public Contact() {
+    }
 
     public Contact(String phone, String name, Bitmap image) {
         this.phone = phone;
@@ -37,6 +39,14 @@ public class Contact implements Comparable, Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Bitmap getImage() {

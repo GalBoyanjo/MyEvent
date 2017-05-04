@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeSet;
 
 public class ContactList extends AppCompatActivity {
@@ -57,6 +58,7 @@ public class ContactList extends AppCompatActivity {
     private static boolean hasContactsPermission = false;
     private ArrayList<Contact> selectedContacts = new ArrayList<>();
     private ProgressDialog progressDialog;
+    private int requestsStack = 0;
 
     /**
      * Called when the activity is first created.
@@ -102,14 +104,13 @@ public class ContactList extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_ok) {
-            for (Contact contact : selectedContacts) {
-                updateDB(contact);
-            }
-            Intent ProfileIntent = new Intent(ContactList.this, Profile.class);
-            ProfileIntent.putExtra("user",user);
-            startActivity(ProfileIntent);
-
-            finish();
+            if (selectedContacts.isEmpty())
+                checkFinished();
+            else
+                for (Contact contact : selectedContacts) {
+                    requestsStack++;
+                    updateDB(contact);
+                }
             return true;
         }
 
@@ -267,17 +268,51 @@ public class ContactList extends AppCompatActivity {
                                 (getString(R.string.error_saving_contact_in_db)),
                                 Toast.LENGTH_LONG).show();
                     }
+                    requestsStack--;
+                    checkFinished();
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("Error", error.toString());
+                    Toast.makeText(ContactList.this,
+                            (getString(R.string.error_saving_contact_in_db)),
+                            Toast.LENGTH_LONG).show();
+                    requestsStack--;
+                    checkFinished();
                 }
             });
             netRequestQueue.add(request);
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(ContactList.this,
+                    (getString(R.string.error_saving_contact_in_db)),
+                    Toast.LENGTH_LONG).show();
+            requestsStack--;
+            checkFinished();
         }
 
+    }
+
+    private String generateCode() {
+        String code = "";
+        char letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        Random rand = new Random();
+        for (int i = 0; i < 16; i++) {
+            if (i != 0 && i != 15)
+                code += letters[rand.nextInt(letters.length - 1)];
+            else
+                code += letters[0];
+        }
+        return code;
+    }
+
+    private void checkFinished() {
+        if (requestsStack == 0) {
+            Intent ProfileIntent = new Intent(ContactList.this, Profile.class);
+            ProfileIntent.putExtra("user", user);
+            startActivity(ProfileIntent);
+            finish();
+        }
     }
 }

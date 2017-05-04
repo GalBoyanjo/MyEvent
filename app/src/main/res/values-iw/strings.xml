@@ -21,6 +21,7 @@
     <string name="please_wait">אנא המתן...</string>
     <string name="contact_saves_in_db">איש קשר נשמר ב-DB</string>
     <string name="error_saving_contact_in_db">שגיאה לשמור ב-DB</string>
+    <string name="error_occurred">אירעה שגיאה</string>
     <string name="SMS_faild_please_try_again">שליחת SMS נכשלה, אנא נסה שוב.</string>
     <string name="SMS_sent">SMS נשלח.</string>
     <string name="error_bad_email_password">שגיאה - סיסמא או אימייל שגויים</string>

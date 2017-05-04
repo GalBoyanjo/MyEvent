@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    tools:context="com.gal.invitation.Screens.CreateInvitation">
+
+
+    <Button
+        android:id="@+id/EventType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event type"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/EventDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/Names"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event names"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/EventPlace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event Place"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/EventText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event text"
+        android:textAlignment="center" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add PIC"/>
+</LinearLayout>

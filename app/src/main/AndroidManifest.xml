@@ -15,7 +15,7 @@
         <activity
             android:name=".Screens.ContactList"
             android:label="@string/title_activity_contacts_list"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".Screens.Register"
             android:label="@string/title_activity_register"
@@ -32,7 +32,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Screens.SendInvitations" />
-        <activity android:name=".Screens.Profile"></activity>
+        <activity android:name=".Screens.Profile" />
+        <activity android:name=".Screens.CreateInvitation"></activity>
     </application>
 
 </manifest>

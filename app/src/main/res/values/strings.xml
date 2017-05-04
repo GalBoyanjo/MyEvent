@@ -21,6 +21,7 @@
     <string name="please_wait">Please wait...</string>
     <string name="contact_saves_in_db">Contact Saves In DB</string>
     <string name="error_saving_contact_in_db">Error Saving Contact In DB</string>
+    <string name="error_occurred">Error occurred</string>
     <string name="SMS_faild_please_try_again">SMS faild, please try again.</string>
     <string name="SMS_sent">SMS sent.</string>
     <string name="error_bad_email_password">Error - bad email/password</string>
