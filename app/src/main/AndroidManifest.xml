@@ -24,7 +24,7 @@
             android:name=".Reservation"
             android:label="@string/title_activity_reservation"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Screens.Login">
+        <activity android:name=".Screens.CreateInvitation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,7 +33,8 @@
         </activity>
         <activity android:name=".Screens.SendInvitations" />
         <activity android:name=".Screens.Profile" />
-        <activity android:name=".Screens.CreateInvitation"></activity>
+    <activity android:name=".Screens.Login"/>
+
     </application>
 
 </manifest>

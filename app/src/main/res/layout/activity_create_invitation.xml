@@ -9,35 +9,39 @@
     tools:context="com.gal.invitation.Screens.CreateInvitation">
 
 
-    <Button
-        android:id="@+id/EventType"
+    <Spinner
+        android:id="@+id/eventType"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Event type"
-        android:textAlignment="center" />
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/EventDate"
+    <EditText
+        android:id="@+id/eventDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Date"
         android:textAlignment="center" />
 
-    <Button
-        android:id="@+id/Names"
+    <EditText
+        android:id="@+id/eventTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Event names"
-        android:textAlignment="center" />
+        android:hint="select time"
+        android:textAlignment="center"/>
 
-    <Button
+    <EditText
         android:id="@+id/EventPlace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Event Place"
         android:textAlignment="center" />
+    <Spinner
+        android:id="@+id/eventPlaceType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Event Place type"
+        android:textAlignment="center" />
 
-    <Button
+    <EditText
         android:id="@+id/EventText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,4 +51,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add PIC"/>
+
+    <EditText
+        android:id="@+id/eventGroom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="groom"
+        android:visibility="gone"/>
+    <EditText
+        android:id="@+id/eventBride"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="bride"
+        android:visibility="gone"/>
+    <EditText
+        android:id="@+id/eventParents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="parents"
+        android:visibility="gone"/>
+
 </LinearLayout>

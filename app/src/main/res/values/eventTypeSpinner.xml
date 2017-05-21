@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="type">
+        <item>Wedding</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="placeType">
+        <item>Functions hall</item>
+        <item>Other</item>
+    </string-array>
+
+</resources>
