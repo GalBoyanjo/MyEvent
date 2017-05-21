@@ -119,9 +119,6 @@ public class CreateInvitation extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 
     public void eventSelected(Spinner eventType){
