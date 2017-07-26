@@ -1,28 +1,40 @@
 package com.gal.invitation.Screens;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gal.invitation.Utils.Constants;
 import com.gal.invitation.Utils.JSONParser;
 import com.gal.invitation.R;
 import com.gal.invitation.Entities.User;
+import com.gal.invitation.Utils.ScreenUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class Register extends AppCompatActivity {
 
+    public static String systemLanguage;
     private JSONParser jsonParser;
     private final static String url_get_user = "http://master1590.a2hosted.com/invitations/createUser.php";
     private final static String TAG_SUCCESS = "success";
@@ -38,6 +50,7 @@ public class Register extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ScreenUtil.setLocale(Register.this, getString(R.string.title_activity_register));
         setContentView(R.layout.content_register);
         ReEmail = (EditText) findViewById(R.id.ReEmail);
         ReName = (EditText) findViewById(R.id.ReName);
@@ -56,6 +69,21 @@ public class Register extends AppCompatActivity {
 
         });
 
+
+    }
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        /**
+         * This overridden method will catch the screen rotation event and will prevent the onCreate
+         * function call. Defined in Manifest xml - activity node
+         */
+        super.onConfigurationChanged(newConfig);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = this.getWindow();
+            window.setNavigationBarColor(ContextCompat.getColor(Register.this, R.color.colorPrimary));
+        }
+        systemLanguage = newConfig.locale.getLanguage();
+        ScreenUtil.setLocale(Register.this, getString(R.string.title_activity_register));
 
     }
 

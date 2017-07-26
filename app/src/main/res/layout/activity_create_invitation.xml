@@ -4,71 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context="com.gal.invitation.Screens.CreateInvitation">
+    android:orientation="vertical">
 
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        tools:context="com.gal.invitation.Screens.CreateInvitation">
 
-    <Spinner
-        android:id="@+id/eventType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-    <EditText
-        android:id="@+id/eventDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Date"
-        android:textAlignment="center" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <EditText
-        android:id="@+id/eventTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="select time"
-        android:textAlignment="center"/>
+        </android.support.design.widget.AppBarLayout>
 
-    <EditText
-        android:id="@+id/EventPlace"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Event Place"
-        android:textAlignment="center" />
-    <Spinner
-        android:id="@+id/eventPlaceType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Event Place type"
-        android:textAlignment="center" />
+    </android.support.design.widget.CoordinatorLayout>
 
-    <EditText
-        android:id="@+id/EventText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Event text"
-        android:textAlignment="center" />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add PIC"/>
-
-    <EditText
-        android:id="@+id/eventGroom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="groom"
-        android:visibility="gone"/>
-    <EditText
-        android:id="@+id/eventBride"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="bride"
-        android:visibility="gone"/>
-    <EditText
-        android:id="@+id/eventParents"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="parents"
-        android:visibility="gone"/>
+    <include layout="@layout/content_create_invitation" />
 
 </LinearLayout>

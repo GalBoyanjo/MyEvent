@@ -2,6 +2,10 @@
     <string name="app_name">Invitation</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_reservation">Reservation</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_send_invitations">Send Invitations</string>
+    <string name="title_activity_create_invitations">Create Invitations</string>
+    <string name="title_activity_login">Login</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -28,6 +32,51 @@
     <string name="register">Register</string>
     <string name="create">CREATE</string>
     <string name="welcome">"WELCOME"</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="wedding">"Wedding"</string>
+    <string name="other">"Other"</string>
+    <string name="functions_hall">"Functions hall"</string>
+    <string name="date">"Date"</string>
+    <string name="time">"Time"</string>
+    <string name="event_place">"Event place"</string>
+    <string name="event_address">"Event address"</string>
+    <string name="free_text">"Free text..."</string>
+    <string name="add_pic">"Add Pic"</string>
+    <string name="bride">"Bride name"</string>
+    <string name="groom">"Groom name"</string>
+    <string name="parents">"Parents name"</string>
+    <string name="empty_field">"Empty field!"</string>
+    <string name="design_invitation">"Desing invitation"</string>
+    <string name="send_invitation">"Send invitation"</string>
+
+    <string name="from_contacts">From Contacts</string>
+    <string name="new_contact">New Contact</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_restart_dialog_title">Restart</string>
+    <string name="pref_restart_dialog_message">For this change to take affect, app restart is required.</string>
+    <string name="pref_language_title">Language</string>
+    <string-array name="pref_languages_list_titles">
+        <item>עברית</item>
+        <item>English</item>
+    </string-array>
+    <string-array name="pref_languages_list_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string name="restart">Restart</string>
+    <string name="later">Later</string>
+
+
+
+
+
+
+
+
 
 
 </resources>

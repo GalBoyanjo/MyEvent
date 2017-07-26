@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,27 +15,39 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Screens.ContactList"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_contacts_list"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Screens.Register"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".Reservation"
-            android:label="@string/title_activity_reservation"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".Screens.CreateInvitation">
+        <activity android:name=".Screens.Login"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Screens.SendInvitations" />
-        <activity android:name=".Screens.Profile" />
-    <activity android:name=".Screens.Login"/>
-
+        <activity
+            android:name=".Screens.SendInvitations"
+            android:configChanges="orientation|screenSize">
+        </activity>
+        <activity
+            android:name=".Screens.Profile"
+            android:configChanges="orientation|screenSize">
+        </activity>
+        <activity
+            android:name=".Screens.CreateInvitation"
+            android:configChanges="orientation|screenSize">
+        </activity>
+        <activity
+            android:name=".Screens.SettingsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_settings">
+        </activity>
     </application>
 
 </manifest>

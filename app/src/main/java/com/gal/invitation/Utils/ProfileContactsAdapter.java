@@ -21,13 +21,13 @@ import com.gal.invitation.R;
 
 import java.util.ArrayList;
 
-public class ContactsAdapter extends ArrayAdapter<Contact> {
+public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
 
     private Context context;
     private int layoutResourceId;
     private ArrayList<Contact> data;
 
-    public ContactsAdapter(Context context, int layoutResourceId, ArrayList<Contact> data) {
+    public ProfileContactsAdapter(Context context, int layoutResourceId, ArrayList<Contact> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -49,6 +49,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
 
             holder = new ContactHolder();
             holder.rowName = (TextView) row.findViewById(R.id.row_name);
+            holder.rowStatus = (TextView)row.findViewById(R.id.row_status);
             holder.rowImage = (ImageView) row.findViewById(R.id.row_image);
 
             row.setTag(holder);
@@ -66,6 +67,19 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
         }
         try {
             holder.rowName.setText(contact.getName());
+            switch (contact.getStatus()){
+                case -1:
+                    holder.rowStatus.setBackground(ContextCompat.getDrawable(context, R.drawable.yellow_circle));
+                    break;
+                case 0:
+                    holder.rowStatus.setBackground(ContextCompat.getDrawable(context, R.drawable.red_circle));
+                    break;
+                default:
+                    holder.rowStatus.setBackground(ContextCompat.getDrawable(context, R.drawable.green_circle));
+                    holder.rowStatus.setText(String.valueOf(contact.getStatus()));
+                    break;
+            }
+
 
             if (contact.getImage()!=null)
                 holder.rowImage.setImageBitmap(contact.getImage());
@@ -94,6 +108,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
 
     private static class ContactHolder {
         TextView rowName;
+        TextView rowStatus;
         ImageView rowImage;
 
     }

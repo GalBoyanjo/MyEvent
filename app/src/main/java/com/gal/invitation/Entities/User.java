@@ -1,10 +1,7 @@
 package com.gal.invitation.Entities;
 
 
-import com.gal.invitation.Reservation;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class User implements Serializable {
 
@@ -12,7 +9,6 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String email;
-    private ArrayList<Reservation> reservations = new ArrayList<>();
 
 
     public User(int ID, String username, String password, String email) {
@@ -56,11 +52,5 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public ArrayList<Reservation> getReservations() {
-        return reservations;
-    }
 
-    public void setReservations(ArrayList<Reservation> reservations) {
-        this.reservations = reservations;
-    }
 }

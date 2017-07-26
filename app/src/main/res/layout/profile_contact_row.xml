@@ -32,6 +32,18 @@
             android:text="Name"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
+        <TextView
+            android:id="@+id/row_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/row_name"
+            android:gravity="center"
+            android:minHeight="@dimen/row_circle_size"
+            android:minWidth="@dimen/row_circle_size"
+            android:textColor="@android:color/white"
+            android:layout_centerVertical="true"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
         <ImageButton
             android:id="@+id/row_remove"
             android:layout_width="wrap_content"

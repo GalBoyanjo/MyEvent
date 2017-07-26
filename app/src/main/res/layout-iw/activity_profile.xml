@@ -67,7 +67,7 @@
             fab:menu_labels_paddingLeft="8dp"
             fab:menu_labels_paddingRight="8dp"
             fab:menu_labels_paddingTop="4dp"
-            fab:menu_labels_position="left"
+            fab:menu_labels_position="right"
             fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
             fab:menu_labels_showShadow="true"
             fab:menu_labels_singleLine="false"

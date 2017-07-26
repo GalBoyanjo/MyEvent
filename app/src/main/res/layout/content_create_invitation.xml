@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_contacts_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.gal.invitation.Screens.CreateInvitation"
+    tools:showIn="@layout/activity_create_invitation">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true"
+        tools:context="com.gal.invitation.Screens.CreateInvitation"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp">
+
+        <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Spinner
+            android:id="@+id/eventType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/eventDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/date"
+                android:textAlignment="center"
+                android:layout_marginEnd="20dp"/>
+
+            <EditText
+                android:id="@+id/eventTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/time"
+                android:textAlignment="center"
+                android:layout_toEndOf="@id/eventDate"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <EditText
+                android:id="@+id/EventPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/event_place"
+                android:textAlignment="center"
+                android:layout_marginEnd="10dp"/>
+            <Spinner
+                android:id="@+id/eventPlaceType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event Place type"
+                android:textAlignment="center"
+                android:layout_toEndOf="@id/EventPlace" />
+            <EditText
+                android:id="@+id/EventPlaceAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/event_address"
+                android:textAlignment="center"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/eventPlaceType"/>
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/EventText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.40"
+            android:hint="@string/free_text"
+            android:gravity="top|start" />
+
+        <Button
+            android:id="@+id/eventAddPic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add PIC"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/eventGroom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/groom"
+                android:visibility="gone"
+                android:paddingEnd="15dp"/>
+            <EditText
+                android:id="@+id/eventBride"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/bride"
+                android:visibility="gone"
+                android:layout_toEndOf="@id/eventGroom"
+                android:paddingStart="15dp"/>
+        </RelativeLayout>
+        <EditText
+            android:id="@+id/eventParents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/parents"
+            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/eventPic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

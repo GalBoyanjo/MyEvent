@@ -5,8 +5,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -30,11 +33,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.gal.invitation.Entities.Contact;
+import com.gal.invitation.Interfaces.UpdateAllContactsCallbacks;
 import com.gal.invitation.Utils.ContactUtil;
 import com.gal.invitation.Utils.ContactsAdapter;
 import com.gal.invitation.Utils.MyStringRequest;
 import com.gal.invitation.R;
 import com.gal.invitation.Entities.User;
+import com.gal.invitation.Utils.NetworkUtil;
+import com.gal.invitation.Utils.ScreenUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,9 +54,9 @@ import java.util.TreeSet;
 
 public class ContactList extends AppCompatActivity {
 
+    public static String systemLanguage;
     private RequestQueue netRequestQueue;
-    private final static String url_update_contact = "http://master1590.a2hosted.com/invitations/updateContact.php";
-    private final static String TAG_SUCCESS = "success";
+
     private User user = null;
     private static final String TAG = ContactList.class.getSimpleName();
     private static final int CONTACTS_PERMISSIONS_REQUEST = 123;
@@ -66,6 +72,7 @@ public class ContactList extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ScreenUtil.setLocale(ContactList.this, getString(R.string.title_activity_contacts_list));
         setContentView(R.layout.activity_contacts_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -106,15 +113,47 @@ public class ContactList extends AppCompatActivity {
         if (id == R.id.action_ok) {
             if (selectedContacts.isEmpty())
                 checkFinished();
-            else
-                for (Contact contact : selectedContacts) {
+            else {
+                for(Contact contact : selectedContacts) {
                     requestsStack++;
-                    updateDB(contact);
+                    NetworkUtil.updateDB(this, user, contact, new UpdateAllContactsCallbacks() {
+                        @Override
+                        public void onSuccess() {
+                            requestsStack--;
+                            checkFinished();
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            requestsStack--;
+                            checkFinished();
+                            Toast.makeText(ContactList.this,
+                                    errorMessage,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
+            }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        /**
+         * This overridden method will catch the screen rotation event and will prevent the onCreate
+         * function call. Defined in Manifest xml - activity node
+         */
+        super.onConfigurationChanged(newConfig);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = this.getWindow();
+            window.setNavigationBarColor(ContextCompat.getColor(ContactList.this, R.color.colorPrimary));
+        }
+        systemLanguage = newConfig.locale.getLanguage();
+        ScreenUtil.setLocale(ContactList.this, getString(R.string.title_activity_contacts_list));
+
     }
 
     public void loadContact() {
@@ -244,55 +283,7 @@ public class ContactList extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-    private void updateDB(Contact contact) {
-        try {
-            Map<String, String> params = new HashMap<>();
-            params.put("UserID", String.valueOf(user.getID()));
-            params.put("Name", contact.getName());
-            params.put("Phone", contact.getPhone());
 
-            MyStringRequest request = new MyStringRequest(Request.Method.POST,
-                    url_update_contact, params, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.getInt(TAG_SUCCESS) == 1) {
-                            Toast.makeText(ContactList.this,
-                                    (getString(R.string.contact_saves_in_db)),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(ContactList.this,
-                                (getString(R.string.error_saving_contact_in_db)),
-                                Toast.LENGTH_LONG).show();
-                    }
-                    requestsStack--;
-                    checkFinished();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("Error", error.toString());
-                    Toast.makeText(ContactList.this,
-                            (getString(R.string.error_saving_contact_in_db)),
-                            Toast.LENGTH_LONG).show();
-                    requestsStack--;
-                    checkFinished();
-                }
-            });
-            netRequestQueue.add(request);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(ContactList.this,
-                    (getString(R.string.error_saving_contact_in_db)),
-                    Toast.LENGTH_LONG).show();
-            requestsStack--;
-            checkFinished();
-        }
-
-    }
 
     private String generateCode() {
         String code = "";
