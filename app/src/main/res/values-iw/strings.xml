@@ -50,5 +50,14 @@
 
     <string name="from_contacts">בחירה מאנשי הקשר</string>
     <string name="new_contact">איש קשר חדש</string>
+    <string name="email">אימייל</string>
+    <string name="password">סיסמא</string>
+    <string name="login">התחבר</string>
+    <string name="username">שם משתמש</string>
+    <string name="hina">חינה</string>
+
+
+
+
 
 </resources>

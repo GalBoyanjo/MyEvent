@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_contacts_list"
@@ -21,118 +21,234 @@
         android:orientation="vertical"
         android:fitsSystemWindows="true"
         tools:context="com.gal.invitation.Screens.CreateInvitation"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/round_frame">
 
-        <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="1" >
         <Spinner
             android:id="@+id/eventType"
             android:layout_width="wrap_content"
+            android:layout_height="@dimen/round_box_size"
+            android:layout_weight="0.5"
+            android:background="@drawable/round_edit_text"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="1" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="GROOM:"
+                android:visibility="gone"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="BRIDE:"
+                android:visibility="gone"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="PARENTS:"
+                android:visibility="gone"/>
+</LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="1" >
+    <EditText
+        android:id="@+id/eventGroom"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/round_box_size"
+        android:layout_weight="0.5"
+        android:background="@drawable/round_edit_text"
+        android:hint="@string/groom"
+        android:visibility="gone"
+        android:paddingEnd="15dp"/>
+    <EditText
+        android:id="@+id/eventBride"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/round_box_size"
+        android:layout_weight="0.5"
+        android:background="@drawable/round_edit_text"
+        android:hint="@string/bride"
+        android:visibility="gone"
+        android:layout_toEndOf="@id/eventGroom"
+        android:paddingStart="15dp"/>
+    <EditText
+        android:id="@+id/eventParents"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/round_box_size"
+        android:layout_weight="0.5"
+        android:background="@drawable/round_edit_text"
+        android:hint="@string/parents"
+        android:visibility="gone"/>
+</LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="1" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/date"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/time"/>
+</LinearLayout>
+
+
+        <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:weightSum="1" >
+
 
             <EditText
                 android:id="@+id/eventDate"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/round_box_size"
+                android:layout_weight="0.5"
                 android:hint="@string/date"
                 android:textAlignment="center"
-                android:layout_marginEnd="20dp"/>
+
+                android:background="@drawable/round_edit_text"/>
 
             <EditText
                 android:id="@+id/eventTime"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/round_box_size"
+                android:layout_weight="0.5"
                 android:hint="@string/time"
                 android:textAlignment="center"
                 android:layout_toEndOf="@id/eventDate"
-                />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+                android:background="@drawable/round_edit_text"/>
+        </LinearLayout>
 
 
-            <EditText
-                android:id="@+id/EventPlace"
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="1" >
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="@string/event_place"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="@string/event_address"/>
+</LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="1" >
+
+
+        <EditText
+                android:id="@+id/EventPlace"
+                android:layout_width="wrap_content"
+            android:layout_height="@dimen/round_box_size"
                 android:hint="@string/event_place"
+                android:layout_weight="0.4"
                 android:textAlignment="center"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="10dp"
+            android:background="@drawable/round_edit_text"/>
             <Spinner
                 android:id="@+id/eventPlaceType"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/round_box_size"
+                android:layout_weight="0.2"
                 android:text="Event Place type"
                 android:textAlignment="center"
-                android:layout_toEndOf="@id/EventPlace" />
+                android:layout_toEndOf="@id/EventPlace"
+                android:background="@drawable/round_edit_text"/>
+
             <EditText
                 android:id="@+id/EventPlaceAddress"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/round_box_size"
+                android:layout_weight="0.4"
                 android:hint="@string/event_address"
                 android:textAlignment="center"
                 android:layout_marginEnd="10dp"
-                android:layout_toEndOf="@id/eventPlaceType"/>
-        </RelativeLayout>
+                android:layout_toEndOf="@id/eventPlaceType"
+                android:background="@drawable/round_edit_text"/>
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/EventText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.40"
+            android:layout_height="100dp"
+            android:padding="10dp"
+            android:layout_margin="10dp"
             android:hint="@string/free_text"
-            android:gravity="top|start" />
+            android:gravity="top|start"
+            android:background="@drawable/round_edit_text"/>
+
 
         <Button
             android:id="@+id/eventAddPic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add PIC"/>
+            android:layout_width="@dimen/circle_btn_size"
+            android:layout_height="@dimen/circle_btn_size"
+            android:background="@drawable/ic_add_pic"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/eventGroom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/groom"
-                android:visibility="gone"
-                android:paddingEnd="15dp"/>
-            <EditText
-                android:id="@+id/eventBride"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/bride"
-                android:visibility="gone"
-                android:layout_toEndOf="@id/eventGroom"
-                android:paddingStart="15dp"/>
-        </RelativeLayout>
-        <EditText
-            android:id="@+id/eventParents"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/parents"
-            android:visibility="gone"/>
+
+
         <ImageView
             android:id="@+id/eventPic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-
+            android:visibility="gone"/>
+        </RelativeLayout>
     </LinearLayout>
-
-
-
-</RelativeLayout>
+</LinearLayout>

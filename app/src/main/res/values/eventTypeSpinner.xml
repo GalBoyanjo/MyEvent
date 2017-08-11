@@ -2,7 +2,7 @@
 <resources>
     <string-array name="type">
         <item>@string/wedding</item>
-        <item>@string/other</item>
+        <item>@string/hina</item>
     </string-array>
 
     <string-array name="placeType">

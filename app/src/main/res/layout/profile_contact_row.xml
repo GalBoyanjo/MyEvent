@@ -30,6 +30,7 @@
             android:layout_toEndOf="@id/row_image"
             android:layout_centerVertical="true"
             android:text="Name"
+            android:maxWidth="200dp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
@@ -53,7 +54,7 @@
             android:layout_marginStart="15dp"
             android:src="@drawable/remove"
             android:background="@android:color/transparent"
-            android:visibility="gone"/>
+            android:visibility="invisible"/>
 
         <ImageButton
             android:id="@+id/row_edit"
@@ -64,7 +65,7 @@
             android:layout_marginStart="15dp"
             android:src="@drawable/edit"
             android:background="@android:color/transparent"
-            android:visibility="gone"/>
+            android:visibility="invisible"/>
 
     </RelativeLayout>
 </LinearLayout>

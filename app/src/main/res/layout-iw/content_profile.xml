@@ -13,11 +13,6 @@
     tools:context="com.gal.invitation.Screens.Profile"
     tools:showIn="@layout/activity_profile">
 
-
-
-
-
-
     <TextView
         android:id="@+id/userName"
         android:layout_width="match_parent"
@@ -47,7 +42,6 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white" />
 
-
         <TextView
             android:id="@+id/row_maybe"
             android:layout_width="wrap_content"
@@ -73,6 +67,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white" />
 
+
     </LinearLayout>
 
     <Button
@@ -95,7 +90,7 @@
             android:id="@+id/icon_edit_invitation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+
             android:background="@drawable/ic_edit_invitation"
             android:gravity="center"
             android:minHeight="@dimen/circle_size"
@@ -108,15 +103,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-10dp"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/icon_edit_invitation"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/icon_edit_invitation"
             android:gravity="center"
             android:text="@string/design_invitation"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/holo_blue_dark"
             android:textSize="11dp" />
-
-
     </RelativeLayout>
 
     <ListView
@@ -126,22 +120,22 @@
         android:layout_below="@+id/profile_create_invitation_btn"
         android:layout_centerHorizontal="true" />
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/profile_contact_list">
-        <include layout="@layout/send_message_btn"/>
-    </FrameLayout>
+        android:layout_below="@+id/profile_contact_list"
+        android:layout_centerHorizontal="true">
 
-    <com.github.clans.fab.FloatingActionMenu
-        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        <include layout="@layout/send_message_btn" />
+    </LinearLayout>
+
+    <com.github.clans.fab.FloatingActionMenu xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:id="@+id/add_contact_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
         android:layout_marginBottom="@dimen/fab_margin"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
@@ -166,7 +160,7 @@
         fab:menu_labels_paddingLeft="8dp"
         fab:menu_labels_paddingRight="8dp"
         fab:menu_labels_paddingTop="4dp"
-        fab:menu_labels_position="left"
+        fab:menu_labels_position="right"
         fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
         fab:menu_labels_showShadow="true"
         fab:menu_labels_singleLine="false"

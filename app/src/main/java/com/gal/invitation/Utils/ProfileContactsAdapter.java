@@ -76,9 +76,13 @@ public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
                     break;
                 default:
                     holder.rowStatus.setBackground(ContextCompat.getDrawable(context, R.drawable.green_circle));
-                    holder.rowStatus.setText(String.valueOf(contact.getStatus()));
+//                    holder.rowStatus.setText(String.valueOf(contact.getStatus()));
                     break;
             }
+
+            if(contact.getStatus()>0)
+                holder.rowStatus.setText(String.valueOf(contact.getStatus()));
+
 
 
             if (contact.getImage()!=null)

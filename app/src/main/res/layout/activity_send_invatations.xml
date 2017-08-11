@@ -9,25 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Screens.SendInvitations">
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sending SMS Example"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="30dp" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tutorials point "
-        android:textColor="#ff87ff09"
-        android:textSize="30dp"
-        android:layout_below="@+id/textView1" />
-
-
 
 
     <Button
@@ -35,7 +16,6 @@
         android:layout_height="wrap_content"
         android:text="Send Sms"
         android:id="@+id/btnSendSMS"
-        android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="48dp"
         />

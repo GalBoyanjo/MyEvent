@@ -2,25 +2,22 @@ package com.gal.invitation.Screens;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,24 +39,28 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.gal.invitation.Entities.Contact;
+import com.gal.invitation.Entities.Invitation;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.R;
-import com.gal.invitation.Utils.Constants;
 import com.gal.invitation.Utils.MyStringRequest;
 import com.gal.invitation.Utils.ScreenUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.TreeSet;
 
 public class CreateInvitation extends AppCompatActivity {
 
     public static String systemLanguage;
     private RequestQueue netRequestQueue;
     private final static String url_update_invitation = "http://master1590.a2hosted.com/invitations/updateInvitation.php";
+    private final static String url_get_invitation = "http://master1590.a2hosted.com/invitations/getUserInvitation.php";
     private final static String TAG_SUCCESS = "success";
     private User user = null;
     EditText date;
@@ -80,6 +81,9 @@ public class CreateInvitation extends AppCompatActivity {
     private boolean hasWRITE_EXTERNAL_STORAGEPermission = false;
     View view;
     boolean allNotEmpty;
+    private Invitation userInvitation;
+    private ProgressDialog progressDialog;
+
 
 
 
@@ -92,33 +96,43 @@ public class CreateInvitation extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        netRequestQueue = Volley.newRequestQueue(this);
+
+        user = (User) getIntent().getSerializableExtra("user");
+
+
         eventPlaceName = (EditText)findViewById(R.id.EventPlace);
         groomName = (EditText)findViewById(R.id.eventGroom);
         brideName = (EditText)findViewById(R.id.eventBride);
         parentsName = (EditText)findViewById(R.id.eventParents);
         freeText  =(EditText)findViewById(R.id.EventText);
         eventAddress = (EditText)findViewById(R.id.EventPlaceAddress);
-
-
-        eventType = (Spinner) findViewById(R.id.eventType);
-        createEventType();
-
-
         date = (EditText) findViewById(R.id.eventDate);
-        createEventDate();
-
-
+        eventType = (Spinner) findViewById(R.id.eventType);
         time = (EditText) findViewById(R.id.eventTime);
-        createEventTime();
-
         eventPlaceType = (Spinner) findViewById(R.id.eventPlaceType);
-        createEventPlaceType();
 
+
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("LOADING INVITATION");
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
+
+        getUserInvitation();
+
+
+
+
+        createEventType();
+        createEventDate();
+        createEventTime();
+        createEventPlaceType();
         createEventAddPic();
 
-        netRequestQueue = Volley.newRequestQueue(this);
 
-        user = (User) getIntent().getSerializableExtra("user");
     }
 
 
@@ -299,15 +313,17 @@ public class CreateInvitation extends AppCompatActivity {
     public void eventSelected(){
         String type = eventType.getSelectedItem().toString();
 
-        Toast.makeText(CreateInvitation.this,
-                type,
-                Toast.LENGTH_LONG).show();
 
         if (type.equals(getString(R.string.wedding))){
             groomName.setVisibility(View.VISIBLE);
             brideName.setVisibility(View.VISIBLE);
             parentsName.setVisibility(View.GONE);
         }
+        if (type.equals(getString(R.string.hina))){
+            groomName.setVisibility(View.VISIBLE);
+            brideName.setVisibility(View.VISIBLE);
+            parentsName.setVisibility(View.GONE);
+            }
         if (type.equals(getString(R.string.other))) {
             groomName.setVisibility(View.GONE);
             brideName.setVisibility(View.GONE);
@@ -469,4 +485,92 @@ public class CreateInvitation extends AppCompatActivity {
         }
 
     }
+
+    private void getUserInvitation() {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("UserID", String.valueOf(user.getID()));
+
+            MyStringRequest request = new MyStringRequest(Request.Method.POST,
+                    url_get_invitation, params, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getInt(TAG_SUCCESS) == 1) {
+//                            JSONArray ja = jsonObject.getJSONArray("Invitation");
+//                            for (int i = 0; i < ja.length(); i++) {
+//                                JSONObject jo = ja.getJSONObject(i);
+//                                Invitation tempInvitation = new Invitation();
+//                                tempInvitation.setType(jo.getString("Type"));
+//                                tempInvitation.setDate(jo.getString("Date"));
+//                                tempInvitation.setTime(jo.getString("Time"));
+//                                tempInvitation.setPlacetype(jo.getString("PlaceType"));
+//                                tempInvitation.setPlace(jo.getString("Place"));
+//                                tempInvitation.setAddress(jo.getString("Address"));
+//                                tempInvitation.setFreeText(jo.getString("FreeText"));
+//                                tempInvitation.setBride(jo.getString("Bride"));
+//                                tempInvitation.setGroom(jo.getString("Groom"));
+
+                                userInvitation=new Invitation(jsonObject.getString("Type")
+                                        ,jsonObject.getString("Date") , jsonObject.getString("Time")
+                                        , jsonObject.getString("PlaceType") , jsonObject.getString("Place")
+                                        , jsonObject.getString("Address") , jsonObject.getString("FreeText")
+                                        , jsonObject.getString("Bride") , jsonObject.getString("Groom"));
+
+
+//                                userInvitation=tempInvitation;
+//                            }
+                            showInvitation();
+                        }
+                        else{
+                            progressDialog.dismiss();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+                        Toast.makeText(CreateInvitation.this,
+                                getString(R.string.error_occurred),
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Error", error.toString());
+                    progressDialog.dismiss();
+                    Toast.makeText(CreateInvitation.this,
+                            getString(R.string.error_occurred),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            netRequestQueue.add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            progressDialog.dismiss();
+            Toast.makeText(CreateInvitation.this,
+                    getString(R.string.error_occurred),
+                    Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void showInvitation(){
+
+        //params.put("Type", eventType.getSelectedItem().toString());
+        //if(eventPlaceType.getSelectedItem().toString()==userInvitation.getPlace())
+
+        date.setText(String.valueOf(userInvitation.getDate()));
+        time.setText(String.valueOf(userInvitation.getTime()));
+        eventPlaceName.setText(String.valueOf(userInvitation.getPlace()));
+        eventAddress.setText(String.valueOf(userInvitation.getAddress()));
+        freeText.setText(String.valueOf(userInvitation.getFreeText()));
+        brideName.setText(String.valueOf(userInvitation.getBride()));
+        groomName.setText(String.valueOf(userInvitation.getGroom()));
+
+
+        progressDialog.dismiss();
+    }
+
 }

@@ -115,9 +115,9 @@ public class Profile extends AppCompatActivity {
         getUserContacts();
 
         txtName = (TextView) findViewById(R.id.userName);
-        txtName.setText("HELLO " + String.valueOf(user.getUsername()));
+        txtName.setText(getString(R.string.hello) +" " + String.valueOf(user.getUsername()));
 
-        final RelativeLayout sendInvitationsSms = (RelativeLayout) findViewById(R.id.profile_send_invitation_btn);
+        final LinearLayout sendInvitationsSms = (LinearLayout) findViewById(R.id.profile_send_invitation_btn);
         sendInvitationsSms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,14 +135,6 @@ public class Profile extends AppCompatActivity {
                 Intent createInvitationLink = new Intent(Profile.this, CreateInvitation.class);
                 createInvitationLink.putExtra("user", user);
                 startActivity(createInvitationLink);
-            }
-        });
-
-        fabMenu = (FloatingActionMenu) findViewById(R.id.add_contact_menu);
-        fabMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fabMenu.open(true);
             }
         });
 
@@ -289,6 +281,10 @@ public class Profile extends AppCompatActivity {
                             }
                             showContact();
                         }
+                        else{
+                            progressDialog.dismiss();
+                        }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                         progressDialog.dismiss();

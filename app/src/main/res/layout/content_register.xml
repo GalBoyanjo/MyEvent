@@ -17,14 +17,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ReEmail"
-        android:hint="Email"/>
+        android:hint="@string/email"/>
 
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ReName"
-        android:hint="UserName"
+        android:hint="@string/username"
         android:layout_below="@+id/ReEmail"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/RePassword"
-        android:hint="Password"
+        android:hint="@string/password"
         android:layout_below="@+id/ReEmail"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
