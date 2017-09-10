@@ -1,31 +1,26 @@
 package com.gal.invitation.Screens;
 
 import android.app.AlarmManager;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -48,7 +43,6 @@ import com.gal.invitation.R;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.Utils.Constants;
 import com.gal.invitation.Utils.ContactUtil;
-import com.gal.invitation.Utils.ContactsAdapter;
 import com.gal.invitation.Utils.MyStringRequest;
 import com.gal.invitation.Utils.NetworkUtil;
 import com.gal.invitation.Utils.ProfileContactsAdapter;
@@ -63,7 +57,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -92,6 +85,14 @@ public class Profile extends AppCompatActivity {
     private TextView txtName;
     private ProfileContactsAdapter adapter;
 
+    Button yesFilter;
+    Button noFilter;
+    Button maybeFilter;
+    Button allFilter;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,10 +116,10 @@ public class Profile extends AppCompatActivity {
         getUserContacts();
 
         txtName = (TextView) findViewById(R.id.userName);
-        txtName.setText(getString(R.string.hello) +" " + String.valueOf(user.getUsername()));
+        txtName.setText(getString(R.string.hello) + " " + String.valueOf(user.getUsername()));
 
         final LinearLayout sendInvitationsSms = (LinearLayout) findViewById(R.id.profile_send_invitation_btn);
-        sendInvitationsSms.setOnClickListener(new View.OnClickListener() {
+        sendInvitationsSms.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent sendInvitationLink = new Intent(Profile.this, SendInvitations.class);
@@ -129,7 +130,7 @@ public class Profile extends AppCompatActivity {
         });
 
         final RelativeLayout createInvitation = (RelativeLayout) findViewById(R.id.profile_create_invitation_btn);
-        createInvitation.setOnClickListener(new View.OnClickListener() {
+        createInvitation.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent createInvitationLink = new Intent(Profile.this, CreateInvitation.class);
@@ -139,7 +140,7 @@ public class Profile extends AppCompatActivity {
         });
 
         fabFromContacts = (FloatingActionButton) findViewById(R.id.fab_from_contacts);
-        fabFromContacts.setOnClickListener(new View.OnClickListener() {
+        fabFromContacts.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Profile.this, ContactList.class);
@@ -149,7 +150,7 @@ public class Profile extends AppCompatActivity {
         });
 
         fabNewContact = (FloatingActionButton) findViewById(R.id.fab_new_contact);
-        fabNewContact.setOnClickListener(new View.OnClickListener() {
+        fabNewContact.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 LayoutInflater inflater = LayoutInflater.from(Profile.this);
@@ -177,6 +178,9 @@ public class Profile extends AppCompatActivity {
                                     public void onSuccess() {
                                         adapter.add(contact);
                                         adapter.notifyDataSetChanged();
+                                        finish();
+                                        startActivity(getIntent());
+
                                     }
 
                                     @Override
@@ -200,6 +204,64 @@ public class Profile extends AppCompatActivity {
                 builder.show();
             }
         });
+
+
+        // Locate the EditText in listview_main.xml
+        yesFilter = (Button) findViewById(R.id.profile_yes_btn);
+        noFilter = (Button) findViewById(R.id.profile_no_btn);
+        maybeFilter = (Button) findViewById(R.id.profile_maybe_btn);
+        allFilter = (Button) findViewById(R.id.profile_all_btn);
+
+
+
+
+        //list filters:
+
+        yesFilter.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.filter("yes");
+                yesFilter.setTextColor(getResources().getColor(R.color.colorGreenStatus));
+                noFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+                maybeFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+                allFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+            }
+        });
+        noFilter.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.filter("no");
+                noFilter.setTextColor(getResources().getColor(R.color.colorRedStatus));
+                yesFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+                maybeFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+                allFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+            }
+        });
+        maybeFilter.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.filter("maybe");
+                maybeFilter.setTextColor(getResources().getColor(R.color.colorYellowStatus));
+                noFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+                yesFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+                allFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+            }
+        });
+        allFilter.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.filter("all");
+                yesFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+                noFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+                maybeFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+                allFilter.setTextColor(getResources().getColor(R.color.colorBlack));
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
     }
 
     @Override
@@ -360,7 +422,7 @@ public class Profile extends AppCompatActivity {
                 editContactBtn.setVisibility(View.VISIBLE);
 
 
-                deleteContactBtn.setOnClickListener(new View.OnClickListener() {
+                deleteContactBtn.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
@@ -371,7 +433,7 @@ public class Profile extends AppCompatActivity {
                     }
                 });
 
-                editContactBtn.setOnClickListener(new View.OnClickListener() {
+                editContactBtn.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View arg0) {
 

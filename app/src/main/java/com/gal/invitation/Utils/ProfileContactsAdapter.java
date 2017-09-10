@@ -20,18 +20,21 @@ import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
 
     private Context context;
     private int layoutResourceId;
-    private ArrayList<Contact> data;
+    private ArrayList<Contact> data = new ArrayList<>();
+    private ArrayList<Contact> searchData = new ArrayList<>();
 
     public ProfileContactsAdapter(Context context, int layoutResourceId, ArrayList<Contact> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
-        this.data = data;
+        this.data.addAll(data);
+        this.searchData.addAll(data);
     }
 
     @Override
@@ -59,7 +62,7 @@ public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
         }
 
 
-        Contact contact = data.get(position);
+        Contact contact = searchData.get(position);
         if(contact.isSelected()) {
             row.setBackgroundColor(ContextCompat.getColor(context,R.color.colorAccent));
         } else {
@@ -82,6 +85,9 @@ public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
 
             if(contact.getStatus()>0)
                 holder.rowStatus.setText(String.valueOf(contact.getStatus()));
+            else
+                holder.rowStatus.setText("");
+
 
 
 
@@ -116,7 +122,54 @@ public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
         ImageView rowImage;
 
     }
+    @Override
+    public int getCount() {
+        return searchData.size();
+    }
 
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        searchData.clear();
+
+        switch (charText) {
+            case "yes":
+                searchData.clear();
+                for (Contact contact : data) {
+                    if (contact.getStatus() >0 )
+                        searchData.add(contact);
+                }
+                break;
+            case "no":
+                for (Contact contact : data) {
+                    if (contact.getStatus() == 0) {
+                        searchData.add(contact);
+                    } else if (contact.getStatus() != 0) {
+                        searchData.remove(contact);
+                    }
+                }
+                break;
+            case "maybe":
+                for (Contact contact : data) {
+                    if (contact.getStatus() < 0) {
+                        searchData.add(contact);
+                    } else if (contact.getStatus() >= 0) {
+                        searchData.remove(contact);
+                    }
+                }
+                break;
+            case "all":
+                searchData.addAll(data);
+                break;
+            default:
+                searchData.addAll(data);
+                break;
+
+        }
+
+
+
+        notifyDataSetChanged();
+    }
 
 
 }

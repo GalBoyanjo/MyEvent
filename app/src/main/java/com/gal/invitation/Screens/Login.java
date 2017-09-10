@@ -125,7 +125,6 @@ public class Login extends AppCompatActivity {
                         "POST", params);
 
 
-                Log.d("GetUser Response", json.toString());
 
                 // check for success tag
 

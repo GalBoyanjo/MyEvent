@@ -4,8 +4,6 @@ package com.gal.invitation.Utils;
  * Created by Gal on 11/04/2017.
  */
 
-
-
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -20,26 +18,25 @@ import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class ContactsAdapter extends ArrayAdapter<Contact> {
+public class ContactsAdapter extends ArrayAdapter<Contact>{
 
     private Context context;
     private int layoutResourceId;
-    private ArrayList<Contact> data;
+    private ArrayList<Contact> data = new ArrayList<>();
+    public ArrayList<Contact> searchData = new ArrayList<>();
 
     public ContactsAdapter(Context context, int layoutResourceId, ArrayList<Contact> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
-        this.data = data;
+        this.data.addAll(data);
+        this.searchData.addAll(data);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
-    }
-
-    private View getCustomView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         ContactHolder holder = null;
 
@@ -57,8 +54,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
             holder = (ContactHolder) row.getTag();
         }
 
-
-        Contact contact = data.get(position);
+        Contact contact = searchData.get(position);
         if(contact.isSelected()) {
             row.setBackgroundColor(ContextCompat.getColor(context,R.color.colorAccent));
         } else {
@@ -89,13 +85,36 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        return 0;
+    }
+
+    @Override
+    public int getCount() {
+        return searchData.size();
     }
 
     private static class ContactHolder {
         TextView rowName;
         ImageView rowImage;
 
+    }
+
+    // Filter Class
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        searchData.clear();
+        if (charText.length() == 0) {
+            searchData.addAll(data);
+        } else {
+            for (Contact contact : data) {
+                if (contact.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    searchData.add(contact);
+                }else if(contact.getPhone().toLowerCase(Locale.getDefault()).contains(charText)){
+                    searchData.add(contact);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 

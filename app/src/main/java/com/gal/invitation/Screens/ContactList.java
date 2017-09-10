@@ -2,6 +2,8 @@ package com.gal.invitation.Screens;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,17 +16,23 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -48,6 +56,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeSet;
@@ -57,6 +66,9 @@ public class ContactList extends AppCompatActivity {
     public static String systemLanguage;
     private RequestQueue netRequestQueue;
 
+    private SearchView searchView;
+    private ListView listView;
+
     private User user = null;
     private static final String TAG = ContactList.class.getSimpleName();
     private static final int CONTACTS_PERMISSIONS_REQUEST = 123;
@@ -65,6 +77,8 @@ public class ContactList extends AppCompatActivity {
     private ArrayList<Contact> selectedContacts = new ArrayList<>();
     private ProgressDialog progressDialog;
     private int requestsStack = 0;
+    ContactsAdapter adapter;
+
 
     /**
      * Called when the activity is first created.
@@ -92,13 +106,93 @@ public class ContactList extends AppCompatActivity {
         netRequestQueue = Volley.newRequestQueue(this);
 
         user = (User) getIntent().getSerializableExtra("user");
+
         loadContact();
+
+        // Locate the EditText in listview_main.xml
+        //editsearch = (EditText) findViewById(R.id.myActionEditText);
+
+
+        // Capture Text in EditText
+//        editsearch.addTextChangedListener(new TextWatcher() {
+//
+//            @Override
+//            public void afterTextChanged(Editable arg0) {
+//                // TODO Auto-generated method stub
+//                String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
+//                adapter.filter(text);
+//            }
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence arg0, int arg1,
+//                                          int arg2, int arg3) {
+//                // TODO Auto-generated method stub
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+//                                      int arg3) {
+//                // TODO Auto-generated method stub
+//            }
+//        });
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.contacts_list, menu);
+
+        MenuItem menuSearch = menu.findItem(R.id.action_search);
+
+        //Search related stuff
+        searchView = (SearchView) MenuItemCompat.getActionView(menuSearch);
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                return false;
+            }
+        });
+
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {}
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String searchQuery) {
+                //on every change in the search box - filter the list
+                adapter.filter(searchQuery.trim());
+                listView.invalidate();
+                return true;
+            }
+        });
+
+        MenuItemCompat.setOnActionExpandListener(menuSearch, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true;  // Return true to expand action view
+            }
+        });
+
         return true;
     }
 
@@ -108,39 +202,42 @@ public class ContactList extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.action_ok: {
+                if (selectedContacts.isEmpty())
+                    checkFinished();
+                else {
+                    for (Contact contact : selectedContacts) {
+                        requestsStack++;
+                        NetworkUtil.updateDB(this, user, contact, new UpdateAllContactsCallbacks() {
+                            @Override
+                            public void onSuccess() {
+                                requestsStack--;
+                                checkFinished();
+                            }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_ok) {
-            if (selectedContacts.isEmpty())
-                checkFinished();
-            else {
-                for(Contact contact : selectedContacts) {
-                    requestsStack++;
-                    NetworkUtil.updateDB(this, user, contact, new UpdateAllContactsCallbacks() {
-                        @Override
-                        public void onSuccess() {
-                            requestsStack--;
-                            checkFinished();
-                        }
-
-                        @Override
-                        public void onError(String errorMessage) {
-                            requestsStack--;
-                            checkFinished();
-                            Toast.makeText(ContactList.this,
-                                    errorMessage,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+                            @Override
+                            public void onError(String errorMessage) {
+                                requestsStack--;
+                                checkFinished();
+                                Toast.makeText(ContactList.this,
+                                        errorMessage,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
+                return true;
             }
-            return true;
+            case R.id.action_search: {
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         /**
          * This overridden method will catch the screen rotation event and will prevent the onCreate
@@ -257,15 +354,23 @@ public class ContactList extends AppCompatActivity {
 
     private void buildListView(final TreeSet<Contact> contacts) {
         ArrayList<Contact> contactsArrayList = new ArrayList<>(contacts);
-        final ListView listView = (ListView) findViewById(R.id.contacts_list);
-        ContactsAdapter adapter = new ContactsAdapter(ContactList.this,
+        listView = (ListView) findViewById(R.id.contacts_list);
+        adapter = new ContactsAdapter(ContactList.this,
                 R.layout.contact_row, contactsArrayList);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Contact contact = ((Contact) listView.getAdapter().getItem(position));
+                Contact contact = new Contact();
+                int i = 0;
+                for (Contact c : adapter.searchData) {
+                    if (i == position) {
+                        contact = c;
+                        break;
+                    }
+                    i++;
+                }
 
                 LinearLayout rowContainer = (LinearLayout) view.findViewById(R.id.row_container);
                 if (selectedContacts.contains(contact)) {
@@ -282,8 +387,6 @@ public class ContactList extends AppCompatActivity {
 
         progressDialog.dismiss();
     }
-
-
 
     private String generateCode() {
         String code = "";
@@ -306,4 +409,5 @@ public class ContactList extends AppCompatActivity {
             finish();
         }
     }
+
 }

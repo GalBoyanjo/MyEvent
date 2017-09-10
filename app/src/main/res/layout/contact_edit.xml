@@ -10,17 +10,49 @@
         android:layout_height="64dp"
         android:scaleType="center"
         android:background="@color/colorPrimary"
-        android:contentDescription="@string/app_name"/>
+        android:contentDescription="@string/app_name" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/edit_image_user"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="1dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_user"
+        />
     <EditText
         android:id="@+id/contact_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/edit_image_user"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:inputType="text"
         android:hint=""/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/edit_image_phone"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="1dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_phone"
+        />
+
     <EditText
         android:id="@+id/contact_phone"
         android:layout_width="match_parent"
@@ -29,8 +61,10 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="16dp"
+        android:layout_toEndOf="@id/edit_image_phone"
         android:inputType="phone"
         android:hint=" "/>
+    </RelativeLayout>
 
 
 

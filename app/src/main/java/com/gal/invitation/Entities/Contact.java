@@ -1,6 +1,7 @@
 package com.gal.invitation.Entities;
 
 import android.graphics.Bitmap;
+import android.opengl.Visibility;
 
 import java.io.Serializable;
 

@@ -115,7 +115,6 @@ public class JSONParser implements Serializable {
                 result.append(line);
             }
 
-            Log.d("JSON Parser", "result: " + result.toString());
 
         } catch (IOException e) {
             e.printStackTrace();

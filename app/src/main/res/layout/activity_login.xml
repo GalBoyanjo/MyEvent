@@ -17,6 +17,7 @@
        android:id="@+id/txtEmail"
        android:hint="@string/email"
        android:layout_margin="2dp"
+       android:inputType="textEmailAddress"
        />
 
     <EditText
@@ -24,7 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/txtPassword"
-        android:hint="@string/password" />
+        android:hint="@string/password"
+        android:inputType="textPassword"/>
 
 
     <Button
@@ -32,7 +34,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnLogin"
         android:text="@string/login"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        />
 
     <TextView
         android:layout_width="match_parent"
@@ -42,10 +45,10 @@
 
     <TextView
         android:text=""
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/Register"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="start"/>
 
 
 </LinearLayout>

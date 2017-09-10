@@ -45,7 +45,8 @@
             android:minHeight="@dimen/circle_size"
             android:minWidth="@dimen/circle_size"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:elevation="5dp"  />
 
 
         <TextView
@@ -58,7 +59,8 @@
             android:minHeight="@dimen/circle_size"
             android:minWidth="@dimen/circle_size"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:elevation="5dp"  />
 
 
         <TextView
@@ -71,7 +73,8 @@
             android:minHeight="@dimen/circle_size"
             android:minWidth="@dimen/circle_size"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:elevation="5dp"  />
 
     </LinearLayout>
 
@@ -119,18 +122,59 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/profile_contact_list_filters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="fill_vertical"
+        android:layout_below="@id/profile_create_invitation_btn">
+
+        <Button
+            android:id="@+id/profile_yes_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/yes"
+            android:background="@drawable/filter_box"
+            android:layout_marginEnd="-3dp"/>
+
+        <Button
+            android:id="@+id/profile_no_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no"
+            android:background="@drawable/filter_box"
+            android:layout_marginEnd="-3dp"/>
+        <Button
+            android:id="@+id/profile_maybe_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/maybe"
+            android:background="@drawable/filter_box"
+            android:layout_marginEnd="-3dp"/>
+
+        <Button
+            android:id="@+id/profile_all_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all"
+            android:background="@drawable/filter_box"/>
+
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/profile_contact_list"
         android:layout_width="match_parent"
         android:layout_height="130dp"
-        android:layout_below="@+id/profile_create_invitation_btn"
+        android:layout_below="@+id/profile_contact_list_filters"
         android:layout_centerHorizontal="true" />
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/profile_contact_list">
+        android:layout_below="@+id/profile_contact_list"
+        android:layout_margin="10dp">
         <include layout="@layout/send_message_btn"/>
     </FrameLayout>
 

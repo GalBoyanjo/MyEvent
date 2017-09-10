@@ -15,8 +15,8 @@
     <string name="required_permission_title">Required Permission</string>
     <string name="required_permission_ask_again">Request Again</string>
     <string name="required_contacts_permission_message">This permission is required in order to get access to your contacts, without it you won\'t be able to send SMS. Request permission again?</string>
-    <string name="cancel">Cancel</string>
-    <string name="ok">Ok</string>
+    <string name="cancel">ביטול</string>
+    <string name="ok">אישור</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello">שלום</string>
@@ -55,6 +55,12 @@
     <string name="login">התחבר</string>
     <string name="username">שם משתמש</string>
     <string name="hina">חינה</string>
+    <string name="search">חפש</string>
+    <string name="all">כולם</string>
+    <string name="yes">מגיעים</string>
+    <string name="no">לא מגיעים</string>
+    <string name="maybe">טרם השיבו</string>
+
 
 
 
