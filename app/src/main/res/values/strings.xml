@@ -37,6 +37,7 @@
     <string name="other">"Other"</string>
     <string name="functions_hall">"Functions hall"</string>
     <string name="date">"Date"</string>
+    <string name="reception_time">"Reception time"</string>
     <string name="time">"Time"</string>
     <string name="event_place">"Event place"</string>
     <string name="event_address">"Event address"</string>
@@ -47,6 +48,9 @@
     <string name="parents">"Parents name"</string>
     <string name="empty_field">"Empty field!"</string>
     <string name="design_invitation">"Desing invitation"</string>
+    <string name="invitation_preview">"Invitation Preview"</string>
+    <string name="design_picture">"Desing picture"</string>
+    <string name="edit_invitation">"Edit invitation"</string>
     <string name="send_invitation">"Send invitation"</string>
 
     <string name="from_contacts">From Contacts</string>
@@ -79,14 +83,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="maybe">Maybe</string>
-
-
-
-
-
-
-
-
 
 
 </resources>

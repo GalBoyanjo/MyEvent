@@ -19,7 +19,7 @@ public class Invitation {
     public Invitation(){
     }
 
-    public Invitation(String type , String date , String time , String placetype , String place , String address , String freetext , String bride , String groom){
+    public Invitation(String type , String date , String time , String placetype , String place , String address , String freetext , String bride , String groom ){
         setType(type);
         setDate(date);
         setTime(time);
@@ -102,6 +102,7 @@ public class Invitation {
     public void setGroom(String groom) {
         this.groom = groom;
     }
+
 
 
 }

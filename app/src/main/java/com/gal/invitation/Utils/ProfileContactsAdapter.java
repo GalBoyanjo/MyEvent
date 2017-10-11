@@ -51,9 +51,9 @@ public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ContactHolder();
-            holder.rowName = (TextView) row.findViewById(R.id.row_name);
-            holder.rowStatus = (TextView)row.findViewById(R.id.row_status);
-            holder.rowImage = (ImageView) row.findViewById(R.id.row_image);
+            holder.rowName = (TextView) row.findViewById(R.id.profile_row_name);
+            holder.rowStatus = (TextView)row.findViewById(R.id.profile_row_status);
+            holder.rowImage = (ImageView) row.findViewById(R.id.profile_row_image);
 
             row.setTag(holder);
 

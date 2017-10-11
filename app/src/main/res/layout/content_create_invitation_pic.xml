@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_contacts_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.gal.invitation.Screens.CreateInvitation"
+    tools:showIn="@layout/activity_create_invitation_pic">
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/round_frame"
+            android:fitsSystemWindows="true"
+            android:isScrollContainer="true"
+            android:orientation="vertical"
+            tools:context="com.gal.invitation.Screens.CreateInvitationPic">
+
+            <Button
+                android:id="@+id/eventAddPic"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_pic"
+                android:visibility="visible"
+                android:layout_gravity="center"/>
+
+            <com.gal.invitation.Utils.RoundedImageView
+                android:id="@+id/eventPic"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="20dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher"
+                android:layout_gravity="center"/>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginTop="20dp">
+            <Button
+                android:id="@+id/efffectBtn1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="EFFECT1"
+                android:layout_margin="2dp"/>
+
+            <Button
+                android:id="@+id/efffectBtn2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="EFFECT2"
+                android:layout_margin="2dp"/>
+            <Button
+                android:id="@+id/efffectBtn3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="EFFECT3"
+                android:layout_margin="2dp"/>
+
+</LinearLayout>
+            <ImageView
+                android:id="@+id/myView"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"/>
+
+
+
+
+        </LinearLayout>
+</LinearLayout>

@@ -17,7 +17,6 @@
 
 
 
-
     <TextView
         android:id="@+id/userName"
         android:layout_width="match_parent"
@@ -25,12 +24,75 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:id="@+id/profile_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="preview"
+        android:textAlignment="center"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/row_status_des"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userName"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp">
+
+        <TextView
+            android:id="@+id/row_yes_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/yes"
+            android:gravity="center"
+            android:minHeight="@dimen/circle_size"
+            android:minWidth="@dimen/circle_size"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorGreenStatus"
+            android:elevation="5dp"/>
+
+        <TextView
+            android:id="@+id/row_maybe_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/maybe"
+            android:gravity="center"
+            android:minHeight="@dimen/circle_size"
+            android:minWidth="@dimen/circle_size"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorYellowStatus"
+            android:elevation="5dp"  />
+
+
+        <TextView
+            android:id="@+id/row_no_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/no"
+            android:gravity="center"
+            android:minHeight="@dimen/circle_size"
+            android:minWidth="@dimen/circle_size"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorRedStatus"
+            android:elevation="5dp"  />
+
+
+
+
+    </LinearLayout>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/row_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/userName"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/circle_size"
         android:gravity="center"
         android:paddingBottom="3dp"
         android:paddingTop="3dp">
@@ -46,8 +108,7 @@
             android:minWidth="@dimen/circle_size"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white"
-            android:elevation="5dp"  />
-
+            android:elevation="5dp" />
 
         <TextView
             android:id="@+id/row_maybe"
@@ -76,13 +137,11 @@
             android:textColor="@android:color/white"
             android:elevation="5dp"  />
 
+
+
+
     </LinearLayout>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:text="@string/design_invitation"
-        android:visibility="gone" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/profile_create_invitation_btn"

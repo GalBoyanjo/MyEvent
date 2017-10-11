@@ -36,6 +36,7 @@
     <string name="other">"אחר"</string>
     <string name="functions_hall">"אולם אירועים"</string>
     <string name="date">"תאריך"</string>
+    <string name="reception_time">"שעת קבלת פנים"</string>
     <string name="time">"שעה"</string>
     <string name="event_place">"שם המקום"</string>
     <string name="event_address">"כתובת"</string>
@@ -46,8 +47,10 @@
     <string name="parents">"שם ההורים"</string>
     <string name="empty_field">"שדה ריק!"</string>
     <string name="design_invitation">"עצב הזמנה"</string>
+    <string name="invitation_preview">"צפה בהזמנה"</string>
+    <string name="design_picture">"עצב תמונה"</string>
+    <string name="edit_invitation">"ערוך הזמנה"</string>
     <string name="send_invitation">"שלח הזמנה"</string>
-
     <string name="from_contacts">בחירה מאנשי הקשר</string>
     <string name="new_contact">איש קשר חדש</string>
     <string name="email">אימייל</string>

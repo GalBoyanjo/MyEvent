@@ -20,18 +20,20 @@
             android:label="@string/title_activity_contacts_list"
             android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".Screens.Register"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Screens.Login"
+        <activity
+            android:name=".Screens.Login"
             android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,22 +43,18 @@
         </activity>
         <activity
             android:name=".Screens.SendInvitations"
-            android:configChanges="orientation|screenSize">
-        </activity>
+            android:configChanges="orientation|screenSize"></activity>
         <activity
             android:name=".Screens.Profile"
-            android:configChanges="orientation|screenSize">
-        </activity>
+            android:configChanges="orientation|screenSize"></activity>
         <activity
             android:name=".Screens.CreateInvitation"
-            android:configChanges="orientation|screenSize">
-        </activity>
+            android:configChanges="orientation|screenSize"></activity>
         <activity
             android:name=".Screens.SettingsActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_settings">
-        </activity>
-
+            android:label="@string/title_activity_settings"></activity>
+        <activity android:name=".Screens.CreateInvitationPic"></activity>
     </application>
 
 </manifest>

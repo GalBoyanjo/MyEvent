@@ -1,33 +1,49 @@
 package com.gal.invitation.Screens;
 
+import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Rect;
+import android.icu.text.SimpleDateFormat;
+import android.net.Uri;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.preference.PreferenceActivity;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,11 +54,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.gal.invitation.Entities.Contact;
+import com.gal.invitation.Entities.Invitation;
+import com.gal.invitation.Entities.InvitationPic;
+import com.gal.invitation.Interfaces.CustomDialogCallback;
 import com.gal.invitation.Interfaces.UpdateAllContactsCallbacks;
 import com.gal.invitation.R;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.Utils.Constants;
 import com.gal.invitation.Utils.ContactUtil;
+import com.gal.invitation.Utils.CustomDialog;
 import com.gal.invitation.Utils.MyStringRequest;
 import com.gal.invitation.Utils.NetworkUtil;
 import com.gal.invitation.Utils.ProfileContactsAdapter;
@@ -54,9 +74,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -67,6 +90,11 @@ public class Profile extends AppCompatActivity {
     private final static String url_edit_contact = "http://master1590.a2hosted.com/invitations/editContact.php";
     private final static String url_delete_contact = "http://master1590.a2hosted.com/invitations/deleteContact.php";
     private final static String url_get_contacts = "http://master1590.a2hosted.com/invitations/getUserContacts.php";
+    private final static String url_get_invitation = "http://master1590.a2hosted.com/invitations/getUserInvitation.php";
+    private final static String url_get_invitation_pic = "http://master1590.a2hosted.com/invitations/getUserInvitationPic.php";
+
+    private InvitationPic userInvitationPic;
+    private Invitation userInvitation;
     private final static String TAG_SUCCESS = "success";
     private User user = null;
     private TreeSet<Contact> userContacts = new TreeSet<>(new Comparator<Contact>() {
@@ -90,7 +118,21 @@ public class Profile extends AppCompatActivity {
     Button maybeFilter;
     Button allFilter;
 
+    CountDownTimer countDownTimer;
+    long mInitialTime;
+    TextView countDownView;
 
+    Button btnFloating;
+    RelativeLayout relativeLayout;
+    PopupWindow popupWindow;
+    View popupView;
+    int mCurrentX,mCurrentY;
+
+
+
+    ListView listViewDialog;
+
+    long startTime;
 
 
     @Override
@@ -113,31 +155,82 @@ public class Profile extends AppCompatActivity {
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
 
+        getUserInvitation();
+        getUserInvitationPic();
         getUserContacts();
+
+
+        listViewDialog = (ListView)findViewById(R.id.dialog_contact_list);
 
         txtName = (TextView) findViewById(R.id.userName);
         txtName.setText(getString(R.string.hello) + " " + String.valueOf(user.getUsername()));
 
+
+
         final LinearLayout sendInvitationsSms = (LinearLayout) findViewById(R.id.profile_send_invitation_btn);
+        final RadioGroup radioGrp = (RadioGroup)findViewById(R.id.radio_grp);
+        final RadioButton radioAll = (RadioButton)findViewById(R.id.radio_select_all);
+        CharSequence[]items={"ALL","MAYBE","CHOOSE"};
         sendInvitationsSms.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent sendInvitationLink = new Intent(Profile.this, SendInvitations.class);
-                sendInvitationLink.putExtra("user", user);
-                sendInvitationLink.putExtra("list", new ArrayList<>(userContacts));
-                startActivity(sendInvitationLink);
+            public void onClick(final View view) {
+                if(userInvitation.getType()!=null && !userInvitation.getType().isEmpty()
+                        && userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty()) {
+
+                    CustomDialog dialog = new CustomDialog(Profile.this, new ArrayList<Contact>(userContacts), new CustomDialogCallback() {
+                        @Override
+                        public void onSelected(List<Contact> contacts) {
+
+                        }
+                    });
+                    dialog.setCancelable(true);
+                    dialog.show();
+//
+//                    final LayoutInflater inflater = LayoutInflater.from(Profile.this);
+//
+//                    final View sendInvitationView = inflater.inflate(R.layout.send_invitation_dialog, null);
+//
+//                    final AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+//
+//                    builder.setView(sendInvitationView);
+//
+//                    builder
+//                            .setSingleChoiceItems((ListAdapter) radioGrp, -1, new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                    dialogInterface.cancel();
+//                                }
+//
+//                            });
+//                    builder.create();
+//
+//                    builder.show();
+
+
+//                    Intent sendInvitationLink = new Intent(Profile.this, SendInvitations.class);
+//                    sendInvitationLink.putExtra("user", user);
+//
+//                    sendInvitationLink.putExtra("list", new ArrayList<>(userContacts));
+//                    startActivity(sendInvitationLink);
+
+                }
             }
         });
 
+        final RelativeLayout createInvitationPopUP = (RelativeLayout) findViewById(R.id.profile_create_invitation_btn_popup);
         final RelativeLayout createInvitation = (RelativeLayout) findViewById(R.id.profile_create_invitation_btn);
-        createInvitation.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent createInvitationLink = new Intent(Profile.this, CreateInvitation.class);
-                createInvitationLink.putExtra("user", user);
-                startActivity(createInvitationLink);
-            }
-        });
+        final RelativeLayout createInvitationDesign = (RelativeLayout) findViewById(R.id.profile_create_invitation_btn_design);
+        final RelativeLayout createInvitationPic = (RelativeLayout) findViewById(R.id.profile_create_invitation_btn_pic);
+        final RelativeLayout createInvitationPreview = (RelativeLayout) findViewById(R.id.profile_create_invitation_btn_preview);
+        final LinearLayout dimLayout = (LinearLayout) findViewById(R.id.dim_layout);
+//        createInvitation.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent createInvitationLink = new Intent(Profile.this, CreateInvitation.class);
+//                createInvitationLink.putExtra("user", user);
+//                startActivity(createInvitationLink);
+//            }
+//        });
 
         fabFromContacts = (FloatingActionButton) findViewById(R.id.fab_from_contacts);
         fabFromContacts.setOnClickListener(new OnClickListener() {
@@ -257,6 +350,141 @@ public class Profile extends AppCompatActivity {
                 allFilter.setTextColor(getResources().getColor(R.color.colorBlack));
             }
         });
+
+
+
+        createInvitation.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dimLayout.getVisibility() == View.INVISIBLE) {
+
+                    createInvitationDesign.setVisibility(View.VISIBLE);
+                    createInvitationPic.setVisibility(View.VISIBLE);
+                    createInvitationPreview.setVisibility(View.VISIBLE);
+                    dimLayout.setVisibility(View.VISIBLE);
+
+                    Animation rotate = AnimationUtils.loadAnimation(Profile.this, R.anim.rotate);
+                    TextView plus = (TextView) findViewById(R.id.icon_edit_invitation_plus);
+                    plus.startAnimation(rotate);
+                }
+
+                else if (dimLayout.getVisibility() != View.INVISIBLE) {
+
+                    createInvitationDesign.setVisibility(View.INVISIBLE);
+                    createInvitationPic.setVisibility(View.INVISIBLE);
+                    createInvitationPreview.setVisibility(View.INVISIBLE);
+                    dimLayout.setVisibility(View.INVISIBLE);
+
+                    Animation rotateBack = AnimationUtils.loadAnimation(Profile.this, R.anim.rotate_back);
+                    TextView plus = (TextView) findViewById(R.id.icon_edit_invitation_plus);
+                    plus.startAnimation(rotateBack);
+                }
+
+
+            }
+        });
+
+        createInvitationPic.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent addPicIntent = new Intent(Profile.this, CreateInvitationPic.class);
+                addPicIntent.putExtra("user", user);
+                startActivity(addPicIntent);
+            }
+        });
+        createInvitationDesign.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent designInvitationIntent = new Intent(Profile.this, CreateInvitation.class);
+                designInvitationIntent.putExtra("user", user);
+                startActivity(designInvitationIntent);
+            }
+        });
+
+        createInvitationPreview.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if(userInvitation.getType()!=null && !userInvitation.getType().isEmpty()
+                            && userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty()) {
+
+                        Uri uriUrl = Uri.parse("http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" +
+                                "&By=" + user.getID());
+                        Intent launchBrowser = new Intent();
+                        launchBrowser.setAction(Intent.ACTION_VIEW);
+                        launchBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
+                        launchBrowser.setData(uriUrl);
+                        startActivity(launchBrowser);
+                    }
+                }
+            });
+
+
+
+
+
+
+
+
+        //create popup window
+//        createInvitation.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                createInvitation.setVisibility(View.INVISIBLE);
+//                LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+//                popupView = layoutInflater.inflate(R.layout.create_invitation_pop_up,null);
+//
+//                popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+//
+//                TextView btnClose = (TextView)popupView.findViewById(R.id.pop_up_close);
+//
+//                btnClose.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        popupWindow.dismiss();
+//                        createInvitation.setVisibility(View.VISIBLE);
+//                    }
+//                });
+//
+//
+//                int[] loc_int = new int[2];
+//                createInvitation.getLocationOnScreen(loc_int);
+//                Rect location = new Rect();
+//                location.left=loc_int[0];
+//                location.top=loc_int[1];
+//                location.right=location.left+createInvitation.getWidth();
+//                location.bottom=location.top+createInvitation.getHeight();
+//
+//                mCurrentX = 0;
+//                mCurrentY = 95;
+//
+//                popupWindow.showAtLocation(createInvitationPopUP, Gravity.CENTER, mCurrentX,mCurrentY);
+//
+
+                //enable move the popup view on touch
+//                popupView.setOnTouchListener(new View.OnTouchListener() {
+//                    private float mDx;
+//                    private float mDy;
+//
+//                    @Override
+//                    public boolean onTouch(View v, MotionEvent event) {
+//                        int action = event.getAction();
+//                        if (action == MotionEvent.ACTION_DOWN) {
+//                            mDx = mCurrentX - event.getRawX();
+//                            mDy = mCurrentY - event.getRawY();
+//                        } else
+//                        if (action == MotionEvent.ACTION_MOVE) {
+//                            mCurrentX = (int) (event.getRawX() + mDx);
+//                            mCurrentY = (int) (event.getRawY() + mDy);
+//                            popupWindow.update(mCurrentX, mCurrentY, -1, -1);
+//                        }
+//                        return true;
+//                    }
+//                });
+//
+//            }
+//        });
+
     }
 
     @Override
@@ -413,12 +641,12 @@ public class Profile extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
                 final Contact contact = ((Contact) listView.getAdapter().getItem(position));
-                LinearLayout rowContainer = (LinearLayout) view.findViewById(R.id.row_container);
+                LinearLayout rowContainer = (LinearLayout) view.findViewById(R.id.profile_row_container);
 
 
-                ImageButton deleteContactBtn = (ImageButton) rowContainer.findViewById(R.id.row_remove);
+                ImageButton deleteContactBtn = (ImageButton) rowContainer.findViewById(R.id.profile_row_remove);
                 deleteContactBtn.setVisibility(View.VISIBLE);
-                final ImageButton editContactBtn = (ImageButton) rowContainer.findViewById(R.id.row_edit);
+                final ImageButton editContactBtn = (ImageButton) rowContainer.findViewById(R.id.profile_row_edit);
                 editContactBtn.setVisibility(View.VISIBLE);
 
 
@@ -576,5 +804,215 @@ public class Profile extends AppCompatActivity {
         }
 
     }
+
+    private void getUserInvitationPic() {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("UserID", String.valueOf(user.getID()));
+
+            MyStringRequest request = new MyStringRequest(Request.Method.POST,
+                    url_get_invitation_pic, params, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getInt(TAG_SUCCESS) == 1) {
+                            userInvitationPic =new InvitationPic(jsonObject.getString("Picture"));
+
+
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+
+                        Toast.makeText(Profile.this,
+                                getString(R.string.error_occurred),
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Error", error.toString());
+
+                    Toast.makeText(Profile.this,
+                            getString(R.string.error_occurred),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            netRequestQueue.add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Toast.makeText(Profile.this,
+                    getString(R.string.error_occurred),
+                    Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void getUserInvitation() {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("UserID", String.valueOf(user.getID()));
+
+            MyStringRequest request = new MyStringRequest(Request.Method.POST,
+                    url_get_invitation, params, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getInt(TAG_SUCCESS) == 1) {
+                            userInvitation=new Invitation(jsonObject.getString("Type")
+                                    ,jsonObject.getString("Date") , jsonObject.getString("Time")
+                                    , jsonObject.getString("PlaceType") , jsonObject.getString("Place")
+                                    , jsonObject.getString("Address") , jsonObject.getString("FreeText")
+                                    , jsonObject.getString("Bride") , jsonObject.getString("Groom"));
+
+                            getUserCountDown();
+
+                        }
+                        else{
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+
+                        Toast.makeText(Profile.this,
+                                getString(R.string.error_occurred),
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Error", error.toString());
+
+                    Toast.makeText(Profile.this,
+                            getString(R.string.error_occurred),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            netRequestQueue.add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Toast.makeText(Profile.this,
+                    getString(R.string.error_occurred),
+                    Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void getUserCountDown(){
+        if(userInvitation.getType()!=null && !userInvitation.getType().isEmpty()) {
+
+            long milliseconds = 0;
+            long diff;
+
+            countDownView = (TextView) findViewById(R.id.profile_count_down);
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy, HH:mm");
+            formatter.setLenient(false);
+
+            String endTime = String.valueOf(userInvitation.getDate()) + ", " + String.valueOf(userInvitation.getTime());
+
+            Date endDate;
+            try {
+                endDate = formatter.parse(endTime);
+                milliseconds = endDate.getTime();
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            startTime = System.currentTimeMillis();
+
+            diff = milliseconds - startTime;
+//                    DateUtils.DAY_IN_MILLIS * 2 +
+//                    DateUtils.HOUR_IN_MILLIS * 9 +
+//                    DateUtils.MINUTE_IN_MILLIS * 3 +
+//                    DateUtils.SECOND_IN_MILLIS * 42;
+
+            countDownTimer = new CountDownTimer(milliseconds, 1000) {
+
+
+                @Override
+                public void onTick(long l) {
+                    startTime=startTime-1;
+                    Long serverUptimeSeconds =
+                            (l - startTime) / 1000;
+
+                    String daysLeft = String.format("%d", serverUptimeSeconds / 86400);
+                    //txtViewDays.setText(daysLeft);
+
+
+                    String hoursLeft = String.format("%d", (serverUptimeSeconds % 86400) / 3600);
+                    //txtViewHours.setText(hoursLeft);
+
+                    String minutesLeft = String.format("%d", ((serverUptimeSeconds % 86400) % 3600) / 60);
+                    //txtViewMinutes.setText(minutesLeft);
+
+                    String secondsLeft = String.format("%d", ((serverUptimeSeconds % 86400) % 3600) % 60);
+                    //txtViewSecond.setText(secondsLeft);
+
+                    countDownView.setText(daysLeft+" " +"DAY"+"\n"+" "+hoursLeft+":"+minutesLeft+":"+secondsLeft );
+
+                }
+
+                @Override
+                public void onFinish() {
+                    countDownView.setText(DateUtils.formatElapsedTime(0));
+                }
+            }.start();
+
+        }
+
+    }
+
+//    public void onRadioButtonClick(View view){
+//
+//        boolean checked = ((RadioButton)view).isChecked();
+//
+//        switch (view.getId()) {
+//            case R.id.radio_select_all:
+//                if(checked) {
+//                    Toast.makeText(Profile.this, "ALL!!!", Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//            case R.id.radio_select_maybe:
+//                if(checked){
+//                    Toast.makeText(Profile.this, "MAYBE", Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//            case R.id.radio_select_manually:
+//                if (checked){
+//
+//                    final LayoutInflater inflater = LayoutInflater.from(Profile.this);
+//
+//                    final View sendInvitationListView = inflater.inflate(R.layout.send_invitation_list_dialog, null);
+//
+//                    final AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+//
+//                    builder.setView(sendInvitationListView);
+//
+//
+//
+//                    builder.create();
+//
+//                    builder.show();
+//
+//
+//
+//                }
+//                break;
+//        }
+//
+//    }
+
+
+
 
 }

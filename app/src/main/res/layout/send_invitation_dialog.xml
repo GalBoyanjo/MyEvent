@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <ImageView
+        app:srcCompat="@drawable/ic_edit"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:scaleType="center"
+        android:background="@color/colorPrimary"
+        android:contentDescription="@string/app_name"/>
+    <RadioGroup
+        android:id="@+id/radio_grp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <RadioButton
+        android:id="@+id/radio_select_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="all contacts"/>
+    <RadioButton
+        android:id="@+id/radio_select_maybe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/maybe"/>
+    <RadioButton
+        android:id="@+id/radio_select_manually"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="select manually"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/checkboxes_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>
