@@ -47,6 +47,8 @@
         android:layout_below="@+id/RePassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="23dp"
-        android:id="@+id/btnRegister" />
+        android:id="@+id/btnRegister"
+        android:textColor="#FFFFFF"
+        android:background="@color/colorPrimary"/>
 
 </RelativeLayout>

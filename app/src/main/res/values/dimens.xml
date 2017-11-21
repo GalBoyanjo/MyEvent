@@ -16,4 +16,10 @@
 
     <dimen name="round_box_size">34dp</dimen>
 
+
+    //Google dimen:
+    <dimen name="g_top_margin">30dp</dimen>
+
+
+
 </resources>

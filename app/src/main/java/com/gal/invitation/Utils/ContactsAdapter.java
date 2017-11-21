@@ -46,6 +46,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
 
             holder = new ContactHolder();
             holder.rowName = (TextView) row.findViewById(R.id.row_name);
+            holder.rowNumber = (TextView) row.findViewById(R.id.row_number);
             holder.rowImage = (ImageView) row.findViewById(R.id.row_image);
 
             row.setTag(holder);
@@ -62,6 +63,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
         }
         try {
             holder.rowName.setText(contact.getName());
+            holder.rowNumber.setText(contact.getPhone());
 
             if (contact.getImage()!=null)
                 holder.rowImage.setImageBitmap(contact.getImage());
@@ -95,6 +97,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
 
     private static class ContactHolder {
         TextView rowName;
+        TextView rowNumber;
         ImageView rowImage;
 
     }

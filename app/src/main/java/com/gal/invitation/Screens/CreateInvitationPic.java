@@ -5,14 +5,13 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.icu.util.Calendar;
-import android.media.Image;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -30,6 +29,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -43,11 +43,22 @@ import com.gal.invitation.Utils.MyStringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CreateInvitationPic extends AppCompatActivity {
@@ -56,6 +67,7 @@ public class CreateInvitationPic extends AppCompatActivity {
     private RequestQueue netRequestQueue;
     private final static String url_update_invitation_pic = "http://master1590.a2hosted.com/invitations/updateInvitationPic.php";
     private final static String url_get_invitation_pic = "http://master1590.a2hosted.com/invitations/getUserInvitationPic.php";
+    private final static String url_get_invitation_pic_address = "http://master1590.a2hosted.com/invitations/images/";
     private final static String TAG_SUCCESS = "success";
     private User user = null;
     private ProgressDialog progressDialog;
@@ -63,7 +75,8 @@ public class CreateInvitationPic extends AppCompatActivity {
     ImageView imgEventPic;
     Button addPic;
     Bitmap eventPic;
-    String eventPicBytes= "";
+    String eventPicBytes = "";
+    String eventPicPath = "";
     private static int RESULT_LOAD_IMG = 1, CAMERA = 2;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
@@ -99,7 +112,7 @@ public class CreateInvitationPic extends AppCompatActivity {
 
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("LOADING INVITATION");
+        progressDialog.setTitle(getString(R.string.loading_invitation));
         progressDialog.setCancelable(false);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.please_wait));
@@ -108,9 +121,17 @@ public class CreateInvitationPic extends AppCompatActivity {
         getUserInvitation();
 
 
+        hasWRITE_EXTERNAL_STORAGEPermission = ContextCompat.checkSelfPermission(CreateInvitationPic.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
 
-        addPic =(Button)findViewById(R.id.eventAddPic);
-        imgEventPic = (ImageView)findViewById(R.id.eventPic);
+        hasCAMERAPermission = ContextCompat.checkSelfPermission(CreateInvitationPic.this,
+                Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
+
+
+        addPic = (Button) findViewById(R.id.eventAddPic);
+        imgEventPic = (ImageView) findViewById(R.id.eventPic);
 
         addPic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,16 +140,16 @@ public class CreateInvitationPic extends AppCompatActivity {
             }
         });
 
-        effect1 = (Button)findViewById(R.id.efffectBtn1);
-        effect2 = (Button)findViewById(R.id.efffectBtn2);
-        effect3 = (Button)findViewById(R.id.efffectBtn3);
-        changed= (ImageView)findViewById(R.id.myView);
+        effect1 = (Button) findViewById(R.id.efffectBtn1);
+        effect2 = (Button) findViewById(R.id.efffectBtn2);
+        effect3 = (Button) findViewById(R.id.efffectBtn3);
+        changed = (ImageView) findViewById(R.id.myView);
 
 
         effect1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if((userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty()) || noPic==false ) {
+                if ((userInvitationPic.getPicture() != null && !userInvitationPic.getPicture().isEmpty()) || noPic == false) {
 
                     out = addEffect(eventPic, 5, 5.0, 6.0, 0.0);
 
@@ -140,7 +161,7 @@ public class CreateInvitationPic extends AppCompatActivity {
         effect2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if((userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty()) || noPic==false ) {
+                if ((userInvitationPic.getPicture() != null && !userInvitationPic.getPicture().isEmpty()) || noPic == false) {
 
                     out = addEffect(eventPic, 5, 5.0, 0.0, 10.0);
 
@@ -152,7 +173,7 @@ public class CreateInvitationPic extends AppCompatActivity {
         effect3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if((userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty()) || noPic==false ) {
+                if ((userInvitationPic.getPicture() != null && !userInvitationPic.getPicture().isEmpty()) || noPic == false) {
 
                     out = addEffect(eventPic, 0, 0.0, 0.0, 0.0);
 
@@ -162,8 +183,6 @@ public class CreateInvitationPic extends AppCompatActivity {
                 }
             }
         });
-
-
 
 
     }
@@ -184,45 +203,40 @@ public class CreateInvitationPic extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_ok) {
-                updateDB();
-                Intent ProfileIntent = new Intent(CreateInvitationPic.this, Profile.class);
-                ProfileIntent.putExtra("user", user);
-                startActivity(ProfileIntent);
-                finish();
+            //updateDB();
+            new UploadImage().execute();
+            Intent ProfileIntent = new Intent(CreateInvitationPic.this, Profile.class);
+            ProfileIntent.putExtra("user", user);
+            startActivity(ProfileIntent);
+            finish();
         }
 
-             return true;
+        return true;
     }
 
-    private void showPictureDialog(){
+    private void showPictureDialog() {
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
         pictureDialog.setTitle("Select Action");
         String[] pictureDialogItems = {
                 "Select photo from gallery",
-                "Capture photo from camera" };
+                "Capture photo from camera"};
         pictureDialog.setItems(pictureDialogItems,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                hasWRITE_EXTERNAL_STORAGEPermission = ContextCompat.checkSelfPermission(CreateInvitationPic.this,
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                        == PackageManager.PERMISSION_GRANTED;
                                 if (hasWRITE_EXTERNAL_STORAGEPermission) {
                                     choosePhotoFromGallery();
                                 } else {
-                                    requestPermission(view);
+                                    requestPermission();
                                 }
                                 break;
                             case 1:
-                                hasCAMERAPermission = ContextCompat.checkSelfPermission(CreateInvitationPic.this,
-                                        Manifest.permission.CAMERA)
-                                        == PackageManager.PERMISSION_GRANTED;
                                 if (hasCAMERAPermission) {
                                     takePhotoFromCamera();
                                 } else {
-                                    requestPermissionCamera(view);
+                                    requestPermissionCamera();
                                 }
                                 break;
                         }
@@ -239,13 +253,13 @@ public class CreateInvitationPic extends AppCompatActivity {
     }
 
     private void takePhotoFromCamera() {
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, CAMERA);
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 //        try{
 //            if(requestCode == RESULT_LOAD_IMG && requestCode == RESULT_OK && null !=data){
 //
@@ -277,7 +291,7 @@ public class CreateInvitationPic extends AppCompatActivity {
                 Uri contentURI = data.getData();
                 try {
                     eventPic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
-                    String path = saveImage(eventPic);
+                    eventPicPath = saveImage(eventPic);
                     Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
                     imgEventPic.setImageBitmap(eventPic);
                     noPic = false;
@@ -291,7 +305,7 @@ public class CreateInvitationPic extends AppCompatActivity {
         } else if (requestCode == CAMERA) {
             eventPic = (Bitmap) data.getExtras().get("data");
             imgEventPic.setImageBitmap(eventPic);
-            saveImage(eventPic);
+            eventPicPath = saveImage(eventPic);
             Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
             noPic = false;
         }
@@ -304,8 +318,8 @@ public class CreateInvitationPic extends AppCompatActivity {
     public String saveImage(Bitmap myBitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        byte [] byte_arr = bytes.toByteArray();
-        eventPicBytes = Base64.encodeToString(byte_arr,0);
+        byte[] byte_arr = bytes.toByteArray();
+        eventPicBytes = Base64.encodeToString(byte_arr, 0);
         File wallpaperDirectory = new File(
                 Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
         // have the object build the directory structure, if needed.
@@ -332,7 +346,7 @@ public class CreateInvitationPic extends AppCompatActivity {
         return "";
     }
 
-    private void requestPermission(View view) {
+    private void requestPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -348,7 +362,7 @@ public class CreateInvitationPic extends AppCompatActivity {
 
     }
 
-    private void requestPermissionCamera(View view) {
+    private void requestPermissionCamera() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -363,30 +377,63 @@ public class CreateInvitationPic extends AppCompatActivity {
         }
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    hasWRITE_EXTERNAL_STORAGEPermission = true;
                     choosePhotoFromGallery();
                 } else {
-                    Toast.makeText(CreateInvitationPic.this,
-                            (getString(R.string.SMS_faild_please_try_again)),
-                            Toast.LENGTH_LONG).show();
-                    return;
+                    hasWRITE_EXTERNAL_STORAGEPermission = false;
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(CreateInvitationPic.this);
+                    builder.setTitle(getResources().getString(R.string.required_permission_title));
+                    builder.setMessage(getResources().getString(R.string.required_contacts_permission_message));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(getResources().getString(R.string.required_permission_ask_again), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            requestPermission();
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+
                 }
+                return;
             }
             case MY_PERMISSIONS_REQUEST_CAMERA: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    hasCAMERAPermission = true;
                     takePhotoFromCamera();
                 } else {
-                    Toast.makeText(CreateInvitationPic.this,
-                            (getString(R.string.SMS_faild_please_try_again)),
-                            Toast.LENGTH_LONG).show();
-                    return;
+                    hasCAMERAPermission = false;
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(CreateInvitationPic.this);
+                    builder.setTitle(getResources().getString(R.string.required_permission_title));
+                    builder.setMessage(getResources().getString(R.string.required_contacts_permission_message));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(getResources().getString(R.string.required_permission_ask_again), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            requestPermissionCamera();
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+
                 }
+                return;
             }
         }
 
@@ -396,7 +443,7 @@ public class CreateInvitationPic extends AppCompatActivity {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("UserID", String.valueOf(user.getID()));
-            if(eventPic!=null && eventPicBytes!=null && !eventPicBytes.isEmpty()) {
+            if (eventPic != null && eventPicBytes != null && !eventPicBytes.isEmpty()) {
                 params.put("Picture", eventPicBytes);
             }
             MyStringRequest request = new MyStringRequest(Request.Method.POST,
@@ -428,6 +475,11 @@ public class CreateInvitationPic extends AppCompatActivity {
 
                 }
             });
+            request.setRetryPolicy(new DefaultRetryPolicy(
+                    300000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
             netRequestQueue.add(request);
         } catch (Exception e) {
             e.printStackTrace();
@@ -436,6 +488,132 @@ public class CreateInvitationPic extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
 
         }
+
+    }
+
+    class UploadImage extends AsyncTask<String, String, Boolean> {
+
+        protected Boolean doInBackground(String... args) {
+
+            HttpURLConnection conn = null;
+            DataOutputStream dos = null;
+            String lineEnd = "\r\n";
+            String twoHyphens = "--";
+            String boundary = "*****";
+            int bytesRead, bytesAvailable, bufferSize;
+            byte[] buffer;
+            int maxBufferSize = 1 * 1024 * 1024;
+            File sourceFile = new File(eventPicPath);
+            String fileName = "temp_file_name.jpg";
+            if (!sourceFile.isFile()) {
+                Log.e("uploadFile", "Source File not exist :" + eventPicPath);
+                return false;
+            } else {
+                try {
+                    Map<String,Object> params = new LinkedHashMap<>();
+                    params.put("UserID", String.valueOf(user.getID()));
+                    StringBuilder postData = new StringBuilder();
+                    for (Map.Entry<String,Object> param : params.entrySet()) {
+                        if (postData.length() != 0) postData.append('&');
+                        postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                        postData.append('=');
+                        postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+                    }
+                    byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+                    // open a URL connection to the Servlet
+                    FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                    URL url = new URL(url_update_invitation_pic);
+
+                    // Open a HTTP  connection to  the URL
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoInput(true); // Allow Inputs
+                    conn.setDoOutput(true); // Allow Outputs
+                    conn.setUseCaches(false); // Don't use a Cached Copy
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Connection", "Keep-Alive");
+                    conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                    conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                    conn.setRequestProperty("uploaded_file", fileName);
+                    conn.setRequestProperty("USERID", String.valueOf(user.getID()));
+                //    conn.getOutputStream().write(postDataBytes);
+
+                    dos = new DataOutputStream(conn.getOutputStream());
+
+
+                    dos.writeBytes(lineEnd + twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
+                            + fileName + "\"" + lineEnd);
+                    dos.writeBytes(lineEnd);
+                    //dos.writeBytes(postData.toString() + lineEnd);
+                    // create a buffer of  maximum size
+                    bytesAvailable = fileInputStream.available();
+
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    buffer = new byte[bufferSize];
+
+                    // read file and write it into form...
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                    while (bytesRead > 0) {
+                        dos.write(buffer, 0, bufferSize);
+                        bytesAvailable = fileInputStream.available();
+                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                    }
+
+                    // send multipart form data necessary after file data...
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                    // Responses from the server (code and message)
+                    int serverResponseCode = conn.getResponseCode();
+                    String serverResponseMessage = conn.getResponseMessage();
+
+                    boolean success = false;
+
+                    if(serverResponseCode == 200) {
+                        InputStream in = new BufferedInputStream(conn.getInputStream());
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                        StringBuilder result = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            result.append(line);
+                        }
+                        try {
+                            JSONObject jObj = new JSONObject(result.toString());
+                            success = jObj.getInt(TAG_SUCCESS) == 1;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //close the streams //
+                    fileInputStream.close();
+                    dos.flush();
+                    dos.close();
+                    return success;
+                } catch (MalformedURLException ex) {
+                    ex.printStackTrace();
+                    Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
+                    return false;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        }
+
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                Toast.makeText(CreateInvitationPic.this,
+                        (getString(R.string.picture_save_success)),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(CreateInvitationPic.this,
+                        (getString(R.string.saving_picture_faild_please_try_again)),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+
 
     }
 
@@ -451,11 +629,10 @@ public class CreateInvitationPic extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(TAG_SUCCESS) == 1) {
-                            userInvitationPic =new InvitationPic(jsonObject.getString("Picture"));
+                            userInvitationPic = new InvitationPic(jsonObject.getString("Picture"));
 
                             showInvitationPic();
-                        }
-                        else{
+                        } else {
                             progressDialog.dismiss();
                         }
 
@@ -488,15 +665,29 @@ public class CreateInvitationPic extends AppCompatActivity {
 
     }
 
-    private void showInvitationPic(){
+    private void showInvitationPic() {
 
-        if(userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty() ) {
+        if (userInvitationPic.getPicture() != null && !userInvitationPic.getPicture().isEmpty()) {
             eventPicBytes = String.valueOf(userInvitationPic.getPicture());
             //set the base64 bitmap image to bitmap into ImageView:
             if (eventPicBytes != null && !eventPicBytes.isEmpty()) {
-                byte[] decodedString = Base64.decode(eventPicBytes, Base64.DEFAULT);
-                eventPic = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                imgEventPic.setImageBitmap(eventPic);
+                //byte[] decodedString = Base64.decode(eventPicBytes, Base64.DEFAULT);
+                //eventPic = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+//                try {
+//                    URL url = new URL(url_get_invitation_pic_address+userInvitationPic);
+//                    eventPic = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+//                    imgEventPic.setImageBitmap(eventPic);
+//                } catch (MalformedURLException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+
+                // show The Image in a ImageView
+                new DownloadImageTask(imgEventPic)
+                        .execute(url_get_invitation_pic_address + eventPicBytes);
+
+
             }
 
         }
@@ -518,8 +709,8 @@ public class CreateInvitationPic extends AppCompatActivity {
         int channel_aplha, channel_red, channel_green, channel_blue;
         int pixel;
 
-        for(int x = 0; x < width; ++x) {
-            for(int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
 
                 pixel = src.getPixel(x, y);
                 channel_aplha = Color.alpha(pixel);
@@ -527,21 +718,18 @@ public class CreateInvitationPic extends AppCompatActivity {
                 channel_green = Color.green(pixel);
                 channel_blue = Color.blue(pixel);
 
-                channel_blue = channel_green = channel_red = (int)(grayScale_Red * channel_red + grayScale_Green * channel_green + grayScale_Blue * channel_blue);
+                channel_blue = channel_green = channel_red = (int) (grayScale_Red * channel_red + grayScale_Green * channel_green + grayScale_Blue * channel_blue);
 
                 channel_red += (depth * red);
-                if(channel_red > 255)
-                {
+                if (channel_red > 255) {
                     channel_red = 255;
                 }
                 channel_green += (depth * green);
-                if(channel_green > 255)
-                {
+                if (channel_green > 255) {
                     channel_green = 255;
                 }
                 channel_blue += (depth * blue);
-                if(channel_blue > 255)
-                {
+                if (channel_blue > 255) {
                     channel_blue = 255;
                 }
 
@@ -551,5 +739,29 @@ public class CreateInvitationPic extends AppCompatActivity {
         return finalBitmap;
     }
 
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
 
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
+
+}

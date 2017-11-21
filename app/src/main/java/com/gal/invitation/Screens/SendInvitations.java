@@ -3,6 +3,7 @@ package com.gal.invitation.Screens;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -12,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.telephony.SmsManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -35,11 +37,11 @@ public class SendInvitations extends Activity {
 
     public static String systemLanguage;
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+    private boolean hasSMSPermission = false;
     private Button sendBtn;
     private String phoneNo;
     private String message;
     private ArrayList<Contact> contactArrayList = new ArrayList<>();
-    private boolean hasSMSPermission = false;
     private User user;
 
     @Override
@@ -52,7 +54,7 @@ public class SendInvitations extends Activity {
 
         hasSMSPermission = ContextCompat.checkSelfPermission(SendInvitations.this,
                 Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED;
+                == PackageManager.PERMISSION_GRANTED;
 
         try {
             contactArrayList = (ArrayList<Contact>) getIntent().getSerializableExtra("list");
@@ -113,6 +115,16 @@ public class SendInvitations extends Activity {
                     contact.getCode() + "&By=" + user.getID();
 
             SmsManager smsManager = SmsManager.getDefault();
+            if (android.os.Build.VERSION.SDK_INT >= 22) {
+                Log.e("Alert", "Checking SubscriptionId");
+                try {
+                    Log.e("Alert", "SubscriptionId is " + smsManager.getSubscriptionId());
+                } catch (Exception e) {
+                    Log.e("Alert", e.getMessage());
+                    Log.e("Alert", "Fixed SubscriptionId to 1");
+                    smsManager = SmsManager.getSmsManagerForSubscriptionId(1);
+                }
+            }
             smsManager.sendTextMessage(phoneNo, null, message, null, null);
             Toast.makeText(SendInvitations.this,
                     "http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" + contact.getCode() + (getString(R.string.SMS_sent)),
@@ -128,13 +140,29 @@ public class SendInvitations extends Activity {
             case MY_PERMISSIONS_REQUEST_SEND_SMS: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    hasSMSPermission = true;
                     sendSMSMessage();
                 } else {
-                    Toast.makeText(SendInvitations.this,
-                            (getString(R.string.SMS_faild_please_try_again)),
-                            Toast.LENGTH_LONG).show();
-                    return;
+                    hasSMSPermission = false;
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(SendInvitations.this);
+                    builder.setTitle(getResources().getString(R.string.required_permission_title));
+                    builder.setMessage(getResources().getString(R.string.required_contacts_permission_message));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(getResources().getString(R.string.required_permission_ask_again), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            requestSMSPermission();
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+
                 }
+                return;
             }
         }
 

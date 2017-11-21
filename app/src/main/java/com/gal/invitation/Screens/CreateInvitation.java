@@ -115,7 +115,7 @@ public class CreateInvitation extends AppCompatActivity {
 
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("LOADING INVITATION");
+        progressDialog.setTitle(getString(R.string.loading_invitation));
         progressDialog.setCancelable(false);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.please_wait));
@@ -372,13 +372,13 @@ public class CreateInvitation extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(TAG_SUCCESS) == 1) {
                             Toast.makeText(CreateInvitation.this,
-                                    (getString(R.string.contact_saves_in_db)),
+                                    (getString(R.string.invitation_save_success)),
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(CreateInvitation.this,
-                                (getString(R.string.error_saving_contact_in_db)),
+                                (getString(R.string.saving_invitation_faild_please_try_again)),
                                 Toast.LENGTH_LONG).show();
                     }
 
@@ -388,7 +388,7 @@ public class CreateInvitation extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     Log.e("Error", error.toString());
                     Toast.makeText(CreateInvitation.this,
-                            (getString(R.string.error_saving_contact_in_db)),
+                            (getString(R.string.saving_invitation_faild_please_try_again)),
                             Toast.LENGTH_LONG).show();
 
                 }
@@ -397,7 +397,7 @@ public class CreateInvitation extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(CreateInvitation.this,
-                    (getString(R.string.error_saving_contact_in_db)),
+                    (getString(R.string.saving_invitation_faild_please_try_again)),
                     Toast.LENGTH_LONG).show();
 
         }

@@ -12,4 +12,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="CheckBoxTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#FFC107</item>
+        <item name="colorControlActivated">#9C27B0</item>
+    </style>
 </resources>

@@ -23,36 +23,30 @@
             android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher" />
 
+
+        <LinearLayout
+            android:id="@+id/profile_row_contact"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/row_image"
+            android:layout_centerVertical="true">
         <TextView
             android:id="@+id/row_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/row_image"
-            android:layout_centerVertical="true"
+            android:textColor="@color/colorPrimaryText"
             android:text="Name"
             android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:id="@+id/row_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number"
+                android:textColor="@color/colorSecondaryText"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <ImageButton
-            android:id="@+id/row_remove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/row_status"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="15dp"
-            android:src="@drawable/remove"
-            android:background="@android:color/transparent"
-            android:visibility="gone"/>
-
-        <ImageButton
-            android:id="@+id/row_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/row_remove"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="15dp"
-            android:src="@drawable/edit"
-            android:background="@android:color/transparent"
-            android:visibility="gone"/>
+        </LinearLayout>
 
     </RelativeLayout>
 </LinearLayout>

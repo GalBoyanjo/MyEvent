@@ -6,7 +6,8 @@
     android:layout_gravity="center_horizontal"
     android:gravity="center"
     android:background="@drawable/blue_circle"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:elevation="3dp">
 
     <ImageView
         android:id="@+id/icon_message"

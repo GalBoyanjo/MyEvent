@@ -4,45 +4,54 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <ImageView
-        app:srcCompat="@drawable/ic_edit"
+    <TextView
+        android:gravity="center|start"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:paddingStart="5dp"
+        android:text="@string/send_to"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:scaleType="center"
-        android:background="@color/colorPrimary"
-        android:contentDescription="@string/app_name"/>
+        android:background="@color/colorPrimary"/>
     <RadioGroup
         android:id="@+id/radio_grp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     <RadioButton
+        android:textSize="16sp"
         android:id="@+id/radio_select_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="all contacts"/>
+        android:text="@string/send_all_contacts"/>
     <RadioButton
+        android:textSize="16sp"
         android:id="@+id/radio_select_maybe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/maybe"/>
+        android:text="@string/send_all_not_answer_yet"/>
     <RadioButton
+        android:textSize="16sp"
         android:id="@+id/radio_select_manually"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="select manually"/>
+        android:text="@string/send_manually" />
     </RadioGroup>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
+        android:textSize="14sp"
         android:id="@+id/checkboxes_container"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone">
 
     </LinearLayout>
 
-
-
+    </ScrollView>
 
 
 </LinearLayout>

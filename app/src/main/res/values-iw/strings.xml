@@ -22,9 +22,15 @@
     <string name="hello">שלום</string>
     <string name="title_activity_contacts_list">אנשי קשר</string>
     <string name="loading_contacts">טוען אנשי קשר</string>
+    <string name="loading_invitation">טוען הזמנה</string>
     <string name="please_wait">אנא המתן...</string>
     <string name="contact_saves_in_db">איש קשר נשמר ב-DB</string>
-    <string name="error_saving_contact_in_db">שגיאה לשמור ב-DB</string>
+    <string name="error_saving_contact_in_db">שגיאה לשמור ב-איש קשר</string>
+    <string name="picture_save_success">תמונה נשמרה בהצלחה</string>
+    <string name="saving_picture_faild_please_try_again">שמירת תמונה נכשלה, אנא נסה שוב.</string>
+    <string name="invitation_save_success">הזמנה נשמרה בהצלחה</string>
+    <string name="saving_invitation_faild_please_try_again">שמירת הזמנה נכשלה, אנא נסה שוב.</string>
+
     <string name="error_occurred">אירעה שגיאה</string>
     <string name="SMS_faild_please_try_again">שליחת SMS נכשלה, אנא נסה שוב.</string>
     <string name="SMS_sent">SMS נשלח.</string>
@@ -40,7 +46,7 @@
     <string name="time">"שעה"</string>
     <string name="event_place">"שם המקום"</string>
     <string name="event_address">"כתובת"</string>
-    <string name="free_text">"טקסט חופשי..."</string>
+    <string name="free_text">"טקסט חופשי…"</string>
     <string name="add_pic">"הוסף תמונה"</string>
     <string name="bride">"שם הכלה"</string>
     <string name="groom">"שם החתן"</string>
@@ -63,9 +69,56 @@
     <string name="yes">מגיעים</string>
     <string name="no">לא מגיעים</string>
     <string name="maybe">טרם השיבו</string>
+    <string name="not_a_member">"משתמש חדש? "</string>
+
+    <string name="send_to">שלח אל</string>
+    <string name="send_all_contacts">כל המוזמנים</string>
+    <string name="send_all_not_answer_yet">מוזמנים שטרם ענו</string>
+    <string name="send_manually">בחירה מתוך מוזמנים</string>
 
 
+    //Google String's: !!!
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="signed_in">Signed in</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="signed_out">Signed out</string>
+    <string name="signed_in_err">"Error: please check logs."</string>
+    <string name="error_null_person">
+        Error: Plus.PeopleApi.getCurrentPerson returned null. Ensure that the Google+ API is
+        enabled for your project, you have a properly configured google-services.json file
+        and that your device has an internet connection.
+    </string>
+    <string name="loading">Loading…</string>
+    <string name="auth_code_fmt">Auth Code: %s</string>
+    <string name="id_token_fmt">ID Token: %s</string>
 
+    <!-- Google Play Services error for Toast -->
+    <string name="play_services_error_fmt">Google Play Services Error: %i</string>
+
+    <!-- Button labels -->
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
+
+    <!-- Content Description for images -->
+    <string name="desc_google_icon">Google Logo</string>
+
+    <!-- Rationale for asking for Contacts -->
+    <string name="contacts_permission_rationale">Contacts access is needed in order to retrieve your email address.</string>
+
+    <!-- Activity Names and Descriptions -->
+    <string name="name_sign_in_activity">SignInActivity</string>
+    <string name="desc_sign_in_activity">Signing in, signing out, and revoking access.</string>
+    <string name="desc_sign_in_activity_scopes">Signing in, signing out, and revoking access with Google Drive permissions.</string>
+    <string name="name_id_token_activity">IdTokenActivity</string>
+    <string name="desc_id_token_activity">Retrieving an ID Token for the user.</string>
+    <string name="desc_auth_code_activity">Demonstrate retrieving an auth code for authorizing your server.</string>
+    <string name="name_auth_code_activity">ServerAuthCodeActivity</string>
+
+    <!-- TODO(user): replace with your real server client ID -->
+    <!-- Server Client ID.  This should be a valid Web OAuth 2.0 Client ID obtained
+         from https://console.developers.google.com/ -->
+    <string name="server_client_id">YOUR_SERVER_CLIENT_ID</string>
+    <string name="name">Name :</string>
 
 
 

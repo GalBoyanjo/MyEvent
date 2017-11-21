@@ -14,14 +14,14 @@
     tools:showIn="@layout/activity_create_invitation">
 
     <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
@@ -30,6 +30,7 @@
             android:isScrollContainer="true"
             android:orientation="vertical"
             tools:context="com.gal.invitation.Screens.CreateInvitation">
+
 
 
             <LinearLayout
@@ -41,7 +42,7 @@
 
                 <Spinner
                     android:id="@+id/eventType"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/round_box_size"
                     android:layout_weight="0.5"
 
@@ -60,23 +61,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:text="GROOM:"
-                    android:visibility="gone" />
+                    android:text="@string/groom" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:text="BRIDE:"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="PARENTS:"
-                    android:visibility="gone" />
+                    android:text="@string/bride" />
             </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -116,39 +110,6 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_pic"
-                    android:layout_margin="5dp"/>
-                <Button
-                    android:id="@+id/eventAddPic"
-                    android:layout_width="@dimen/circle_size"
-                    android:layout_height="@dimen/circle_size"
-                    android:background="@drawable/ic_add_pic"
-                    android:visibility="visible"
-                    android:layout_marginStart="1dp"
-                    android:layout_marginEnd="15dp"/>
-
-
-                <com.gal.invitation.Utils.RoundedImageView
-                    android:id="@+id/eventPic"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_margin="1dp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitXY"
-                    android:visibility="visible"
-                    android:src="@mipmap/ic_launcher"/>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -179,7 +140,7 @@
                 android:weightSum="1">
 
 
-                <EditText
+                <Button
                     android:id="@+id/eventDate"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/round_box_size"
@@ -189,7 +150,7 @@
 
                     android:textAlignment="center" />
 
-                <EditText
+                <Button
                     android:id="@+id/eventTime"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/round_box_size"
@@ -255,7 +216,7 @@
                 android:weightSum="1">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
                     android:text="@string/event_address" />
@@ -291,7 +252,6 @@
                 android:gravity="top|start"
                 android:hint="@string/free_text"
                 android:padding="10dp" />
-
 
 
 

@@ -62,8 +62,8 @@ public class JSONParser implements Serializable {
 
                 conn.setRequestProperty("Accept-Charset", charset);
 
-                conn.setReadTimeout(10000);
-                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(50000);
+                conn.setConnectTimeout(50000);
 
                 conn.connect();
 
@@ -95,7 +95,7 @@ public class JSONParser implements Serializable {
 
                 conn.setRequestProperty("Accept-Charset", charset);
 
-                conn.setConnectTimeout(10000);
+                conn.setConnectTimeout(50000);
 
                 conn.connect();
 

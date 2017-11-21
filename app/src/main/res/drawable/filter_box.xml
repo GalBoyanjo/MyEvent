@@ -11,7 +11,7 @@
             <solid android:color="@android:color/transparent" />
             <stroke
                 android:width="1dp"
-                android:color="@color/colorBrightBlue" />
+                android:color="@color/colorDivider" />
             <gradient
                 android:angle="-90"
                 android:endColor="@color/colorDefaultBackground"

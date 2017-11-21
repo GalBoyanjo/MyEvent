@@ -1,5 +1,6 @@
 package com.gal.invitation.Screens;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
@@ -8,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.icu.text.SimpleDateFormat;
@@ -16,10 +18,12 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceActivity;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -58,6 +62,7 @@ import com.gal.invitation.Entities.Invitation;
 import com.gal.invitation.Entities.InvitationPic;
 import com.gal.invitation.Interfaces.CustomDialogCallback;
 import com.gal.invitation.Interfaces.UpdateAllContactsCallbacks;
+import com.gal.invitation.Interfaces.UpdateProfileContacts;
 import com.gal.invitation.R;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.Utils.Constants;
@@ -83,10 +88,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-public class Profile extends AppCompatActivity {
+public class Profile extends AppCompatActivity{
+
+    private ListView listView;
 
     public static String systemLanguage;
     private RequestQueue netRequestQueue;
+    private static boolean hasContactsPermission = false;
+    private static final int CONTACTS_PERMISSIONS_REQUEST = 123;
     private final static String url_edit_contact = "http://master1590.a2hosted.com/invitations/editContact.php";
     private final static String url_delete_contact = "http://master1590.a2hosted.com/invitations/deleteContact.php";
     private final static String url_get_contacts = "http://master1590.a2hosted.com/invitations/getUserContacts.php";
@@ -103,6 +112,7 @@ public class Profile extends AppCompatActivity {
             return contact.getName().compareTo(contact2.getName());
         }
     });
+    private ArrayList<Contact> selectedContacts = new ArrayList<>();
     private ProgressDialog progressDialog;
     private AlertDialog editor;
 
@@ -122,15 +132,6 @@ public class Profile extends AppCompatActivity {
     long mInitialTime;
     TextView countDownView;
 
-    Button btnFloating;
-    RelativeLayout relativeLayout;
-    PopupWindow popupWindow;
-    View popupView;
-    int mCurrentX,mCurrentY;
-
-
-
-    ListView listViewDialog;
 
     long startTime;
 
@@ -148,6 +149,10 @@ public class Profile extends AppCompatActivity {
 
         user = (User) getIntent().getSerializableExtra("user");
 
+        hasContactsPermission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS)
+                == PackageManager.PERMISSION_GRANTED;
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.loading_contacts));
         progressDialog.setCancelable(false);
@@ -155,12 +160,8 @@ public class Profile extends AppCompatActivity {
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
 
-        getUserInvitation();
-        getUserInvitationPic();
-        getUserContacts();
+        loadContacts();
 
-
-        listViewDialog = (ListView)findViewById(R.id.dialog_contact_list);
 
         txtName = (TextView) findViewById(R.id.userName);
         txtName.setText(getString(R.string.hello) + " " + String.valueOf(user.getUsername()));
@@ -168,9 +169,7 @@ public class Profile extends AppCompatActivity {
 
 
         final LinearLayout sendInvitationsSms = (LinearLayout) findViewById(R.id.profile_send_invitation_btn);
-        final RadioGroup radioGrp = (RadioGroup)findViewById(R.id.radio_grp);
-        final RadioButton radioAll = (RadioButton)findViewById(R.id.radio_select_all);
-        CharSequence[]items={"ALL","MAYBE","CHOOSE"};
+
         sendInvitationsSms.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -181,31 +180,15 @@ public class Profile extends AppCompatActivity {
                         @Override
                         public void onSelected(List<Contact> contacts) {
 
+                            Intent sendInvitationLink = new Intent(Profile.this, SendInvitations.class);
+                            sendInvitationLink.putExtra("user", user);
+                            sendInvitationLink.putExtra("list", new ArrayList<>(contacts));
+                            startActivity(sendInvitationLink);
+
                         }
                     });
                     dialog.setCancelable(true);
                     dialog.show();
-//
-//                    final LayoutInflater inflater = LayoutInflater.from(Profile.this);
-//
-//                    final View sendInvitationView = inflater.inflate(R.layout.send_invitation_dialog, null);
-//
-//                    final AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
-//
-//                    builder.setView(sendInvitationView);
-//
-//                    builder
-//                            .setSingleChoiceItems((ListAdapter) radioGrp, -1, new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialogInterface, int i) {
-//                                    dialogInterface.cancel();
-//                                }
-//
-//                            });
-//                    builder.create();
-//
-//                    builder.show();
-
 
 //                    Intent sendInvitationLink = new Intent(Profile.this, SendInvitations.class);
 //                    sendInvitationLink.putExtra("user", user);
@@ -487,6 +470,17 @@ public class Profile extends AppCompatActivity {
 
     }
 
+    public void loadContacts(){
+        if (hasContactsPermission) {
+            getUserInvitation();
+            getUserInvitationPic();
+            getUserContacts();
+
+        } else {
+            requestContactsPermission();
+        }
+    }
+
     @Override
     public void onBackPressed(){
         super.onBackPressed();
@@ -604,6 +598,60 @@ public class Profile extends AppCompatActivity {
 
     }
 
+    private void requestContactsPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    CONTACTS_PERMISSIONS_REQUEST);
+
+        } else {
+            hasContactsPermission = true;
+            loadContacts();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CONTACTS_PERMISSIONS_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    hasContactsPermission = true;
+                    loadContacts();
+                } else {
+
+                    hasContactsPermission = false;
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+                    builder.setTitle(getResources().getString(R.string.required_permission_title));
+                    builder.setMessage(getResources().getString(R.string.required_contacts_permission_message));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(getResources().getString(R.string.required_permission_ask_again), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            requestContactsPermission();
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
     private void showStatus(int statusYes, int statusNo, int statusMaybe) {
 
         TextView yesRow = (TextView) findViewById(R.id.row_yes);
@@ -617,9 +665,96 @@ public class Profile extends AppCompatActivity {
 
     private void showContact() {
         ArrayList<Contact> contactsArrayList = new ArrayList<>(userContacts);
-        final ListView listView = (ListView) findViewById(R.id.profile_contact_list);
+        listView = (ListView) findViewById(R.id.profile_contact_list);
         adapter = new ProfileContactsAdapter(Profile.this,
-                R.layout.profile_contact_row, contactsArrayList);
+                R.layout.profile_contact_row, contactsArrayList, new UpdateProfileContacts() {
+            @Override
+            public void deleteContact(final Contact contact) {
+                try {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("UserID", String.valueOf(user.getID()));
+                    params.put("Name", contact.getName());
+                    params.put("Phone", contact.getPhone());
+
+                    MyStringRequest request = new MyStringRequest(Request.Method.POST,
+                            url_delete_contact, params, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                if (jsonObject.getInt(TAG_SUCCESS) == 1) {
+                                    Toast.makeText(Profile.this, contact.getName() + "  DELETED",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(Profile.this,
+                                        "error_deleting_contact_in_db",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("Error", error.toString());
+                        }
+                    });
+                    netRequestQueue.add(request);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                finish();
+                startActivity(getIntent());
+
+            }
+
+            @Override
+            public void editContactDialog(final Contact contact) {
+                LayoutInflater inflater = LayoutInflater.from(Profile.this);
+
+                View contactEditView = inflater.inflate(R.layout.contact_edit, null);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+
+                builder.setView(contactEditView);
+
+                final EditText contactName = (EditText) contactEditView.findViewById(R.id.contact_name);
+                final EditText contactPhone = (EditText) contactEditView.findViewById(R.id.contact_phone);
+
+                contactName.setHint(String.valueOf(contact.getName()));
+                contactPhone.setHint(String.valueOf(contact.getPhone()));
+
+                builder
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String setContactName = contactName.getText().toString();
+                                if (TextUtils.isEmpty(setContactName))
+                                    setContactName = (String.valueOf(contact.getName()));
+                                String setContactPhone = contactPhone.getText().toString();
+                                if (TextUtils.isEmpty(setContactPhone))
+                                    setContactPhone = (String.valueOf(contact.getPhone()));
+                                editContact(contact, setContactName, setContactPhone);
+                                adapter.remove(contact);
+                                contact.setName(setContactName);
+                                contact.setPhone(setContactPhone);
+                                adapter.add(contact);
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+
+                            }
+                        });
+                builder.create();
+
+                builder.show();
+            }
+        });
         listView.setAdapter(adapter);
 
         int statusMaybe = 0, statusNo = 0, statusYes = 0;
@@ -636,133 +771,11 @@ public class Profile extends AppCompatActivity {
         showStatus(statusYes, statusNo, statusMaybe);
 
 
-        listView.setLongClickable(true);
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-                final Contact contact = ((Contact) listView.getAdapter().getItem(position));
-                LinearLayout rowContainer = (LinearLayout) view.findViewById(R.id.profile_row_container);
-
-
-                ImageButton deleteContactBtn = (ImageButton) rowContainer.findViewById(R.id.profile_row_remove);
-                deleteContactBtn.setVisibility(View.VISIBLE);
-                final ImageButton editContactBtn = (ImageButton) rowContainer.findViewById(R.id.profile_row_edit);
-                editContactBtn.setVisibility(View.VISIBLE);
-
-
-                deleteContactBtn.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        deleteContact(contact);
-                        finish();
-                        startActivity(getIntent());
-
-                    }
-                });
-
-                editContactBtn.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View arg0) {
-
-                        Toast.makeText(Profile.this, contact.getName() + "  EDIT",
-                                Toast.LENGTH_LONG).show();
-
-
-                        LayoutInflater inflater = LayoutInflater.from(Profile.this);
-
-                        View contactEditView = inflater.inflate(R.layout.contact_edit, null);
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
-
-                        builder.setView(contactEditView);
-
-                        final EditText contactName = (EditText) contactEditView.findViewById(R.id.contact_name);
-                        final EditText contactPhone = (EditText) contactEditView.findViewById(R.id.contact_phone);
-
-                        contactName.setHint(String.valueOf(contact.getName()));
-                        contactPhone.setHint(String.valueOf(contact.getPhone()));
-
-                        builder
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        String setContactName = contactName.getText().toString();
-                                        if (TextUtils.isEmpty(setContactName))
-                                            setContactName = (String.valueOf(contact.getName()));
-                                        String setContactPhone = contactPhone.getText().toString();
-                                        if (TextUtils.isEmpty(setContactPhone))
-                                            setContactPhone = (String.valueOf(contact.getPhone()));
-                                        editContact(contact, setContactName, setContactPhone);
-                                        adapter.remove(contact);
-                                        contact.setName(setContactName);
-                                        contact.setPhone(setContactPhone);
-                                        adapter.add(contact);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.cancel();
-
-                                    }
-                                });
-                        builder.create();
-
-                        builder.show();
-                    }
-                });
-
-                //deleteContact(contact);
-                //Toast.makeText(Profile.this, contact.getName(), Toast.LENGTH_LONG).show();
-                return true;
-            }
-
-        });
-
         progressDialog.dismiss();
     }
 
     private void sendInvitationsMessage(final ArrayList<Contact> contactArrayList) {
 
-
-    }
-
-    private void deleteContact(final Contact contact) {
-        try {
-            Map<String, String> params = new HashMap<>();
-            params.put("UserID", String.valueOf(user.getID()));
-            params.put("Name", contact.getName());
-            params.put("Phone", contact.getPhone());
-
-            MyStringRequest request = new MyStringRequest(Request.Method.POST,
-                    url_delete_contact, params, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.getInt(TAG_SUCCESS) == 1) {
-                            Toast.makeText(Profile.this, contact.getName() + "  DELETED",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(Profile.this,
-                                "error_deleting_contact_in_db",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("Error", error.toString());
-                }
-            });
-            netRequestQueue.add(request);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 

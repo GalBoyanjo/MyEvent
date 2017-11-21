@@ -11,6 +11,13 @@
     android:orientation="vertical"
     tools:context="com.gal.invitation.Screens.Login">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:layout_gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_marginBottom="55dp"/>
    <EditText
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -30,25 +37,46 @@
 
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btnLogin"
         android:text="@string/login"
+        android:textColor="@android:color/white"
         android:layout_gravity="center_horizontal"
-        />
+        android:background="@drawable/round_button"
+        android:layout_marginTop="20dp" />
 
+
+
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="start"
+    android:layout_marginTop="40dp">
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/login_txt_register"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lblWelcome"
-        android:visibility="gone"/>
-
+        android:text="@string/not_a_member" />
     <TextView
         android:text=""
+        android:textColor="@android:color/holo_blue_light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/Register"
-        android:layout_gravity="start"/>
+        android:layout_toEndOf="@id/login_txt_register"/>
+</RelativeLayout>
 
+<com.google.android.gms.common.SignInButton
+    android:id="@+id/google_sign_in_button"
+    android:layout_width="200dp"
+    android:layout_marginTop="20dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal" />
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/gplus_tv"/>
 
 </LinearLayout>

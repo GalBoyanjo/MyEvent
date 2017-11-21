@@ -2,19 +2,18 @@ package com.gal.invitation.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.Interfaces.CustomDialogCallback;
@@ -31,9 +30,9 @@ public class CustomDialog extends AlertDialog.Builder {
     private Activity activity;
 
     private RadioGroup radioGroup;
-    private RadioButton radioButton1;
-    private RadioButton radioButton2;
-    private RadioButton radioButton3;
+    private RadioButton chooseAll;
+    private RadioButton chooseYetAnswered;
+    private RadioButton chooseManually;
     private LinearLayout checkBoxesContainer;
 
     private List<Contact> contacts;
@@ -42,6 +41,13 @@ public class CustomDialog extends AlertDialog.Builder {
     private CustomDialogCallback callback;
 
     private AlertDialog alertDialog;
+
+
+    RoundedImageView checkboxImage;
+    TextView checkboxName;
+    TextView checkboxNum;
+    TextView checkboxStatus;
+
 
     public CustomDialog(Activity activity, List<Contact> contacts, CustomDialogCallback callback) {
         super(activity);
@@ -54,6 +60,7 @@ public class CustomDialog extends AlertDialog.Builder {
     @Override
     public AlertDialog show() {
         View view = LayoutInflater.from(activity).inflate(R.layout.send_invitation_dialog, null);
+//        View checkboxView = LayoutInflater.from(activity).inflate(R.layout.checkbox_contact_row, null);
 
 
         setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -72,12 +79,13 @@ public class CustomDialog extends AlertDialog.Builder {
         });
 
         radioGroup = (RadioGroup) view.findViewById(R.id.radio_grp);
-        radioButton1 = (RadioButton) view.findViewById(R.id.radio_select_all);
-        radioButton2 = (RadioButton) view.findViewById(R.id.radio_select_maybe);
-        radioButton3 = (RadioButton) view.findViewById(R.id.radio_select_manually);
+        chooseAll = (RadioButton) view.findViewById(R.id.radio_select_all);
+        chooseYetAnswered = (RadioButton) view.findViewById(R.id.radio_select_maybe);
+        chooseManually = (RadioButton) view.findViewById(R.id.radio_select_manually);
         checkBoxesContainer = (LinearLayout) view.findViewById(R.id.checkboxes_container);
 
-        radioButton1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        chooseAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if (checked) {
@@ -87,7 +95,7 @@ public class CustomDialog extends AlertDialog.Builder {
                 }
             }
         });
-        radioButton2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        chooseYetAnswered.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if (checked) {
@@ -97,7 +105,7 @@ public class CustomDialog extends AlertDialog.Builder {
                 }
             }
         });
-        radioButton3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        chooseManually.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if (checked) {
@@ -109,8 +117,11 @@ public class CustomDialog extends AlertDialog.Builder {
 
 
         for (final Contact contact : contacts) {
-            CheckBox checkBox = new CheckBox(activity);
-            checkBox.setText(contact.getName());
+
+
+            CustomCheckbox checkBox = new CustomCheckbox(activity);
+            checkBox.setText(contact.getName()+" \n"+contact.getPhone());
+
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {

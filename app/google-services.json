@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "892476132522",
+    "project_id": "invitation-7b4c0"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892476132522:android:4c2b8fa52ffa0d61",
+        "android_client_info": {
+          "package_name": "com.gal.invitation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "892476132522-ojsqd6b6nmq2o4k6u3i8lm0hn0i82cdp.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "892476132522-46tc4e8ch3778evmqqesvacmmsq1ohkk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gal.invitation",
+            "certificate_hash": "1528bd72ccf2569c607461fa3d0f542923449726"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIv2F4nmSza6bdxpvfx4skOxeIj5CNeIk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
