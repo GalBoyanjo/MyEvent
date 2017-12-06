@@ -1,5 +1,6 @@
 package com.gal.invitation.Screens;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -14,15 +15,18 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gal.invitation.Interfaces.LoginRequestCallbacks;
 import com.gal.invitation.Utils.Constants;
 import com.gal.invitation.Utils.JSONParser;
 import com.gal.invitation.R;
 import com.gal.invitation.Entities.User;
+import com.gal.invitation.Utils.NetworkUtil;
 import com.gal.invitation.Utils.ScreenUtil;
 
 import org.json.JSONException;
@@ -36,7 +40,7 @@ public class Register extends AppCompatActivity {
 
     public static String systemLanguage;
     private JSONParser jsonParser;
-    private final static String url_get_user = "http://master1590.a2hosted.com/invitations/createUser.php";
+    private final static String url_create_user = "http://master1590.a2hosted.com/invitations/createUser.php";
     private final static String TAG_SUCCESS = "success";
 
     private User user;
@@ -62,9 +66,39 @@ public class Register extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new CreateUser().execute(ReEmail.getText().toString(),
-                        ReName.getText().toString(),
-                        RePassword.getText().toString());
+
+//                new CreateUser().execute(ReEmail.getText().toString(),
+//                        ReName.getText().toString(),
+//                        RePassword.getText().toString());
+                NetworkUtil.createUser(Register.this, url_create_user, ReEmail.getText().toString(), RePassword.getText().toString(),
+                        ReName.getText().toString(), "Regular", "",
+                        new LoginRequestCallbacks(){
+
+                            @Override
+                            public void onSuccess(User myUser) {
+                                user = myUser;
+                                Toast.makeText(Register.this,
+                                        (getText(R.string.welcome)),
+                                        Toast.LENGTH_LONG).show();
+                                Intent registerIntent= new Intent(Register.this, Profile.class);
+                                registerIntent.putExtra("user", user);
+                                Register.this.startActivity(registerIntent);
+                                //hide the keyboard
+                                View view = Register.this.getCurrentFocus();
+                                if (view != null) {
+                                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                }
+
+                            }
+
+                            @Override
+                            public void onError(String errorMessage) {
+                                Toast.makeText(Register.this,
+                                        (getText(R.string.error_bad_email_password)),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
             }
 
         });
@@ -87,6 +121,9 @@ public class Register extends AppCompatActivity {
 
     }
 
+
+
+
     class CreateUser extends AsyncTask<String, String, Boolean> {
 
         String email;
@@ -96,7 +133,6 @@ public class Register extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         protected Boolean doInBackground(String... args) {
@@ -111,7 +147,7 @@ public class Register extends AppCompatActivity {
                 params.put("Email", email);
 
                 jsonParser = new JSONParser();
-                JSONObject json = jsonParser.makeHttpRequest(url_get_user,
+                JSONObject json = jsonParser.makeHttpRequest(url_create_user,
                         "POST", params);
 
 

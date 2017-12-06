@@ -1,9 +1,7 @@
 package com.gal.invitation.Screens;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,43 +9,32 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceActivity;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +48,7 @@ import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.Entities.Invitation;
 import com.gal.invitation.Entities.InvitationPic;
 import com.gal.invitation.Interfaces.CustomDialogCallback;
-import com.gal.invitation.Interfaces.UpdateAllContactsCallbacks;
+import com.gal.invitation.Interfaces.GeneralRequestCallbacks;
 import com.gal.invitation.Interfaces.UpdateProfileContacts;
 import com.gal.invitation.R;
 import com.gal.invitation.Entities.User;
@@ -249,7 +236,7 @@ public class Profile extends AppCompatActivity{
                                 final Contact contact = new Contact();
                                 contact.setName(setContactName);
                                 contact.setPhone(setContactPhone);
-                                NetworkUtil.updateDB(Profile.this, user, contact, new UpdateAllContactsCallbacks() {
+                                NetworkUtil.updateDB(Profile.this, user, contact, new GeneralRequestCallbacks() {
                                     @Override
                                     public void onSuccess() {
                                         adapter.add(contact);

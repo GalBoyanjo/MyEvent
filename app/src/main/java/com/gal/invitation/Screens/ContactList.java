@@ -2,8 +2,6 @@ package com.gal.invitation.Screens;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,43 +19,29 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.gal.invitation.Entities.Contact;
-import com.gal.invitation.Interfaces.UpdateAllContactsCallbacks;
+import com.gal.invitation.Interfaces.GeneralRequestCallbacks;
 import com.gal.invitation.Utils.ContactUtil;
 import com.gal.invitation.Utils.ContactsAdapter;
-import com.gal.invitation.Utils.MyStringRequest;
 import com.gal.invitation.R;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.Utils.NetworkUtil;
 import com.gal.invitation.Utils.ScreenUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 import java.util.TreeSet;
 
@@ -209,7 +193,7 @@ public class ContactList extends AppCompatActivity {
                 else {
                     for (Contact contact : selectedContacts) {
                         requestsStack++;
-                        NetworkUtil.updateDB(this, user, contact, new UpdateAllContactsCallbacks() {
+                        NetworkUtil.updateDB(this, user, contact, new GeneralRequestCallbacks() {
                             @Override
                             public void onSuccess() {
                                 requestsStack--;
