@@ -1,0 +1,17 @@
+<resources>
+
+
+    <dimen name="circle_size">40dp</dimen>
+    <dimen name="calendar_size">40dp</dimen>
+    <dimen name="rhombus_size">100dp</dimen>
+
+    <dimen name="rhombus_size_margin">25dp</dimen>
+    <dimen name="rhombus_margin">2dp</dimen>
+    <dimen name="rhombus_text_width">64dp</dimen>
+    <dimen name="rhombus_icon_size">40dp</dimen>
+
+    <dimen name="circle_margin">8dp</dimen>
+    <dimen name="calendar_margin">4dp</dimen>
+
+
+</resources>

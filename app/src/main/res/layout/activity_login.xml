@@ -25,7 +25,8 @@
        android:hint="@string/email"
        android:layout_margin="2dp"
        android:inputType="textEmailAddress"
-       />
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_margin="2dp"
@@ -33,7 +34,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/txtPassword"
         android:hint="@string/password"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
     <Button
@@ -68,12 +71,19 @@
         android:layout_toEndOf="@id/login_txt_register"/>
 </RelativeLayout>
 
-<com.google.android.gms.common.SignInButton
-    android:id="@+id/google_sign_in_button"
-    android:layout_width="match_parent"
-    android:layout_marginTop="20dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal" />
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
 
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/facebook_sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
 
 </LinearLayout>

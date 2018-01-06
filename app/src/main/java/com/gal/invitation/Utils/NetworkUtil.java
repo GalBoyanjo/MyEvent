@@ -88,7 +88,7 @@ public class NetworkUtil {
                                     context.getString(R.string.contact_saves_in_db),
                                     Toast.LENGTH_LONG).show();
                         }
-                        User user = new User(jsonObject.getInt("ID"), jsonObject.getString("Username"),
+                        User user = new User(jsonObject.getInt("ID"), jsonObject.getString("UserName"),
                                 jsonObject.getString("Password"), jsonObject.getString("Email"));
 
                         loginRequestCallbacks.onSuccess(user);
@@ -136,7 +136,7 @@ public class NetworkUtil {
                                     context.getString(R.string.contact_saves_in_db),
                                     Toast.LENGTH_LONG).show();
                         }
-                        User user = new User(jsonObject.getInt("ID"), jsonObject.getString("Username"),
+                        User user = new User(jsonObject.getInt("ID"), jsonObject.getString("UserName"),
                                 jsonObject.getString("Password"), jsonObject.getString("Email"));
 
                         loginRequestCallbacks.onSuccess(user);

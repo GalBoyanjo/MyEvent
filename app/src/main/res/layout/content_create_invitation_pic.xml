@@ -30,7 +30,7 @@
 
             <Button
                 android:id="@+id/eventAddPic"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/add_pic"
                 android:visibility="visible"
@@ -41,52 +41,15 @@
 
             <com.gal.invitation.Utils.RoundedImageView
                 android:id="@+id/eventPic"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
                 android:layout_marginTop="20dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitXY"
                 android:src="@mipmap/ic_launcher"
                 android:layout_gravity="center"/>
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_marginTop="20dp">
-            <Button
-                android:id="@+id/efffectBtn1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="EFFECT1"
-                android:layout_margin="2dp"/>
-
-            <Button
-                android:id="@+id/efffectBtn2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="EFFECT2"
-                android:layout_margin="2dp"/>
-            <Button
-                android:id="@+id/efffectBtn3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="EFFECT3"
-                android:layout_margin="2dp"/>
-
-</LinearLayout>
-            <ImageView
-                android:id="@+id/myView"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"/>
-
-
-
 
         </LinearLayout>
+
 </LinearLayout>

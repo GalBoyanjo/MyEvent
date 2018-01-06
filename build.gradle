@@ -19,14 +19,16 @@ allprojects {
         jcenter()
         mavenCentral()
         google()
+
     }
 }
 
 ext{
     compileSdkVersion = 26
     buildToolsVersion = "26.0.2"
-    supportLibVersion = "27.0.1"
-    playServicesVersion = "11.6.0"
+    supportLibVersion = "27.0.2"
+    playServicesVersion = "11.6.2"
+    facebookVersion = "4.29.0"
 }
 
 task clean(type: Delete) {

@@ -16,6 +16,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
         android:id="@+id/ReEmail"
         android:hint="@string/email"/>
 
@@ -24,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ReName"
-        android:hint="@string/username"
+        android:hint="@string/userName"
         android:layout_below="@+id/ReEmail"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -38,7 +39,8 @@
         android:layout_below="@+id/ReEmail"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="80dp" />
+        android:layout_marginTop="80dp"
+        android:inputType="textPassword"/>
 
     <Button
         android:text=""

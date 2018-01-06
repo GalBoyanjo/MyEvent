@@ -111,7 +111,10 @@ public class SendInvitations extends Activity {
         for (Contact contact : contactArrayList) {
 
             phoneNo = contact.getPhone();
-            message = "http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" +
+            message =
+//                    "הנכם מוזמנים ל" + + " של " + +
+//                    "אנא אשרו הגעתכם" +
+                    "http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" +
                     contact.getCode() + "&By=" + user.getID();
 
             SmsManager smsManager = SmsManager.getDefault();

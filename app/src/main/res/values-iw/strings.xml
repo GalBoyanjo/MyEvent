@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Invitation</string>
-    <string name="title_activity_register">Register</string>
-    <string name="title_activity_reservation">Reservation</string>
+    <string name="title_activity_register">הרשמה</string>
     <string name="title_activity_profile">Profile</string>
-    <string name="title_activity_send_invitations">Send Invitations</string>
-    <string name="title_activity_create_invitations">Create Invitations</string>
-    <string name="title_activity_login">Login</string>
+    <string name="title_activity_send_invitations">שלח הזמנה</string>
+    <string name="title_activity_create_invitations">צור הזמנה</string>
+    <string name="title_activity_login">התחברות</string>
+    <string name="title_activity_manage_guest_list">ניהול מוזמנים</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -23,9 +23,9 @@
     <string name="title_activity_contacts_list">אנשי קשר</string>
     <string name="loading_contacts">טוען אנשי קשר</string>
     <string name="loading_invitation">טוען הזמנה</string>
-    <string name="please_wait">אנא המתן...</string>
-    <string name="contact_saves_in_db">איש קשר נשמר ב-DB</string>
-    <string name="error_saving_contact_in_db">שגיאה לשמור ב-איש קשר</string>
+    <string name="please_wait">אנא המתן…</string>
+    <string name="contact_saves_in_db">איש קשר נשמר</string>
+    <string name="error_saving_contact_in_db">שגיאה לשמור איש קשר</string>
     <string name="picture_save_success">תמונה נשמרה בהצלחה</string>
     <string name="saving_picture_faild_please_try_again">שמירת תמונה נכשלה, אנא נסה שוב.</string>
     <string name="invitation_save_success">הזמנה נשמרה בהצלחה</string>
@@ -41,6 +41,7 @@
     <string name="wedding">"חתונה"</string>
     <string name="other">"אחר"</string>
     <string name="functions_hall">"אולם אירועים"</string>
+    <string name="garden_events">"גן אירועים"</string>
     <string name="date">"תאריך"</string>
     <string name="reception_time">"שעת קבלת פנים"</string>
     <string name="time">"שעה"</string>
@@ -62,7 +63,7 @@
     <string name="email">אימייל</string>
     <string name="password">סיסמא</string>
     <string name="login">התחבר</string>
-    <string name="username">שם משתמש</string>
+    <string name="userName">שם משתמש</string>
     <string name="hina">חינה</string>
     <string name="search">חפש</string>
     <string name="all">כולם</string>
@@ -75,6 +76,32 @@
     <string name="send_all_contacts">כל המוזמנים</string>
     <string name="send_all_not_answer_yet">מוזמנים שטרם ענו</string>
     <string name="send_manually">בחירה מתוך מוזמנים</string>
+
+    <string name="days">ימים</string>
+    <string name="hours">שעות</string>
+    <string name="minutes">דקות</string>
+    <string name="seconds">שניות</string>
+
+    <string name="manage_guest_list">ניהול מוזמנים</string>
+
+
+    <string name="title_activity_settings">הגדרות</string>
+    <string name="pref_header_general">General</string>
+    <string name="pref_restart_dialog_title">הפעלה מחדש</string>
+    <string name="pref_restart_dialog_message">על מנת לבצע שינויים אלו, אנא הפעל את האפליקציה מחדש.</string>
+    <string name="pref_language_title">שפה</string>
+    <string-array name="pref_languages_list_titles">
+        <item>עברית</item>
+        <item>English</item>
+    </string-array>
+    <string-array name="pref_languages_list_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string name="restart">הפעלה מחדש</string>
+    <string name="later">מאוחר יותר</string>
+
+
 
 
     //Google String's: !!!
@@ -121,5 +148,6 @@
     <string name="name">Name :</string>
 
 
+    <string name="facebook_app_id">138141696884806</string>
 
 </resources>

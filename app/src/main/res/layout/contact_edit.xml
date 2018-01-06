@@ -4,20 +4,35 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <ImageView
+    <LinearLayout
         app:srcCompat="@drawable/ic_edit"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:scaleType="center"
         android:background="@color/colorPrimary"
-        android:contentDescription="@string/app_name" />
+        android:gravity="center|start">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_edit"
+            android:layout_margin="8dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Guest"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF"/>
+
+
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/edit_image_user"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_margin="1dp"
@@ -43,8 +58,8 @@
         android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/edit_image_phone"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_margin="1dp"

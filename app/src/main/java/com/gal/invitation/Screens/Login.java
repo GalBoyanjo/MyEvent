@@ -30,6 +30,16 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.gal.invitation.Interfaces.GeneralRequestCallbacks;
 import com.gal.invitation.Interfaces.LoginRequestCallbacks;
 import com.gal.invitation.Utils.Constants;
@@ -57,12 +67,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 
-public class Login extends AppCompatActivity{
+public class Login extends AppCompatActivity {
 
     public static String systemLanguage;
     private JSONParser jsonParser;
@@ -80,60 +91,43 @@ public class Login extends AppCompatActivity{
 
     int retryGetUser = 0;
 
-    private RequestQueue netRequestQueue;
 
-
-
-//    private SignInButton signInButton;
-//    private GoogleSignInOptions gso;
-//    private GoogleApiClient mGoogleApiClient;
-//    private int SIGN_IN = 30;
-//    private TextView tv;
-//    private ImageView iv;
-//    private AQuery aQuery;
-//    private Button btn;
     private GoogleSignInClient mGoogleSignInClient;
     private SignInButton googleSignInButton;
     private int RC_SIGN_IN = 30;
+
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ScreenUtil.setLocale(Login.this, getString(R.string.title_activity_login));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        FragmentManager fm = getSupportFragmentManager();
-//        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-//
-//
-//        if (fragment == null) {
-//            fragment = new GoogleSignIn();
-//            fm.beginTransaction()
-//                    .add(R.id.fragment_container, fragment)
-//                    .commit();
-//        }
-        //!!new!!
-//        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestEmail()
-//                .build();
-//        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-//                .addApi(Plus.API)
-//                .build();
-//
-//        signInButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-//                startActivityForResult(signInIntent, SIGN_IN);
-//            }
-//        });
-//
-//        tv = (TextView) findViewById(R.id.gplus_tv);
-//
-//        aQuery = new AQuery(this);
 
+        callbackManager = CallbackManager.Factory.create();
+        loginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_friends"));
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                getUserDetails(loginResult);
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -156,14 +150,13 @@ public class Login extends AppCompatActivity{
 
 
         final TextView RegisterLink = (TextView) findViewById(R.id.Register);
-        RegisterLink.setText( getText(R.string.register));
+        RegisterLink.setText(getText(R.string.register));
 
 
-        if(SaveSharedPreference.getUserEmail(Login.this).length() == 0) {
+        if (SaveSharedPreference.getUserEmail(Login.this).length() == 0) {
             // call Login Activity
             Toast.makeText(Login.this, "NEED TO LOGIN", Toast.LENGTH_SHORT).show();
-        }
-        else{
+        } else {
             getUser(SaveSharedPreference.getUserEmail(Login.this),
                     SaveSharedPreference.getUserPassword(Login.this),
                     "",
@@ -183,14 +176,13 @@ public class Login extends AppCompatActivity{
             }
         });
 
-        RegisterLink.setOnClickListener (new View.OnClickListener(){
+        RegisterLink.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View v){
-                Intent RegisterIntent = new Intent(Login.this,Register.class);
+            public void onClick(View v) {
+                Intent RegisterIntent = new Intent(Login.this, Register.class);
                 Login.this.startActivity(RegisterIntent);
             }
         });
-
 
 
     }
@@ -211,7 +203,7 @@ public class Login extends AppCompatActivity{
     }
 
     private void getUser(final String email, final String password, final String accountID,
-                         final String type, final String userName){
+                         final String type, final String userName) {
 
         NetworkUtil.getUser(Login.this, url_get_user, email, password, type,
                 new LoginRequestCallbacks() {
@@ -219,13 +211,13 @@ public class Login extends AppCompatActivity{
                     public void onSuccess(User myUser) {
                         user = myUser;
                         SaveSharedPreference.setUser(Login.this, email, password, type);
-                        Intent loginIntent= new Intent(Login.this, Profile.class);
+                        Intent loginIntent = new Intent(Login.this, Profile.class);
                         loginIntent.putExtra("user", user);
                         Login.this.startActivity(loginIntent);
                         //hide the keyboard
                         View view = Login.this.getCurrentFocus();
                         if (view != null) {
-                            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                         }
 
@@ -236,12 +228,12 @@ public class Login extends AppCompatActivity{
                     @Override
                     public void onError(String errorMessage) {
 
-                        if (type == "Regular") {
+                        if (type.equals( "Regular")) {
                             Toast.makeText(Login.this,
                                     errorMessage,
                                     Toast.LENGTH_LONG).show();
 
-                        } else if(type == "Google"){
+                        } else if (type.equals("Google") || type.equals("Facebook")) {
                             NetworkUtil.createUser(Login.this, url_create_user, email, password,
                                     userName, type, accountID,
                                     new LoginRequestCallbacks() {
@@ -251,13 +243,14 @@ public class Login extends AppCompatActivity{
                                             Toast.makeText(Login.this,
                                                     (getText(R.string.welcome)),
                                                     Toast.LENGTH_LONG).show();
-                                            Intent registerIntent= new Intent(Login.this, Profile.class);
+                                            SaveSharedPreference.setUser(Login.this, email, password, type);
+                                            Intent registerIntent = new Intent(Login.this, Profile.class);
                                             registerIntent.putExtra("user", user);
                                             Login.this.startActivity(registerIntent);
                                             //hide the keyboard
                                             View view = Login.this.getCurrentFocus();
                                             if (view != null) {
-                                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                                             }
                                         }
@@ -276,6 +269,7 @@ public class Login extends AppCompatActivity{
                 });
 
     }
+
     class GetUser extends AsyncTask<String, String, Boolean> {
 
         String email;
@@ -293,7 +287,7 @@ public class Login extends AppCompatActivity{
 
         }
 
-        protected Boolean doInBackground(String...  args) {
+        protected Boolean doInBackground(String... args) {
             try {
                 email = args[0];
                 password = args[1];
@@ -307,14 +301,13 @@ public class Login extends AppCompatActivity{
                         "POST", params);
 
 
-
                 // check for success tag
 
                 int success = json.getInt(TAG_SUCCESS);
 
                 if (success == 1) {
 
-                    user = new User(json.getInt("ID"),json.getString("Username"), json.getString("Password"),
+                    user = new User(json.getInt("ID"), json.getString("Username"), json.getString("Password"),
                             json.getString("Email"));
 
                     return true;
@@ -333,24 +326,24 @@ public class Login extends AppCompatActivity{
         }
 
         protected void onPostExecute(Boolean result) {
-            if (result && user!=null) {
-//                lblWelcome.setText(user.getEmail()+ " " + user.getUsername());
+            if (result && user != null) {
+//                lblWelcome.setText(user.getEmail()+ " " + user.getUserName());
 //                lblWelcome.setVisibility(View.VISIBLE);
                 progressDialog.dismiss();
-                Intent loginIntent= new Intent(Login.this, Profile.class);
+                Intent loginIntent = new Intent(Login.this, Profile.class);
                 loginIntent.putExtra("user", user);
                 Login.this.startActivity(loginIntent);
                 //hide the keyboard
                 View view = Login.this.getCurrentFocus();
                 if (view != null) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
 
             } else {
-                if(retryGetUser<2){
+                if (retryGetUser < 2) {
                     retryGetUser++;
-                    new GetUser().execute(email,password);
+                    new GetUser().execute(email, password);
                     return;
                 }
                 progressDialog.dismiss();
@@ -370,6 +363,8 @@ public class Login extends AppCompatActivity{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
@@ -386,7 +381,7 @@ public class Login extends AppCompatActivity{
             // Signed in successfully, show authenticated UI.
             String userType = "Google";
             getUser(account.getEmail(), account.getId(), account.getId(), userType, account.getDisplayName());
-            Log.d("ID @@@@@@@@@@@@@@ ",account.getId());
+            Log.d("ID @@@@@@@@@@@@@@ ", account.getId());
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -394,6 +389,32 @@ public class Login extends AppCompatActivity{
         }
     }
 
+    protected void getUserDetails(LoginResult loginResult) {
+        GraphRequest data_request = GraphRequest.newMeRequest(
+                loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject json_object, GraphResponse response) {
+                        try {
+                            getUser(json_object.getString("email"),
+                                    json_object.getString("id"),
+                                    json_object.getString("id"),
+                                    "Facebook",
+                                    json_object.getString("name"));
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+//                        Intent intent = new Intent(MainActivity.this, UserProfile.class);
+//                        intent.putExtra("userProfile", json_object.toString());
+//                        startActivity(intent);
+                    }
+
+                });
+        Bundle permission_param = new Bundle();
+        permission_param.putString("fields", "id,name,email");
+        data_request.setParameters(permission_param);
+        data_request.executeAsync();
+    }
 
 
 //    @Override

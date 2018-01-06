@@ -22,7 +22,7 @@ import com.gal.invitation.Screens.Profile;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
+public class GuestListAdapter extends ArrayAdapter<Contact> {
 
     private UpdateProfileContacts updateProfileContacts;
     private Context context;
@@ -30,8 +30,8 @@ public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
     private ArrayList<Contact> data = new ArrayList<>();
     public ArrayList<Contact> searchData = new ArrayList<>();
 
-    public ProfileContactsAdapter(Context context, int layoutResourceId, ArrayList<Contact> data,
-                                  UpdateProfileContacts updateProfileContacts) {
+    public GuestListAdapter(Context context, int layoutResourceId, ArrayList<Contact> data,
+                            UpdateProfileContacts updateProfileContacts) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -87,11 +87,11 @@ public class ProfileContactsAdapter extends ArrayAdapter<Contact> {
 
             holder.rowDelete.setVisibility(View.VISIBLE);
             holder.rowEdit.setVisibility(View.VISIBLE);
-            row.setBackgroundColor(ContextCompat.getColor(context,R.color.colorAccent));
+//            row.setBackgroundColor(ContextCompat.getColor(context,R.color.colorAccent));
 
 
         } else {
-            row.setBackgroundColor(ContextCompat.getColor(context,android.R.color.transparent));
+//            row.setBackgroundColor(ContextCompat.getColor(context,android.R.color.transparent));
 
             holder.rowDelete.setVisibility(View.INVISIBLE);
             holder.rowEdit.setVisibility(View.INVISIBLE);

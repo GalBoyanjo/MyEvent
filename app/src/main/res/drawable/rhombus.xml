@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="@dimen/rhombus_size_margin"
+        android:top="@dimen/rhombus_size_margin"
+        android:right="@dimen/rhombus_size_margin"
+        android:bottom="@dimen/rhombus_size_margin">
+        <rotate android:fromDegrees="45">
+            <shape>
+                <size
+                    android:width="@dimen/rhombus_size"
+                    android:height="@dimen/rhombus_size" />
+                <gradient
+                    android:startColor="#33FFFFFF"
+                    android:endColor="#33FFFFFF" />
+                <stroke
+                    android:width="5dp"
+                    android:color="#33FFFFFF" />
+            </shape>
+        </rotate>
+    </item>
+</layer-list>

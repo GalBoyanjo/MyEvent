@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">Invitation</string>
     <string name="title_activity_register">Register</string>
-    <string name="title_activity_reservation">Reservation</string>
     <string name="title_activity_profile">Profile</string>
     <string name="title_activity_send_invitations">Send Invitations</string>
     <string name="title_activity_create_invitations">Create Invitations</string>
     <string name="title_activity_login">Login</string>
+    <string name="title_activity_manage_guest_list">Manage Guest-List</string>
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -23,7 +24,7 @@
     <string name="title_activity_contacts_list">Contacts List</string>
     <string name="loading_contacts">Loading contacts</string>
     <string name="loading_invitation">Loading invitation</string>
-    <string name="please_wait">Please wait...</string>
+    <string name="please_wait">Please wait…</string>
     <string name="contact_saves_in_db">Contact Saves In DB</string>
     <string name="error_saving_contact_in_db">Error Saving Contact In DB</string>
     <string name="picture_save_success">Picture Save success</string>
@@ -41,6 +42,7 @@
     <string name="wedding">"Wedding"</string>
     <string name="other">"Other"</string>
     <string name="functions_hall">"Functions hall"</string>
+    <string name="garden_events">"Garden events"</string>
     <string name="date">"Date"</string>
     <string name="reception_time">"Reception time"</string>
     <string name="time">"Time"</string>
@@ -52,11 +54,11 @@
     <string name="groom">"Groom name"</string>
     <string name="parents">"Parents name"</string>
     <string name="empty_field">"Empty field!"</string>
-    <string name="design_invitation">"Desing invitation"</string>
+    <string name="design_invitation">"Design Invitation"</string>
     <string name="invitation_preview">"Invitation Preview"</string>
-    <string name="design_picture">"Desing picture"</string>
+    <string name="design_picture">"Design picture"</string>
     <string name="edit_invitation">"Edit invitation"</string>
-    <string name="send_invitation">"Send invitation"</string>
+    <string name="send_invitation">"Send Invitation"</string>
     <string name="not_a_member">"Not a member? "</string>
 
     <string name="from_contacts">From Contacts</string>
@@ -82,7 +84,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="username">User name</string>
+    <string name="userName">User name</string>
     <string name="hina">hina</string>
     <string name="search">Search</string>
     <string name="all">All</string>
@@ -94,6 +96,13 @@
     <string name="send_all_contacts">All contacts</string>
     <string name="send_all_not_answer_yet">Not answer yet</string>
     <string name="send_manually">Manually custom</string>
+
+    <string name="days">Days</string>
+    <string name="hours">Hours</string>
+    <string name="minutes">Minutes</string>
+    <string name="seconds">Second</string>
+
+    <string name="manage_guest_list">Manage Guest-List</string>
 
 
     //Google String's: !!!
@@ -139,5 +148,6 @@
     <string name="server_client_id">YOUR_SERVER_CLIENT_ID</string>
     <string name="name">Name :</string>
 
+    <string name="facebook_app_id">138141696884806</string>
 
 </resources>
