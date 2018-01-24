@@ -33,6 +33,8 @@ dependencies {
     compile "com.google.android.gms:play-services-auth:${rootProject.ext.playServicesVersion}"
     compile "com.facebook.android:facebook-android-sdk:${rootProject.ext.facebookVersion}"
 //    compile "com.google.android.gms:play-services:${rootProject.ext.playServicesVersion}"
+
+    compile 'com.github.ybq:Android-SpinKit:1.1.0' // anim for loading
     compile project(':clans_fab')
 
     testCompile 'junit:junit:4.12'

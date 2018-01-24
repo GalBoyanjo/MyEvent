@@ -85,7 +85,7 @@ public class NetworkUtil {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(Constants.TAG_SUCCESS) == 1) {
                             Toast.makeText(context,
-                                    context.getString(R.string.contact_saves_in_db),
+                                    context.getString(R.string.log_in),
                                     Toast.LENGTH_LONG).show();
                         }
                         User user = new User(jsonObject.getInt("ID"), jsonObject.getString("UserName"),
@@ -101,13 +101,13 @@ public class NetworkUtil {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("Error", error.toString());
-                    loginRequestCallbacks.onError(context.getString(R.string.error_saving_contact_in_db));
+                    loginRequestCallbacks.onError(context.getString(R.string.error_bad_email_password));
                 }
             });
             requestQueue.add(request);
         } catch (Exception e) {
             e.printStackTrace();
-            loginRequestCallbacks.onError(context.getString(R.string.error_saving_contact_in_db));
+            loginRequestCallbacks.onError(context.getString(R.string.error_bad_email_password));
         }
 
     }

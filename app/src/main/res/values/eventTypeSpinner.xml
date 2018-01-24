@@ -8,7 +8,7 @@
     <string-array name="placeType">
         <item>@string/functions_hall</item>
         <item>@string/garden_events</item>
-        <item>@string/other</item>
+
     </string-array>
 
 </resources>

@@ -39,6 +39,7 @@ import com.gal.invitation.Entities.InvitationPic;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.R;
 import com.gal.invitation.Utils.MyStringRequest;
+import com.gal.invitation.Utils.ScreenUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +71,7 @@ public class CreateInvitationPic extends AppCompatActivity {
     private final static String url_get_invitation_pic_address = "http://master1590.a2hosted.com/invitations/images/";
     private final static String TAG_SUCCESS = "success";
     private User user = null;
+    private String userType = null;
     private ProgressDialog progressDialog;
 
     ImageView imgEventPic;
@@ -97,6 +99,7 @@ public class CreateInvitationPic extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ScreenUtil.setLocale(CreateInvitationPic.this, getString(R.string.title_activity_create_invitations));
         setContentView(R.layout.activity_create_invitation_pic);
 
 
@@ -106,6 +109,7 @@ public class CreateInvitationPic extends AppCompatActivity {
         netRequestQueue = Volley.newRequestQueue(this);
 
         user = (User) getIntent().getSerializableExtra("user");
+        userType = getIntent().getStringExtra("userType");
 
 
         progressDialog = new ProgressDialog(this);
@@ -142,6 +146,15 @@ public class CreateInvitationPic extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed(){
+        Intent profileIntent = new Intent(CreateInvitationPic.this, Profile.class);
+        profileIntent.putExtra("user", user);
+        profileIntent.putExtra("userType", userType);
+        startActivity(profileIntent);
+        finish();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.create_invitation, menu);
@@ -158,11 +171,14 @@ public class CreateInvitationPic extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_ok) {
             //updateDB();
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Upload");
+            progressDialog.setCancelable(false);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage(getString(R.string.please_wait));
+            progressDialog.show();
             new UploadImage().execute();
-            Intent ProfileIntent = new Intent(CreateInvitationPic.this, Profile.class);
-            ProfileIntent.putExtra("user", user);
-            startActivity(ProfileIntent);
-            finish();
+
         }
 
         return true;
@@ -170,10 +186,10 @@ public class CreateInvitationPic extends AppCompatActivity {
 
     private void showPictureDialog() {
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
-        pictureDialog.setTitle("Select Action");
+        pictureDialog.setTitle(getString(R.string.select_action));
         String[] pictureDialogItems = {
-                "Select photo from gallery",
-                "Capture photo from camera"};
+                getString(R.string.select_photo_from_gallery),
+                getString(R.string.capture_photo_from_camera)};
         pictureDialog.setItems(pictureDialogItems,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -344,7 +360,7 @@ public class CreateInvitationPic extends AppCompatActivity {
                     hasWRITE_EXTERNAL_STORAGEPermission = false;
                     final AlertDialog.Builder builder = new AlertDialog.Builder(CreateInvitationPic.this);
                     builder.setTitle(getResources().getString(R.string.required_permission_title));
-                    builder.setMessage(getResources().getString(R.string.required_contacts_permission_message));
+                    builder.setMessage(getResources().getString(R.string.required_gallery_permission_message));
                     builder.setCancelable(false);
                     builder.setPositiveButton(getResources().getString(R.string.required_permission_ask_again), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
@@ -371,7 +387,7 @@ public class CreateInvitationPic extends AppCompatActivity {
                     hasCAMERAPermission = false;
                     final AlertDialog.Builder builder = new AlertDialog.Builder(CreateInvitationPic.this);
                     builder.setTitle(getResources().getString(R.string.required_permission_title));
-                    builder.setMessage(getResources().getString(R.string.required_contacts_permission_message));
+                    builder.setMessage(getResources().getString(R.string.required_camera_permission_message));
                     builder.setCancelable(false);
                     builder.setPositiveButton(getResources().getString(R.string.required_permission_ask_again), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
@@ -561,10 +577,18 @@ public class CreateInvitationPic extends AppCompatActivity {
                 Toast.makeText(CreateInvitationPic.this,
                         (getString(R.string.picture_save_success)),
                         Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                Intent profileIntent = new Intent(CreateInvitationPic.this, Profile.class);
+                profileIntent.putExtra("user", user);
+                profileIntent.putExtra("userType", userType);
+                startActivity(profileIntent);
+                finish();
             } else {
                 Toast.makeText(CreateInvitationPic.this,
                         (getString(R.string.saving_picture_faild_please_try_again)),
                         Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+
             }
         }
 

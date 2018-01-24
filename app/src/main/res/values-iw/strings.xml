@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name">Invitation</string>
+    <string name="app_name">MyEvent</string>
     <string name="title_activity_register">הרשמה</string>
     <string name="title_activity_profile">Profile</string>
     <string name="title_activity_send_invitations">שלח הזמנה</string>
     <string name="title_activity_create_invitations">צור הזמנה</string>
     <string name="title_activity_login">התחברות</string>
     <string name="title_activity_manage_guest_list">ניהול מוזמנים</string>
+
+    <string name="app_version">1.0</string>
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -15,6 +18,9 @@
     <string name="required_permission_title">Required Permission</string>
     <string name="required_permission_ask_again">Request Again</string>
     <string name="required_contacts_permission_message">This permission is required in order to get access to your contacts, without it you won\'t be able to send SMS. Request permission again?</string>
+    <string name="required_SMS_permission_message">This permission is required in order to get access to your SMS, without it you won\'t be able to send SMS. Request permission again?</string>
+    <string name="required_gallery_permission_message">This permission is required in order to get access to your contacts, without it you won\'t be able to send SMS. Request permission again?</string>
+    <string name="required_camera_permission_message">This permission is required in order to get access to your contacts, without it you won\'t be able to send SMS. Request permission again?</string>
     <string name="cancel">ביטול</string>
     <string name="ok">אישור</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -40,8 +46,8 @@
     <string name="welcome">"ברוך הבא"</string>
     <string name="wedding">"חתונה"</string>
     <string name="other">"אחר"</string>
-    <string name="functions_hall">"אולם אירועים"</string>
-    <string name="garden_events">"גן אירועים"</string>
+    <string name="functions_hall">"אולם האירועים"</string>
+    <string name="garden_events">"גן האירועים"</string>
     <string name="date">"תאריך"</string>
     <string name="reception_time">"שעת קבלת פנים"</string>
     <string name="time">"שעה"</string>
@@ -63,6 +69,7 @@
     <string name="email">אימייל</string>
     <string name="password">סיסמא</string>
     <string name="login">התחבר</string>
+    <string name="log_in">מתחבר…</string>
     <string name="userName">שם משתמש</string>
     <string name="hina">חינה</string>
     <string name="search">חפש</string>
@@ -100,6 +107,22 @@
     </string-array>
     <string name="restart">הפעלה מחדש</string>
     <string name="later">מאוחר יותר</string>
+
+
+    <string name="select_action">בחר פעולה</string>
+    <string name="select_photo_from_gallery">בחירה מתוך גלריית התמונות</string>
+    <string name="capture_photo_from_camera">מצלמה</string>
+
+    <string name="logout">התנתק</string>
+
+    <string name="guest">מוזמן</string>
+
+    <string name="option1">תבנית 1</string>
+    <string name="option2">תבנית 2</string>
+    <string name="clear">נקה</string>
+
+    <string name="are_you_sure_you_want_to_exit">אתה בטוח שברצונך לצאת?</string>
+
 
 
 

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Gal on 09/10/2017.
+ * Created on 09/10/2017.
  */
 public class CustomDialog extends AlertDialog.Builder {
 
@@ -101,6 +101,12 @@ public class CustomDialog extends AlertDialog.Builder {
                 if (checked) {
                     selectedContacts.clear();
 //                selectedContacts.addAll();
+                    for(Contact contact : contacts) {
+                        if (contact.getStatus() < 0)
+                            selectedContacts.add(contact);
+                        else
+                            selectedContacts.remove(contact);
+                    }
                     checkBoxesContainer.setVisibility(View.GONE);
                 }
             }

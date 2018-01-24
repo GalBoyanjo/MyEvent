@@ -6,7 +6,7 @@ import android.opengl.Visibility;
 import java.io.Serializable;
 
 /**
- * Created by Gal on 11/04/2017.
+ * Created on 11/04/2017.
  */
 
 public class Contact implements Comparable, Serializable {

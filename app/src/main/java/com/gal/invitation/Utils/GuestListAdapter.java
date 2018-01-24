@@ -15,29 +15,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gal.invitation.Entities.Contact;
-import com.gal.invitation.Interfaces.UpdateProfileContacts;
+import com.gal.invitation.Interfaces.UpdateGuestList;
 import com.gal.invitation.R;
-import com.gal.invitation.Screens.Profile;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class GuestListAdapter extends ArrayAdapter<Contact> {
 
-    private UpdateProfileContacts updateProfileContacts;
+    private UpdateGuestList updateGuestList;
     private Context context;
     private int layoutResourceId;
     private ArrayList<Contact> data = new ArrayList<>();
     public ArrayList<Contact> searchData = new ArrayList<>();
 
     public GuestListAdapter(Context context, int layoutResourceId, ArrayList<Contact> data,
-                            UpdateProfileContacts updateProfileContacts) {
+                            UpdateGuestList updateGuestList) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data.addAll(data);
         this.searchData.addAll(data);
-        this.updateProfileContacts = updateProfileContacts;
+        this.updateGuestList = updateGuestList;
     }
 
     @Override
@@ -100,14 +99,14 @@ public class GuestListAdapter extends ArrayAdapter<Contact> {
         holder.rowDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateProfileContacts.deleteContact(contact);
+                updateGuestList.deleteContact(contact);
 
             }
         });
         holder.rowEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateProfileContacts.editContactDialog(contact);
+                updateGuestList.editContactDialog(contact);
             }
         });
 

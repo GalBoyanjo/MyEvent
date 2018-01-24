@@ -2,8 +2,10 @@ package com.gal.invitation.Screens;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -24,6 +26,7 @@ import android.widget.EditText;
 import android.widget.*;
 
 import com.gal.invitation.Entities.Contact;
+import com.gal.invitation.Entities.Invitation;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.R;
 import com.gal.invitation.Utils.Constants;
@@ -43,6 +46,12 @@ public class SendInvitations extends Activity {
     private String message;
     private ArrayList<Contact> contactArrayList = new ArrayList<>();
     private User user;
+    private String userType = null;
+    private Invitation invitation;
+
+    Spinner messageTypes;
+    EditText textMessage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +68,9 @@ public class SendInvitations extends Activity {
         try {
             contactArrayList = (ArrayList<Contact>) getIntent().getSerializableExtra("list");
             user = (User)getIntent().getSerializableExtra("user");
+            invitation = (Invitation)getIntent().getSerializableExtra("invitation");
+            userType = getIntent().getStringExtra("userType");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,6 +86,11 @@ public class SendInvitations extends Activity {
                 }
             }
         });
+
+        messageTypes = (Spinner) findViewById(R.id.message_type_spinner);
+        textMessage = (EditText) findViewById(R.id.edit_message);
+
+        createMessageTypes();
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
@@ -111,9 +128,7 @@ public class SendInvitations extends Activity {
         for (Contact contact : contactArrayList) {
 
             phoneNo = contact.getPhone();
-            message =
-//                    "הנכם מוזמנים ל" + + " של " + +
-//                    "אנא אשרו הגעתכם" +
+            message = textMessage.getText() + "\n" +
                     "http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" +
                     contact.getCode() + "&By=" + user.getID();
 
@@ -130,8 +145,12 @@ public class SendInvitations extends Activity {
             }
             smsManager.sendTextMessage(phoneNo, null, message, null, null);
             Toast.makeText(SendInvitations.this,
-                    "http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" + contact.getCode() + (getString(R.string.SMS_sent)),
+                    (getString(R.string.SMS_sent)),
                     Toast.LENGTH_LONG).show();
+            Intent profileIntent = new Intent(SendInvitations.this, Profile.class);
+            profileIntent.putExtra("user", user);
+            profileIntent.putExtra("userType", userType);
+            SendInvitations.this.startActivity(profileIntent);
 
         }
 
@@ -149,7 +168,7 @@ public class SendInvitations extends Activity {
                     hasSMSPermission = false;
                     final AlertDialog.Builder builder = new AlertDialog.Builder(SendInvitations.this);
                     builder.setTitle(getResources().getString(R.string.required_permission_title));
-                    builder.setMessage(getResources().getString(R.string.required_contacts_permission_message));
+                    builder.setMessage(getResources().getString(R.string.required_SMS_permission_message));
                     builder.setCancelable(false);
                     builder.setPositiveButton(getResources().getString(R.string.required_permission_ask_again), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
@@ -170,4 +189,51 @@ public class SendInvitations extends Activity {
         }
 
     }
+
+    public void createMessageTypes(){
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(SendInvitations.this,
+                R.array.message_type, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        messageTypes.setAdapter(adapter);
+
+
+        messageTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                messageTypesSelected();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                return;
+
+            }
+        });
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void messageTypesSelected(){
+        String type = messageTypes.getSelectedItem().toString();
+
+        if(type.equals(getString(R.string.option1))) {
+            textMessage.setText("הנכם מוזמנים ל" + String.valueOf(invitation.getType()) + " של " + String.valueOf(invitation.getGroom()) + " ו" + String.valueOf(invitation.getBride())  +
+                    "\n" + String.valueOf(invitation.getDate()) + "\n" +
+                    "ב" + String.valueOf(invitation.getPlacetype()) + " " + String.valueOf(invitation.getPlace()) +
+                    "\n" + "קבלת פנים בשעה " + String.valueOf(invitation.getTime())  + "\n" +
+                    "\nאנא אשרו הגעתם בלינק המצורף\n" );
+
+        }
+        else if(type.equals(getString(R.string.option2))) {
+            textMessage.setText("הנכם מוזמנים ל" + String.valueOf(invitation.getType()) + " של " + String.valueOf(invitation.getGroom()) + " ו" + String.valueOf(invitation.getBride()) + "\nאנא אשרו הגעתם בלינק המצורף\n" );
+
+        }
+        else if(type.equals(getString(R.string.clear))) {
+            textMessage.setText("");
+        }
+    }
+
+
 }

@@ -28,8 +28,7 @@
             android:background="@drawable/round_frame"
             android:fitsSystemWindows="true"
             android:isScrollContainer="true"
-            android:orientation="vertical"
-            tools:context="com.gal.invitation.Screens.CreateInvitation">
+            android:orientation="vertical">
 
 
 

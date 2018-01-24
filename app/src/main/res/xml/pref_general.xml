@@ -10,6 +10,6 @@
         android:key="languagePosition"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_language_title" />
+        android:title="@string/pref_language_title"/>
 
 </PreferenceScreen>

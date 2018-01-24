@@ -14,8 +14,8 @@
                 android:color="@color/colorDivider" />
             <gradient
                 android:angle="-90"
-                android:endColor="@color/colorDefaultBackground"
-                android:startColor="@color/colorDefaultBackground" />
+                android:endColor="@android:color/transparent"
+                android:startColor="@android:color/transparent" />
 
         </shape>
     </item>

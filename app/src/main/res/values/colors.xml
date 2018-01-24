@@ -14,7 +14,10 @@
     <color name="colorRedStatus">#ff7857</color>
     <color name="colorYellowStatus">#f8e096</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#FFFFFF</color>
     <color name="colorDefaultBackground">#FAFAFA</color>
+
+    <color name="colorRhombus">#33FFFFFF</color>
 
 
     <color name="blue_grey_500">#607D8B</color>

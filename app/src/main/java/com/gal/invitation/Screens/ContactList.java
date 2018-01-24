@@ -54,6 +54,7 @@ public class ContactList extends AppCompatActivity {
     private ListView listView;
 
     private User user = null;
+    private String userType = null;
     private static final String TAG = ContactList.class.getSimpleName();
     private static final int CONTACTS_PERMISSIONS_REQUEST = 123;
     private static final int CONTACT_REQUEST = 1234;
@@ -90,6 +91,8 @@ public class ContactList extends AppCompatActivity {
         netRequestQueue = Volley.newRequestQueue(this);
 
         user = (User) getIntent().getSerializableExtra("user");
+        userType = getIntent().getStringExtra("userType");
+
 
         loadContact();
 
@@ -123,7 +126,12 @@ public class ContactList extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        super.onBackPressed();
+        if (selectedContacts.isEmpty())
+            checkFinished();
+        else {
+            //ADD DIALOG
+            checkFinished();
+        }
     }
 
     @Override
@@ -308,6 +316,7 @@ public class ContactList extends AppCompatActivity {
                     builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             dialog.dismiss();
+                            progressDialog.dismiss();
                         }
                     });
                     builder.show();
@@ -372,26 +381,28 @@ public class ContactList extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-    private String generateCode() {
-        String code = "";
-        char letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-        Random rand = new Random();
-        for (int i = 0; i < 16; i++) {
-            if (i != 0 && i != 15)
-                code += letters[rand.nextInt(letters.length - 1)];
-            else
-                code += letters[0];
-        }
-        return code;
-    }
-
     private void checkFinished() {
         if (requestsStack == 0) {
-            Intent ProfileIntent = new Intent(ContactList.this, Profile.class);
-            ProfileIntent.putExtra("user", user);
-            startActivity(ProfileIntent);
+            Intent guestListIntent = new Intent(ContactList.this, ManageGuestList.class);
+            guestListIntent.putExtra("user", user);
+            guestListIntent.putExtra("userType", userType);
+            startActivity(guestListIntent);
             finish();
         }
     }
+
+
+//    private String generateCode() {
+//        String code = "";
+//        char letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+//        Random rand = new Random();
+//        for (int i = 0; i < 16; i++) {
+//            if (i != 0 && i != 15)
+//                code += letters[rand.nextInt(letters.length - 1)];
+//            else
+//                code += letters[0];
+//        }
+//        return code;
+//    }
 
 }

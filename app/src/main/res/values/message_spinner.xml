@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="message_type">
+        <item>@string/option1</item>
+        <item>@string/option2</item>
+        <item>@string/clear</item>
+    </string-array>
+</resources>

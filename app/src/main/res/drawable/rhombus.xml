@@ -11,11 +11,11 @@
                     android:width="@dimen/rhombus_size"
                     android:height="@dimen/rhombus_size" />
                 <gradient
-                    android:startColor="#33FFFFFF"
-                    android:endColor="#33FFFFFF" />
+                    android:startColor="@color/colorRhombus"
+                    android:endColor="@color/colorRhombus" />
                 <stroke
                     android:width="5dp"
-                    android:color="#33FFFFFF" />
+                    android:color="@color/colorRhombus" />
             </shape>
         </rotate>
     </item>

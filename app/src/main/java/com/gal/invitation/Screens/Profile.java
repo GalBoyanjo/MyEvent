@@ -1,17 +1,23 @@
 package com.gal.invitation.Screens;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceActivity;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +37,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.Entities.Invitation;
 import com.gal.invitation.Entities.InvitationPic;
@@ -41,7 +49,16 @@ import com.gal.invitation.Utils.Constants;
 import com.gal.invitation.Utils.ContactUtil;
 import com.gal.invitation.Utils.CustomDialog;
 import com.gal.invitation.Utils.MyStringRequest;
+import com.gal.invitation.Utils.SaveSharedPreference;
 import com.gal.invitation.Utils.ScreenUtil;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,6 +87,7 @@ public class Profile extends AppCompatActivity{
     private Invitation userInvitation;
     private final static String TAG_SUCCESS = "success";
     private User user = null;
+    private String userType = null;
     private TreeSet<Contact> userContacts = new TreeSet<>(new Comparator<Contact>() {
         @Override
         public int compare(Contact contact, Contact contact2) {
@@ -78,8 +96,15 @@ public class Profile extends AppCompatActivity{
     });
     private ProgressDialog progressDialog;
 
+    private static final int CONTACTS_PERMISSIONS_REQUEST = 123;
+    private static boolean hasContactsPermission = false;
 
     private TextView txtName;
+
+    private Boolean hasInvitation = false;
+    private Boolean hasInvitationPic = false;
+    private Boolean hasGuests = false;
+
 
 
 
@@ -93,11 +118,16 @@ public class Profile extends AppCompatActivity{
 
     long startTime;
 
+    GoogleSignInClient googleSignInClient;
+    GoogleApiClient googleApiClient;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ScreenUtil.setLocale(Profile.this, getString(R.string.title_activity_profile));
+        ScreenUtil.setLocale(Profile.this, getString(R.string.app_name));
         setContentView(R.layout.activity_profile);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
@@ -106,6 +136,12 @@ public class Profile extends AppCompatActivity{
         netRequestQueue = Volley.newRequestQueue(this);
 
         user = (User) getIntent().getSerializableExtra("user");
+        userType = getIntent().getStringExtra("userType");
+
+        hasContactsPermission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS)
+                == PackageManager.PERMISSION_GRANTED;
+
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.loading_contacts));
@@ -124,17 +160,20 @@ public class Profile extends AppCompatActivity{
         sendInvitationsSms.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if(userInvitation.getType()!=null && !userInvitation.getType().isEmpty()
-                        && userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty()) {
-
+//                if(userInvitation.getType()!=null && !userInvitation.getType().isEmpty()
+//                        && userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty()) {
+                if(hasInvitation && hasInvitationPic && hasGuests){
                     CustomDialog dialog = new CustomDialog(Profile.this, new ArrayList<Contact>(userContacts), new CustomDialogCallback() {
                         @Override
                         public void onSelected(List<Contact> contacts) {
 
-                            Intent sendInvitationLink = new Intent(Profile.this, SendInvitations.class);
-                            sendInvitationLink.putExtra("user", user);
-                            sendInvitationLink.putExtra("list", new ArrayList<>(contacts));
-                            startActivity(sendInvitationLink);
+                            Intent sendInvitationIntent = new Intent(Profile.this, SendInvitations.class);
+                            sendInvitationIntent.putExtra("user", user);
+                            sendInvitationIntent.putExtra("list", new ArrayList<>(contacts));
+                            sendInvitationIntent.putExtra("invitation", userInvitation);
+                            sendInvitationIntent.putExtra("userType", userType);
+
+                            startActivity(sendInvitationIntent);
 
                         }
                     });
@@ -162,6 +201,7 @@ public class Profile extends AppCompatActivity{
             public void onClick(View view) {
                 Intent manageGuestIntent = new Intent(Profile.this, ManageGuestList.class);
                 manageGuestIntent.putExtra("user", user);
+                manageGuestIntent.putExtra("userType", userType);
                 startActivity(manageGuestIntent);
             }
 
@@ -172,6 +212,7 @@ public class Profile extends AppCompatActivity{
             public void onClick(View view) {
                 Intent designInvitationIntent = new Intent(Profile.this, CreateInvitation.class);
                 designInvitationIntent.putExtra("user", user);
+                designInvitationIntent.putExtra("userType", userType);
                 startActivity(designInvitationIntent);
             }
 
@@ -183,9 +224,9 @@ public class Profile extends AppCompatActivity{
                 @Override
                 public void onClick(View view) {
 
-                    if(userInvitation.getType()!=null && !userInvitation.getType().isEmpty()
-                            && userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty()) {
-
+//                    if(userInvitation.getType()!=null && !userInvitation.getType().isEmpty()
+//                            && userInvitationPic.getPicture()!=null && !userInvitationPic.getPicture().isEmpty()) {
+                    if(hasInvitation && hasInvitationPic){
                         Uri uriUrl = Uri.parse("http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" +
                                 "&By=" + user.getID());
                         Intent launchBrowser = new Intent();
@@ -198,11 +239,18 @@ public class Profile extends AppCompatActivity{
             });
 
 
+//        FacebookSdk.sdkInitialize(getApplicationContext());
 
 
+        googleApiClient = new GoogleApiClient.Builder(Profile.this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-
-
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
 
         //create popup window
 //        createInvitation.setOnClickListener(new View.OnClickListener() {
@@ -266,15 +314,43 @@ public class Profile extends AppCompatActivity{
     }
 
     public void loadContacts(){
+        if (hasContactsPermission) {
             getUserInvitation();
             getUserInvitationPic();
             getUserContacts();
+        } else {
+            requestContactsPermission();
+        }
 
     }
 
     @Override
     public void onBackPressed(){
-        super.onBackPressed();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+        builder.setIcon(R.mipmap.ic_my_logo);
+        builder.setTitle(getResources().getString(R.string.app_name));
+        builder.setMessage(getResources().getString(R.string.are_you_sure_you_want_to_exit));
+        builder.setCancelable(false);
+        builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                System.exit(0);
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+
+
     }
 
     @Override
@@ -296,6 +372,29 @@ public class Profile extends AppCompatActivity{
                 startActivityForResult(intent, Constants.REQUEST_SETTINGS);
                 return true;
             }
+            case R.id.action_logout: {
+                SaveSharedPreference.removeUser(Profile.this);
+                Intent logoutIntent = new Intent(Profile.this, Login.class);
+                if(userType.equals(getString(R.string.user_type_regular))){
+                    Profile.this.startActivity(logoutIntent);
+                }else if(userType.equals(getString(R.string.user_type_google))){
+
+                    Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
+                            new ResultCallback<Status>() {
+                                @Override
+                                public void onResult(@NonNull Status status) {
+
+                                }
+                            });
+
+                    Profile.this.startActivity(logoutIntent);
+                }else if(userType.equals(getString(R.string.user_type_facebook))){
+                    LoginManager.getInstance().logOut();
+                    Profile.this.startActivity(logoutIntent);
+                }
+
+
+                }
         }
 
         return super.onOptionsItemSelected(item);
@@ -304,7 +403,7 @@ public class Profile extends AppCompatActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Constants.RESULT_RESTART) {
-            Intent mStartActivity = new Intent(Profile.this, Login.class);
+            Intent mStartActivity = new Intent(Profile.this, LoadingActivity.class);
             int mPendingIntentId = 15901590;
             PendingIntent mPendingIntent = PendingIntent.getActivity(Profile.this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
             AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -327,6 +426,68 @@ public class Profile extends AppCompatActivity{
         systemLanguage = newConfig.locale.getLanguage();
         ScreenUtil.setLocale(Profile.this, getString(R.string.title_activity_profile));
 
+    }
+
+    private void requestContactsPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    CONTACTS_PERMISSIONS_REQUEST);
+
+        } else {
+            hasContactsPermission = true;
+            loadContacts();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CONTACTS_PERMISSIONS_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    hasContactsPermission = true;
+                    loadContacts();
+                } else {
+
+                    hasContactsPermission = false;
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+                    builder.setTitle(getResources().getString(R.string.required_permission_title));
+                    builder.setMessage(getResources().getString(R.string.required_contacts_permission_message));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(getResources().getString(R.string.required_permission_ask_again), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            requestContactsPermission();
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.dismiss();
+                            getUserInvitation();
+                            getUserInvitationPic();
+                            progressDialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        googleApiClient.connect();
     }
 
     private void getUserContacts() {
@@ -354,6 +515,7 @@ public class Profile extends AppCompatActivity{
 
                                 userContacts.add(tempContact);
                             }
+                            hasGuests = true;
                             showGuestStatus();
                         }
                         else{
@@ -436,6 +598,9 @@ public class Profile extends AppCompatActivity{
                             userInvitationPic =new InvitationPic(jsonObject.getString("Picture"));
 
 
+                            hasInvitationPic = true;
+
+
                         }
 
 
@@ -486,6 +651,7 @@ public class Profile extends AppCompatActivity{
                                     , jsonObject.getString("Address") , jsonObject.getString("FreeText")
                                     , jsonObject.getString("Bride") , jsonObject.getString("Groom"));
 
+                            hasInvitation = true;
                             getUserCountDown();
 
                         }
@@ -555,14 +721,14 @@ public class Profile extends AppCompatActivity{
 //                    DateUtils.MINUTE_IN_MILLIS * 3 +
 //                    DateUtils.SECOND_IN_MILLIS * 42;
 
-            countDownTimer = new CountDownTimer(milliseconds, 1000) {
+            countDownTimer = new CountDownTimer(diff, 1000) {
 
 
                 @Override
                 public void onTick(long l) {
-                    startTime=startTime-1;
+//                    startTime=startTime-1;
                     Long serverUptimeSeconds =
-                            (l - startTime) / 1000;
+                            (l) / 1000;
 
                     String daysLeft = String.format("%d", serverUptimeSeconds / 86400);
 
@@ -571,6 +737,7 @@ public class Profile extends AppCompatActivity{
                     String minutesLeft = String.format("%d", ((serverUptimeSeconds % 86400) % 3600) / 60);
 
                     String secondsLeft = String.format("%d", ((serverUptimeSeconds % 86400) % 3600) % 60);
+
 
 
                     countDownDaysView.setText(daysLeft);
@@ -582,10 +749,10 @@ public class Profile extends AppCompatActivity{
 
                 @Override
                 public void onFinish() {
-                    countDownDaysView.setText(DateUtils.formatElapsedTime(0));
-                    countDownHoursView.setText(DateUtils.formatElapsedTime(0));
-                    countDownMinutesView.setText(DateUtils.formatElapsedTime(0));
-                    countDownSecondsView.setText(DateUtils.formatElapsedTime(0));
+                    countDownDaysView.setText("0");
+                    countDownHoursView.setText("0");
+                    countDownMinutesView.setText("0");
+                    countDownSecondsView.setText("0");
 
                 }
             }.start();
@@ -593,6 +760,7 @@ public class Profile extends AppCompatActivity{
         }
 
     }
+
 
 //    public void onRadioButtonClick(View view){
 //

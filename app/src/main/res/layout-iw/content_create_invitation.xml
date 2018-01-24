@@ -86,14 +86,12 @@
                     android:background="@drawable/round_edit_text"
                     android:hint="@string/groom"
                     android:paddingEnd="15dp"
-                    android:paddingStart="15dp"
-                    android:gravity=""/>
+                    android:paddingStart="15dp" />
 
                 <EditText
                     android:id="@+id/eventBride"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/round_box_size"
-                    android:layout_toEndOf="@id/eventGroom"
                     android:layout_weight="0.5"
                     android:background="@drawable/round_edit_text"
                     android:hint="@string/bride"

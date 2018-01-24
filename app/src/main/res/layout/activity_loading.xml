@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_loading_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.gal.invitation.Screens.LoadingActivity"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/background_gradient_list">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+    <ImageView
+        android:id="@+id/my_logo_loading"
+        android:layout_width="@dimen/logo_size"
+        android:layout_height="@dimen/logo_size"
+        android:layout_gravity="center_vertical"
+        android:src="@mipmap/ic_my_logo" />
+
+    </RelativeLayout>
+
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/wave"
+        style="@style/SpinKitView.Large.Wave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/colorWhite"/>
+
+
+</LinearLayout>

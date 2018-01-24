@@ -18,12 +18,19 @@ public class SaveSharedPreference {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
     }
 
-    public static void setUser(Context ctx, String email, String password, String type)
-    {
+    public static void setUser(Context ctx, String email, String password, String type) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putString(PREF_EMAIL, email);
         editor.putString(PREF_PASSWORD, password);
         editor.putString(PREF_USER_TYPE, type);
+        editor.apply();
+    }
+
+    public static void removeUser(Context ctx){
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.remove(PREF_EMAIL);
+        editor.remove(PREF_PASSWORD);
+        editor.remove(PREF_USER_TYPE);
         editor.apply();
     }
 

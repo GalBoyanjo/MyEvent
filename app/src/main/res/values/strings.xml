@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Invitation</string>
+    <string name="app_name">MyEvent</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_profile">Profile</string>
     <string name="title_activity_send_invitations">Send Invitations</string>
@@ -7,6 +7,7 @@
     <string name="title_activity_login">Login</string>
     <string name="title_activity_manage_guest_list">Manage Guest-List</string>
 
+    <string name="app_version">1.0</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -16,6 +17,9 @@
     <string name="required_permission_title">Required Permission</string>
     <string name="required_permission_ask_again">Request Again</string>
     <string name="required_contacts_permission_message">This permission is required in order to get access to your contacts, without it you won\'t be able to send SMS. Request permission again?</string>
+    <string name="required_SMS_permission_message">This permission is required in order to get access to your SMS, without it you won\'t be able to send SMS. Request permission again?</string>
+    <string name="required_gallery_permission_message">This permission is required in order to get access to your photo gallery, without it you won\'t be able to add Picture. Request permission again?</string>
+    <string name="required_camera_permission_message">This permission is required in order to get access to your camera, without it you won\'t be able to add Picture. Request permission again?</string>
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -84,6 +88,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="log_in">Login…</string>
     <string name="userName">User name</string>
     <string name="hina">hina</string>
     <string name="search">Search</string>
@@ -103,6 +108,25 @@
     <string name="seconds">Second</string>
 
     <string name="manage_guest_list">Manage Guest-List</string>
+
+    <string name="message_type_option1.1"></string>
+
+    <string name="select_action">Select Action</string>
+    <string name="select_photo_from_gallery">Select photo from gallery</string>
+    <string name="capture_photo_from_camera">Capture photo from camera</string>
+
+    <string name="logout">Logout</string>
+
+    <string name="user_type_regular">Regular</string>
+    <string name="user_type_facebook">Facebook</string>
+    <string name="user_type_google">Google</string>
+
+    <string name="guest">Guest</string>
+
+
+    <string name="option1">Option 1</string>
+    <string name="option2">Option 2</string>
+    <string name="clear">Clear</string>
 
 
     //Google String's: !!!

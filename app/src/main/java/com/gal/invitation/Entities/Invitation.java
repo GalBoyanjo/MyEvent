@@ -1,10 +1,12 @@
 package com.gal.invitation.Entities;
 
+import java.io.Serializable;
+
 /**
- * Created by Gal on 31/07/2017.
+ * Created on 31/07/2017.
  */
 
-public class Invitation {
+public class Invitation implements Serializable {
 
     private String type = "";
     private String date = "";

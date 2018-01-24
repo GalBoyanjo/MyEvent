@@ -33,7 +33,7 @@ import com.android.volley.toolbox.Volley;
 import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.Interfaces.GeneralRequestCallbacks;
-import com.gal.invitation.Interfaces.UpdateProfileContacts;
+import com.gal.invitation.Interfaces.UpdateGuestList;
 import com.gal.invitation.R;
 import com.gal.invitation.Utils.ContactUtil;
 import com.gal.invitation.Utils.GuestListAdapter;
@@ -58,6 +58,7 @@ public class ManageGuestList extends AppCompatActivity {
     private RequestQueue netRequestQueue;
     public static String systemLanguage;
     private User user = null;
+    private String userType = null;
     private static boolean hasContactsPermission = false;
     private ProgressDialog progressDialog;
     private GuestListAdapter adapter;
@@ -94,6 +95,7 @@ public class ManageGuestList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ScreenUtil.setLocale(ManageGuestList.this, getString(R.string.title_activity_manage_guest_list));
         setContentView(R.layout.activity_manage_guest_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.manage_guest_toolbar);
@@ -102,6 +104,7 @@ public class ManageGuestList extends AppCompatActivity {
         netRequestQueue = Volley.newRequestQueue(this);
 
         user = (User) getIntent().getSerializableExtra("user");
+        userType = getIntent().getStringExtra("userType");
 
 
         hasContactsPermission = ContextCompat.checkSelfPermission(this,
@@ -178,6 +181,7 @@ public class ManageGuestList extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ManageGuestList.this, ContactList.class);
                 intent.putExtra("user", user);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
             }
         });
@@ -186,6 +190,8 @@ public class ManageGuestList extends AppCompatActivity {
         fabNewContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (hasContactsPermission) {
+
                 LayoutInflater inflater = LayoutInflater.from(ManageGuestList.this);
 
                 View contactEditView = inflater.inflate(R.layout.contact_edit, null);
@@ -197,32 +203,43 @@ public class ManageGuestList extends AppCompatActivity {
                 final EditText contactName = (EditText) contactEditView.findViewById(R.id.contact_name);
                 final EditText contactPhone = (EditText) contactEditView.findViewById(R.id.contact_phone);
 
+
                 builder
                         .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String setContactName = contactName.getText().toString();
                                 String setContactPhone = contactPhone.getText().toString();
-                                final Contact contact = new Contact();
-                                contact.setName(setContactName);
-                                contact.setPhone(setContactPhone);
-                                NetworkUtil.updateDB(ManageGuestList.this, user, contact, new GeneralRequestCallbacks() {
-                                    @Override
-                                    public void onSuccess() {
-                                        adapter.add(contact);
-                                        adapter.notifyDataSetChanged();
-                                        finish();
-                                        startActivity(getIntent());
 
-                                    }
+                                if(contactName.getText().toString().isEmpty()||
+                                    contactPhone.getText().toString().isEmpty()){
 
-                                    @Override
-                                    public void onError(String errorMessage) {
-                                        Toast.makeText(ManageGuestList.this,
-                                                errorMessage,
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                });
+                                    Toast.makeText(ManageGuestList.this,
+                                            getString(R.string.empty_field),
+                                            Toast.LENGTH_LONG).show();
+
+                                }else {
+                                    final Contact contact = new Contact();
+                                    contact.setName(setContactName);
+                                    contact.setPhone(setContactPhone);
+                                    NetworkUtil.updateDB(ManageGuestList.this, user, contact, new GeneralRequestCallbacks() {
+                                        @Override
+                                        public void onSuccess() {
+                                            adapter.add(contact);
+                                            adapter.notifyDataSetChanged();
+                                            finish();
+                                            startActivity(getIntent());
+
+                                        }
+
+                                        @Override
+                                        public void onError(String errorMessage) {
+                                            Toast.makeText(ManageGuestList.this,
+                                                    errorMessage,
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
 
                             }
                         })
@@ -235,6 +252,10 @@ public class ManageGuestList extends AppCompatActivity {
                 builder.create();
 
                 builder.show();
+
+                } else {
+                    requestContactsPermission();
+                }
             }
         });
 
@@ -243,9 +264,10 @@ public class ManageGuestList extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        Intent ProfileIntent = new Intent(ManageGuestList.this, Profile.class);
-        ProfileIntent.putExtra("user", user);
-        startActivity(ProfileIntent);
+        Intent profileIntent = new Intent(ManageGuestList.this, Profile.class);
+        profileIntent.putExtra("user", user);
+        profileIntent.putExtra("userType", userType);
+        startActivity(profileIntent);
         finish();
     }
 
@@ -261,9 +283,10 @@ public class ManageGuestList extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_ok_guest_list: {
-                Intent ProfileIntent = new Intent(ManageGuestList.this, Profile.class);
-                ProfileIntent.putExtra("user", user);
-                startActivity(ProfileIntent);
+                Intent profileIntent = new Intent(ManageGuestList.this, Profile.class);
+                profileIntent.putExtra("user", user);
+                profileIntent.putExtra("userType", userType);
+                startActivity(profileIntent);
                 finish();
             }
         }
@@ -283,7 +306,7 @@ public class ManageGuestList extends AppCompatActivity {
             window.setNavigationBarColor(ContextCompat.getColor(ManageGuestList.this, R.color.colorPrimary));
         }
         systemLanguage = newConfig.locale.getLanguage();
-        ScreenUtil.setLocale(ManageGuestList.this, getString(R.string.title_activity_profile));
+        ScreenUtil.setLocale(ManageGuestList.this, getString(R.string.title_activity_manage_guest_list));
 
     }
 
@@ -389,6 +412,7 @@ public class ManageGuestList extends AppCompatActivity {
                     builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             dialog.dismiss();
+                            progressDialog.dismiss();
                         }
                     });
                     builder.show();
@@ -404,7 +428,7 @@ public class ManageGuestList extends AppCompatActivity {
         ArrayList<Contact> contactsArrayList = new ArrayList<>(userContacts);
         listView = (ListView) findViewById(R.id.profile_contact_list);
         adapter = new GuestListAdapter(ManageGuestList.this,
-                R.layout.guest_list_row, contactsArrayList, new UpdateProfileContacts() {
+                R.layout.guest_list_row, contactsArrayList, new UpdateGuestList() {
             @Override
             public void deleteContact(final Contact contact) {
                 try {
@@ -463,7 +487,7 @@ public class ManageGuestList extends AppCompatActivity {
                 contactPhone.setHint(String.valueOf(contact.getPhone()));
 
                 builder
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String setContactName = contactName.getText().toString();
@@ -480,7 +504,7 @@ public class ManageGuestList extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();

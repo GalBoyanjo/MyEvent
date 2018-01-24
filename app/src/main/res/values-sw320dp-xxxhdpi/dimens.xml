@@ -4,6 +4,7 @@
     <dimen name="circle_size">56dp</dimen>
     <dimen name="calendar_size">56dp</dimen>
     <dimen name="rhombus_size">136dp</dimen>
+    <dimen name="logo_size">136dp</dimen>
 
     <dimen name="rhombus_size_margin">25dp</dimen>
     <dimen name="rhombus_margin">8dp</dimen>

@@ -184,8 +184,8 @@ public class Register extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
 
 
-                        Intent NewRegisterIntent = new Intent(Register.this,Login.class);
-                        Register.this.startActivity(NewRegisterIntent);
+                Intent NewRegisterIntent = new Intent(Register.this,Login.class);
+                Register.this.startActivity(NewRegisterIntent);
 
 
 
@@ -200,7 +200,7 @@ public class Register extends AppCompatActivity {
         }
 
 
-}
+    }
 
 
 }

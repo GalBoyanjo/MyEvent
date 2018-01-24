@@ -1,5 +1,6 @@
 package com.gal.invitation.Screens;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.icu.util.Calendar;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,6 +53,8 @@ public class CreateInvitation extends AppCompatActivity {
     private final static String url_get_invitation = "http://master1590.a2hosted.com/invitations/getUserInvitation.php";
     private final static String TAG_SUCCESS = "success";
     private User user = null;
+    private String userType = null;
+
     Button date;
     Button time;
     EditText eventPlaceName;
@@ -82,6 +86,8 @@ public class CreateInvitation extends AppCompatActivity {
         netRequestQueue = Volley.newRequestQueue(this);
 
         user = (User) getIntent().getSerializableExtra("user");
+        userType = getIntent().getStringExtra("userType");
+
 
 
         eventPlaceName = (EditText)findViewById(R.id.EventPlace);
@@ -96,7 +102,6 @@ public class CreateInvitation extends AppCompatActivity {
         eventPlaceType = (Spinner) findViewById(R.id.eventPlaceType);
 
 
-
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.loading_invitation));
         progressDialog.setCancelable(false);
@@ -107,14 +112,10 @@ public class CreateInvitation extends AppCompatActivity {
         getUserInvitation();
 
 
-
-
         createEventType();
         createEventDate();
         createEventTime();
         createEventPlaceType();
-
-
 
 
     }
@@ -146,6 +147,7 @@ public class CreateInvitation extends AppCompatActivity {
 
     public void createEventDate(){
         date.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
                 final Calendar calendar = Calendar.getInstance();
@@ -157,6 +159,7 @@ public class CreateInvitation extends AppCompatActivity {
                 datePickerDialog = new DatePickerDialog(CreateInvitation.this,
                         new DatePickerDialog.OnDateSetListener() {
 
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int day) {
                                 date.setText(day + "/" + (month + 1) + "/" + year);
@@ -170,6 +173,7 @@ public class CreateInvitation extends AppCompatActivity {
     public void createEventTime(){
 
         time.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
                 Calendar eventTime = Calendar.getInstance();
@@ -218,6 +222,15 @@ public class CreateInvitation extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed(){
+        Intent profileIntent = new Intent(CreateInvitation.this, Profile.class);
+        profileIntent.putExtra("user", user);
+        profileIntent.putExtra("userType", userType);
+        startActivity(profileIntent);
+        finish();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.create_invitation, menu);
@@ -234,11 +247,14 @@ public class CreateInvitation extends AppCompatActivity {
         if (id == R.id.action_ok) {
             if(checkEmptyField()) {
 
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setTitle(getString(R.string.loading_invitation));
+                progressDialog.setCancelable(false);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage(getString(R.string.please_wait));
+                progressDialog.show();
                 updateDB();
-                Intent AddPicIntent = new Intent(CreateInvitation.this, CreateInvitationPic.class);
-                AddPicIntent.putExtra("user", user);
-                startActivity(AddPicIntent);
-                finish();
+
             }
         }
 
@@ -311,6 +327,7 @@ public class CreateInvitation extends AppCompatActivity {
         }
 
         checkField(eventPlaceName);
+        checkField(eventAddress);
         if(eventType.getSelectedItem().toString().equals(getString(R.string.wedding))){
             checkField(groomName);
             checkField(brideName);
@@ -357,12 +374,20 @@ public class CreateInvitation extends AppCompatActivity {
                             Toast.makeText(CreateInvitation.this,
                                     (getString(R.string.invitation_save_success)),
                                     Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+                            Intent addPicIntent = new Intent(CreateInvitation.this, CreateInvitationPic.class);
+                            addPicIntent.putExtra("user", user);
+                            addPicIntent.putExtra("userType", userType);
+                            startActivity(addPicIntent);
+                            finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(CreateInvitation.this,
                                 (getString(R.string.saving_invitation_faild_please_try_again)),
                                 Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
+
                     }
 
                 }
@@ -373,6 +398,7 @@ public class CreateInvitation extends AppCompatActivity {
                     Toast.makeText(CreateInvitation.this,
                             (getString(R.string.saving_invitation_faild_please_try_again)),
                             Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
 
                 }
             });
@@ -382,8 +408,11 @@ public class CreateInvitation extends AppCompatActivity {
             Toast.makeText(CreateInvitation.this,
                     (getString(R.string.saving_invitation_faild_please_try_again)),
                     Toast.LENGTH_LONG).show();
+            progressDialog.dismiss();
 
         }
+        progressDialog.dismiss();
+
 
     }
 

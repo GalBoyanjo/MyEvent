@@ -20,6 +20,9 @@ allprojects {
         mavenCentral()
         google()
 
+        maven { url "https://jitpack.io" } // anim for loading
+
+
     }
 }
 

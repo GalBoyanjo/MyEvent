@@ -9,6 +9,7 @@
 
 
     <dimen name="rhombus_size">60dp</dimen>
+    <dimen name="logo_size">60dp</dimen>
     <dimen name="rhombus_size_margin">20dp</dimen>
     <dimen name="rhombus_margin">1dp</dimen>
     <dimen name="rhombus_text_width">60dp</dimen>
