@@ -117,17 +117,23 @@
 
     <string name="guest">מוזמן</string>
 
+    <string name="user_type_regular">Regular</string>
+    <string name="user_type_facebook">Facebook</string>
+    <string name="user_type_google">Google</string>
+
     <string name="option1">תבנית 1</string>
-    <string name="option2">תבנית 2</string>
+    <string name="option2">תבנית מוכנה</string>
     <string name="clear">נקה</string>
 
     <string name="are_you_sure_you_want_to_exit">אתה בטוח שברצונך לצאת?</string>
 
 
+    <string name="error_email_not_valid">שגיאה - כתובת אימייל שגויה</string>
 
 
 
     //Google String's: !!!
+
     <string name="signed_in_fmt">Signed in as: %s</string>
     <string name="signed_in">Signed in</string>
     <string name="signing_in">Signing in…</string>
@@ -172,5 +178,8 @@
 
 
     <string name="facebook_app_id">138141696884806</string>
+
+    <string name="facebook_login_btn">התחבר באמצעות פייסבוק</string>
+    <string name="google_login_btn">התחבר באמצעות גוגל</string>
 
 </resources>

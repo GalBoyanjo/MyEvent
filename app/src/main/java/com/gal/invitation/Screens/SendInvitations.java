@@ -218,15 +218,15 @@ public class SendInvitations extends Activity {
     public void messageTypesSelected(){
         String type = messageTypes.getSelectedItem().toString();
 
-        if(type.equals(getString(R.string.option1))) {
-            textMessage.setText("הנכם מוזמנים ל" + String.valueOf(invitation.getType()) + " של " + String.valueOf(invitation.getGroom()) + " ו" + String.valueOf(invitation.getBride())  +
-                    "\n" + String.valueOf(invitation.getDate()) + "\n" +
-                    "ב" + String.valueOf(invitation.getPlacetype()) + " " + String.valueOf(invitation.getPlace()) +
-                    "\n" + "קבלת פנים בשעה " + String.valueOf(invitation.getTime())  + "\n" +
-                    "\nאנא אשרו הגעתם בלינק המצורף\n" );
-
-        }
-        else if(type.equals(getString(R.string.option2))) {
+//        if(type.equals(getString(R.string.option1))) {
+//            textMessage.setText("הנכם מוזמנים ל" + String.valueOf(invitation.getType()) + " של " + String.valueOf(invitation.getGroom()) + " ו" + String.valueOf(invitation.getBride())  +
+//                    "\n" + String.valueOf(invitation.getDate()) + "\n" +
+//                    "ב" + String.valueOf(invitation.getPlacetype()) + " " + String.valueOf(invitation.getPlace()) +
+//                    "\n" + "קבלת פנים בשעה " + String.valueOf(invitation.getTime())  + "\n" +
+//                    "\nאנא אשרו הגעתם בלינק המצורף\n" );
+//
+//        }
+        if(type.equals(getString(R.string.option2))) {
             textMessage.setText("הנכם מוזמנים ל" + String.valueOf(invitation.getType()) + " של " + String.valueOf(invitation.getGroom()) + " ו" + String.valueOf(invitation.getBride()) + "\nאנא אשרו הגעתם בלינק המצורף\n" );
 
         }

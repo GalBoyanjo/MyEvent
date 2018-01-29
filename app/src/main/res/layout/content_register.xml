@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:id="@+id/ReEmail"
-        android:hint="@string/email"/>
+        android:hint="@string/email"
+        android:textAlignment="viewStart"/>
 
 
     <EditText
@@ -29,7 +30,9 @@
         android:layout_below="@+id/ReEmail"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="21dp" />
+        android:layout_marginTop="21dp"
+        android:textAlignment="viewStart"/>
+
 
     <EditText
         android:layout_width="match_parent"
@@ -40,7 +43,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="80dp"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword"
+        android:textAlignment="viewStart"/>
+
 
     <Button
         android:text=""

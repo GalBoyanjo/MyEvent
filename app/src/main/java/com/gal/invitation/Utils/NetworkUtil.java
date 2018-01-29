@@ -13,6 +13,7 @@ import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.Interfaces.GeneralRequestCallbacks;
 import com.gal.invitation.Interfaces.LoginRequestCallbacks;
+import com.gal.invitation.Interfaces.VersionRequestCallbacks;
 import com.gal.invitation.R;
 
 import org.json.JSONException;
@@ -84,9 +85,7 @@ public class NetworkUtil {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(Constants.TAG_SUCCESS) == 1) {
-                            Toast.makeText(context,
-                                    context.getString(R.string.log_in),
-                                    Toast.LENGTH_LONG).show();
+
                         }
                         User user = new User(jsonObject.getInt("ID"), jsonObject.getString("UserName"),
                                 jsonObject.getString("Password"), jsonObject.getString("Email"));
@@ -160,4 +159,43 @@ public class NetworkUtil {
 
     }
 
+    public static void getVersion(final Context context,String url, String version,
+                                  final VersionRequestCallbacks versionRequestCallbacks) {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("Version", version);
+
+            MyStringRequest request = new MyStringRequest(Request.Method.POST,
+                    url, params, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getInt(Constants.TAG_SUCCESS) == 1) {
+                        }
+                        versionRequestCallbacks.onSuccess(jsonObject.getString("CurrentVersion"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        versionRequestCallbacks.onError(context.getString(R.string.error_occurred));
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Error", error.toString());
+                    versionRequestCallbacks.onError(context.getString(R.string.error_occurred));
+                }
+            });
+            requestQueue.add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            versionRequestCallbacks.onError(context.getString(R.string.error_occurred));
+        }
+
+    }
+
+
 }
+
+

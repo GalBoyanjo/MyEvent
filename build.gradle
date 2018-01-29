@@ -30,7 +30,7 @@ ext{
     compileSdkVersion = 26
     buildToolsVersion = "26.0.2"
     supportLibVersion = "27.0.2"
-    playServicesVersion = "11.6.2"
+    playServicesVersion = "11.8.0"
     facebookVersion = "4.29.0"
 }
 

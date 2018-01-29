@@ -51,6 +51,9 @@ public class Register extends AppCompatActivity {
     private Button btnRegister;
     private TextView lblWelcome;
 
+    boolean allNotEmpty;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,40 +70,48 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-//                new CreateUser().execute(ReEmail.getText().toString(),
-//                        ReName.getText().toString(),
-//                        RePassword.getText().toString());
-                NetworkUtil.createUser(Register.this, url_create_user, ReEmail.getText().toString(), RePassword.getText().toString(),
-                        ReName.getText().toString(), "Regular", "",
-                        new LoginRequestCallbacks(){
+                checkEmptyField();
 
-                            @Override
-                            public void onSuccess(User myUser) {
-                                user = myUser;
-                                Toast.makeText(Register.this,
-                                        (getText(R.string.welcome)),
-                                        Toast.LENGTH_LONG).show();
-                                Intent registerIntent= new Intent(Register.this, Profile.class);
-                                registerIntent.putExtra("user", user);
-                                Register.this.startActivity(registerIntent);
-                                //hide the keyboard
-                                View view = Register.this.getCurrentFocus();
-                                if (view != null) {
-                                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                                }
+                if (checkEmptyField()){
+                    if (isValidEmail(ReEmail.getText().toString())) {
 
-                            }
+                        NetworkUtil.createUser(Register.this, url_create_user, ReEmail.getText().toString(), RePassword.getText().toString(),
+                                ReName.getText().toString(), "Regular", "",
+                                new LoginRequestCallbacks() {
 
-                            @Override
-                            public void onError(String errorMessage) {
-                                Toast.makeText(Register.this,
-                                        (getText(R.string.error_bad_email_password)),
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        });
+                                    @Override
+                                    public void onSuccess(User myUser) {
+                                        user = myUser;
+                                        Toast.makeText(Register.this,
+                                                (getText(R.string.welcome)),
+                                                Toast.LENGTH_LONG).show();
+                                        Intent registerIntent = new Intent(Register.this, Profile.class);
+                                        registerIntent.putExtra("user", user);
+                                        Register.this.startActivity(registerIntent);
+                                        //hide the keyboard
+                                        View view = Register.this.getCurrentFocus();
+                                        if (view != null) {
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onError(String errorMessage) {
+                                        Toast.makeText(Register.this,
+                                                (getText(R.string.error_bad_email_password)),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+
+                    } else {
+                        ReEmail.setError(getString(R.string.error_email_not_valid));
+                    }
+                }
+
             }
-
         });
 
 
@@ -202,5 +213,40 @@ public class Register extends AppCompatActivity {
 
     }
 
+    public final static boolean isValidEmail(CharSequence target) {
+        if (target == null)
+            return false;
 
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+
+    public boolean checkEmptyField() {
+        allNotEmpty = true;
+
+        if(ReEmail.getText().toString().isEmpty()) {
+            ReEmail.setError(getString(R.string.empty_field));
+            allNotEmpty = false;
+
+        }else {
+            ReEmail.setError(null);
+        }
+        if (ReName.getText().toString().isEmpty()) {
+            ReName.setError(getString(R.string.empty_field));
+            allNotEmpty = false;
+
+        }else {
+            ReName.setError(null);
+        }
+        if (RePassword.getText().toString().isEmpty()) {
+            RePassword.setError(getString(R.string.empty_field));
+            allNotEmpty = false;
+
+        }else {
+            RePassword.setError(null);
+        }
+
+        return allNotEmpty;
+
+    }
 }

@@ -2,11 +2,13 @@ package com.gal.invitation.Screens;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -74,6 +76,9 @@ public class Login extends AppCompatActivity {
     private LoginButton facebookLoginButton;
     private CallbackManager facebookCallbackManager;
 
+    boolean allNotEmpty;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +127,9 @@ public class Login extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         googleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
 
+        setGooglePlusButtonText(googleSignInButton, getString(R.string.google_login_btn));
+
+
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,10 +156,13 @@ public class Login extends AppCompatActivity {
 //                new GetUser().execute(txtEmail.getText().toString(),
 //                        txtPassword.getText().toString());
 //            getUser(txtEmail.getText().toString(),txtPassword.getText().toString(),"","");
-                loginDialog.show();
+                checkEmptyField();
+                if(checkEmptyField()) {
+                    loginDialog.show();
 
-                String userType = getString(R.string.user_type_regular);
-                getUser(txtEmail.getText().toString(), txtPassword.getText().toString(), "", userType, "");
+                    String userType = getString(R.string.user_type_regular);
+                    getUser(txtEmail.getText().toString(), txtPassword.getText().toString(), "", userType, "");
+                }
             }
         });
 
@@ -162,6 +173,35 @@ public class Login extends AppCompatActivity {
                 Login.this.startActivity(RegisterIntent);
             }
         });
+
+
+    }
+
+    @Override
+    public void onBackPressed(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+        builder.setIcon(R.mipmap.ic_my_logo);
+        builder.setTitle(getResources().getString(R.string.app_name));
+        builder.setMessage(getResources().getString(R.string.are_you_sure_you_want_to_exit));
+        builder.setCancelable(false);
+        builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                System.exit(0);
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
 
 
     }
@@ -367,6 +407,9 @@ public class Login extends AppCompatActivity {
             String userType = getString(R.string.user_type_google);
             getUser(account.getEmail(), account.getId(), account.getId(), userType, account.getDisplayName());
         } catch (ApiException e) {
+
+            loginDialog.dismiss();
+
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             //Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
@@ -401,6 +444,41 @@ public class Login extends AppCompatActivity {
     }
 
 
+    public boolean checkEmptyField() {
+        allNotEmpty = true;
+
+        if(txtEmail.getText().toString().isEmpty()) {
+            txtEmail.setError(getString(R.string.empty_field));
+            allNotEmpty = false;
+
+        }else {
+            txtEmail.setError(null);
+        }
+
+        if (txtPassword.getText().toString().isEmpty()) {
+            txtPassword.setError(getString(R.string.empty_field));
+            allNotEmpty = false;
+
+        }else {
+            txtPassword.setError(null);
+        }
+
+        return allNotEmpty;
+
+    }
+
+    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
+        // Find the TextView that is inside of the SignInButton and set its text
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
+
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(buttonText);
+                return;
+            }
+        }
+    }
 //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);

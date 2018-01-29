@@ -8,8 +8,8 @@ android {
         applicationId "com.gal.invitation"
         minSdkVersion 17
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.0"
         vectorDrawables.useSupportLibrary = true
     }
 

@@ -177,7 +177,16 @@ public class CreateInvitationPic extends AppCompatActivity {
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage(getString(R.string.please_wait));
             progressDialog.show();
-            new UploadImage().execute();
+            if(noPic){
+                progressDialog.dismiss();
+                Intent profileIntent = new Intent(CreateInvitationPic.this, Profile.class);
+                profileIntent.putExtra("user", user);
+                profileIntent.putExtra("userType", userType);
+                startActivity(profileIntent);
+                finish();
+            }else{
+                new UploadImage().execute();
+            }
 
         }
 
@@ -274,9 +283,9 @@ public class CreateInvitationPic extends AppCompatActivity {
 
         } else if (requestCode == CAMERA) {
             eventPic = (Bitmap) data.getExtras().get("data");
-            imgEventPic.setImageBitmap(eventPic);
             eventPicPath = saveImage(eventPic);
             Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+            imgEventPic.setImageBitmap(eventPic);
             noPic = false;
         }
 //
@@ -308,6 +317,7 @@ public class CreateInvitationPic extends AppCompatActivity {
                     new String[]{"image/jpeg"}, null);
             fo.close();
             Log.d("TAG", "File Saved::--->" + f.getAbsolutePath());
+
 
             return f.getAbsolutePath();
         } catch (IOException e1) {

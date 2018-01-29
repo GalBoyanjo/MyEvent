@@ -109,7 +109,6 @@
 
     <string name="manage_guest_list">Manage Guest-List</string>
 
-    <string name="message_type_option1.1"></string>
 
     <string name="select_action">Select Action</string>
     <string name="select_photo_from_gallery">Select photo from gallery</string>
@@ -125,8 +124,16 @@
 
 
     <string name="option1">Option 1</string>
-    <string name="option2">Option 2</string>
+    <string name="option2">Build text format</string>
     <string name="clear">Clear</string>
+
+    <string name="are_you_sure_you_want_to_exit">Are you sure you want to exit?</string>
+
+
+
+    <string name="error_email_not_valid">Error - email is not valid</string>
+
+
 
 
     //Google String's: !!!
@@ -173,5 +180,9 @@
     <string name="name">Name :</string>
 
     <string name="facebook_app_id">138141696884806</string>
+
+    <string name="facebook_login_btn">Login with Facebook</string>
+    <string name="google_login_btn">Login with Google</string>
+
 
 </resources>

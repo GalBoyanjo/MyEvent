@@ -2,6 +2,7 @@ package com.gal.invitation.Screens;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.Interfaces.LoginRequestCallbacks;
+import com.gal.invitation.Interfaces.VersionRequestCallbacks;
 import com.gal.invitation.R;
 import com.gal.invitation.Utils.NetworkUtil;
 import com.gal.invitation.Utils.SaveSharedPreference;
@@ -25,6 +27,7 @@ import com.github.ybq.android.spinkit.style.Wave;
 public class LoadingActivity extends AppCompatActivity {
 
     private final static String url_get_user = "http://master1590.a2hosted.com/invitations/getUser.php";
+    private final static String url_get_version = "http://master1590.a2hosted.com/invitations/getVersion.php";
     private User user;
 
     ImageView myLogo;
@@ -53,7 +56,31 @@ public class LoadingActivity extends AppCompatActivity {
         animationDrawable.setExitFadeDuration(4000);
         animationDrawable.start();
 
-        getSharedPreference();
+        NetworkUtil.getVersion(LoadingActivity.this, url_get_version, getString(R.string.app_version),
+                new VersionRequestCallbacks() {
+                    @Override
+                    public void onSuccess(String currentVersion) {
+                        try {
+                            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+//                            if(pInfo.versionCode>2);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        if(!(currentVersion.equals(getString(R.string.app_version)))){
+//                            Toast.makeText(LoadingActivity.this,
+//                                    "need to update", Toast.LENGTH_LONG).show();
+                        }else{
+                            getSharedPreference();
+                        }
+
+                    }
+                    @Override
+                    public void onError(String errorMessage) {
+
+                    }
+                });
+
+
 
     }
 
