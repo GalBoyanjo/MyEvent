@@ -23,7 +23,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:design:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:support-v13:${rootProject.ext.supportLibVersion}"
@@ -32,11 +31,12 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.google.android.gms:play-services-auth:${rootProject.ext.playServicesVersion}"
     compile "com.facebook.android:facebook-android-sdk:${rootProject.ext.facebookVersion}"
-//    compile "com.google.android.gms:play-services:${rootProject.ext.playServicesVersion}"
-
-    compile 'com.github.ybq:Android-SpinKit:1.1.0' // anim for loading
+    //    compile "com.google.android.gms:play-services:${rootProject.ext.playServicesVersion}"
+    compile 'com.github.ybq:Android-SpinKit:1.1.0'
+    // anim for loading
     compile project(':clans_fab')
-
     testCompile 'junit:junit:4.12'
+    //https://github.com/centic9/poi-on-android/releases
+    implementation files('libs/poishadow-all.jar')
 }
 apply plugin: 'com.google.gms.google-services'

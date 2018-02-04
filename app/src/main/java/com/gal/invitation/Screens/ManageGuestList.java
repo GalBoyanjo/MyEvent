@@ -43,13 +43,22 @@ import com.gal.invitation.Utils.ScreenUtil;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -87,9 +96,11 @@ public class ManageGuestList extends AppCompatActivity {
     private FloatingActionMenu fabMenu;
     private FloatingActionButton fabNewContact;
     private FloatingActionButton fabFromContacts;
+    private FloatingActionButton fabExcel;
 
+    public static final int FILE_SELECT_CODE = 1212;
 
-
+    private ArrayList<Contact> excelContacts = new ArrayList<>();
 
 
     @Override
@@ -175,6 +186,29 @@ public class ManageGuestList extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.profile_contact_list);
 
+        fabExcel = (FloatingActionButton) findViewById(R.id.fab_new_excel);
+        fabExcel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent intent = new Intent(ManageGuestList.this, Excel.class);
+//                intent.putExtra("user", user);
+//                intent.putExtra("userType", userType);
+//                startActivity(intent);
+                Intent intent = new Intent();
+                intent.setType("*/*");
+                if (Build.VERSION.SDK_INT < 19) {
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    intent = Intent.createChooser(intent, "Select file");
+                } else {
+                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                    String[] mimetypes = {"xlsx"};
+//                    intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+                }
+                startActivityForResult(Intent.createChooser(intent, "Select Excel File"), FILE_SELECT_CODE);
+            }
+        });
+
         fabFromContacts = (FloatingActionButton) findViewById(R.id.fab_from_contacts);
         fabFromContacts.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,66 +226,66 @@ public class ManageGuestList extends AppCompatActivity {
             public void onClick(View view) {
                 if (hasContactsPermission) {
 
-                LayoutInflater inflater = LayoutInflater.from(ManageGuestList.this);
+                    LayoutInflater inflater = LayoutInflater.from(ManageGuestList.this);
 
-                View contactEditView = inflater.inflate(R.layout.contact_edit, null);
+                    View contactEditView = inflater.inflate(R.layout.contact_edit, null);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(ManageGuestList.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ManageGuestList.this);
 
-                builder.setView(contactEditView);
+                    builder.setView(contactEditView);
 
-                final EditText contactName = (EditText) contactEditView.findViewById(R.id.contact_name);
-                final EditText contactPhone = (EditText) contactEditView.findViewById(R.id.contact_phone);
+                    final EditText contactName = (EditText) contactEditView.findViewById(R.id.contact_name);
+                    final EditText contactPhone = (EditText) contactEditView.findViewById(R.id.contact_phone);
 
 
-                builder
-                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                String setContactName = contactName.getText().toString();
-                                String setContactPhone = contactPhone.getText().toString();
+                    builder
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String setContactName = contactName.getText().toString();
+                                    String setContactPhone = contactPhone.getText().toString();
 
-                                if(contactName.getText().toString().isEmpty()||
-                                    contactPhone.getText().toString().isEmpty()){
+                                    if(contactName.getText().toString().isEmpty()||
+                                            contactPhone.getText().toString().isEmpty()){
 
-                                    Toast.makeText(ManageGuestList.this,
-                                            getString(R.string.empty_field),
-                                            Toast.LENGTH_LONG).show();
+                                        Toast.makeText(ManageGuestList.this,
+                                                getString(R.string.empty_field),
+                                                Toast.LENGTH_LONG).show();
 
-                                }else {
-                                    final Contact contact = new Contact();
-                                    contact.setName(setContactName);
-                                    contact.setPhone(setContactPhone);
-                                    NetworkUtil.updateDB(ManageGuestList.this, user, contact, new GeneralRequestCallbacks() {
-                                        @Override
-                                        public void onSuccess() {
-                                            adapter.add(contact);
-                                            adapter.notifyDataSetChanged();
-                                            finish();
-                                            startActivity(getIntent());
+                                    }else {
+                                        final Contact contact = new Contact();
+                                        contact.setName(setContactName);
+                                        contact.setPhone(setContactPhone);
+                                        NetworkUtil.updateDB(ManageGuestList.this, user, contact, new GeneralRequestCallbacks() {
+                                            @Override
+                                            public void onSuccess() {
+                                                adapter.add(contact);
+                                                adapter.notifyDataSetChanged();
+                                                finish();
+                                                startActivity(getIntent());
 
-                                        }
+                                            }
 
-                                        @Override
-                                        public void onError(String errorMessage) {
-                                            Toast.makeText(ManageGuestList.this,
-                                                    errorMessage,
-                                                    Toast.LENGTH_LONG).show();
-                                        }
-                                    });
+                                            @Override
+                                            public void onError(String errorMessage) {
+                                                Toast.makeText(ManageGuestList.this,
+                                                        errorMessage,
+                                                        Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                    }
+
                                 }
+                            })
+                            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            });
+                    builder.create();
 
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        });
-                builder.create();
-
-                builder.show();
+                    builder.show();
 
                 } else {
                     requestContactsPermission();
@@ -308,6 +342,88 @@ public class ManageGuestList extends AppCompatActivity {
         systemLanguage = newConfig.locale.getLanguage();
         ScreenUtil.setLocale(ManageGuestList.this, getString(R.string.title_activity_manage_guest_list));
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case FILE_SELECT_CODE: {
+                if (resultCode == RESULT_OK && data != null) {
+                    try {
+                        InputStream inputStream = getContentResolver().openInputStream(data.getData());
+                        if (inputStream==null) {
+                            System.out.println("Can't get file");
+                            return;
+                        }
+
+                        System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
+                        System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
+                        System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
+
+                        Workbook wb = null;
+                        try {
+                            wb = new XSSFWorkbook(inputStream);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        Sheet datatypeSheet = wb.getSheetAt(0);
+                        Iterator<Row> iterator = datatypeSheet.iterator();
+
+                        excelContacts.clear();
+
+                        while (iterator.hasNext()) {
+
+                            Row currentRow = iterator.next();
+                            Iterator<Cell> cellIterator = currentRow.iterator();
+
+                            Contact contact = new Contact();
+                            int curCell = 0;
+                            while (cellIterator.hasNext()) {
+
+                                curCell++;
+
+                                Cell currentCell = cellIterator.next();
+                                //getCellTypeEnum shown as deprecated for version 3.15
+                                //getCellTypeEnum ill be renamed to getCellType starting from version 4.0
+                                if (currentCell.getCellTypeEnum() == CellType.STRING) {
+                                    System.out.print(currentCell.getStringCellValue() + "--");
+                                } else if (currentCell.getCellTypeEnum() == CellType.NUMERIC) {
+                                    System.out.print(currentCell.getNumericCellValue() + "--");
+                                }
+                                if (curCell == 1){
+                                    if (!currentCell.getStringCellValue().isEmpty()){
+                                        contact.setName(currentCell.getStringCellValue());
+                                    }
+                                }
+                                if (curCell == 2){
+                                    if (!currentCell.getStringCellValue().isEmpty()){
+                                        contact.setPhone(currentCell.getStringCellValue());
+                                    }
+                                }
+
+
+
+                            }
+                            System.out.println();
+
+                            if ((!contact.getName().isEmpty())&&(!contact.getPhone().isEmpty())) {
+                                excelContacts.add(contact);
+                            }
+
+                        }
+                        excelContacts.size();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                break;
+            }
+            default:
+                break;
+        }
     }
 
     private void getUserContacts() {

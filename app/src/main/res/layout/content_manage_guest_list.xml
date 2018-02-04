@@ -132,6 +132,15 @@
             fab:fab_colorRipple="@color/colorPrimary"
             fab:fab_label="@string/new_contact"
             fab:fab_size="mini" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_new_excel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_send_message"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
+            fab:fab_colorRipple="@color/colorPrimary"
+            fab:fab_label="EXCEL"
+            fab:fab_size="mini" />
 
     </com.github.clans.fab.FloatingActionMenu>
 
