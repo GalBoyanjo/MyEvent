@@ -92,10 +92,10 @@
     <string name="userName">User name</string>
     <string name="hina">hina</string>
     <string name="search">Search</string>
-    <string name="all">All</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="maybe">Maybe</string>
+    <string name="all">ALL</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="maybe">MAYBE</string>
 
     <string name="send_to">Send to</string>
     <string name="send_all_contacts">All contacts</string>
@@ -131,6 +131,14 @@
 
 
     <string name="error_email_not_valid">Error - email is not valid</string>
+
+    <string name="update_data">Update Data</string>
+    <string name="import_excel">Import Excel</string>
+    <string name="export_excel">Export Excel</string>
+    <string name="guest_list_excel_name">Guest-list - MyEvent</string>
+
+    <string name="deleted">deleted</string>
+    <string name="undo">UNDO</string>
 
 
     //Google String's: !!!
@@ -180,6 +188,7 @@
 
     <string name="facebook_login_btn">Login with Facebook</string>
     <string name="google_login_btn">Login with Google</string>
+    <string name="title_activity_main">MainActivity</string>
 
 
 </resources>

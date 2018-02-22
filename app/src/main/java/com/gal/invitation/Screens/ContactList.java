@@ -17,6 +17,9 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,6 +27,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -38,20 +43,20 @@ import com.gal.invitation.Utils.ContactsAdapter;
 import com.gal.invitation.R;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.Utils.NetworkUtil;
+import com.gal.invitation.Utils.RecycleContactsAdapter;
 import com.gal.invitation.Utils.ScreenUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Random;
 import java.util.TreeSet;
 
-public class ContactList extends AppCompatActivity {
+public class ContactList extends AppCompatActivity implements RecycleContactsAdapter.OnItemClicked {
 
     public static String systemLanguage;
     private RequestQueue netRequestQueue;
 
     private SearchView searchView;
-    private ListView listView;
+    private RecyclerView recyclerView;
 
     private User user = null;
     private String userType = null;
@@ -62,7 +67,10 @@ public class ContactList extends AppCompatActivity {
     private ArrayList<Contact> selectedContacts = new ArrayList<>();
     private ProgressDialog progressDialog;
     private int requestsStack = 0;
-    ContactsAdapter adapter;
+    private RecycleContactsAdapter adapter;
+
+    private RecyclerView.LayoutManager myLayoutManager;
+    DividerItemDecoration mDividerItemDecoration;
 
 
     /**
@@ -125,7 +133,7 @@ public class ContactList extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         if (selectedContacts.isEmpty())
             checkFinished();
         else {
@@ -153,7 +161,8 @@ public class ContactList extends AppCompatActivity {
 
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {}
+            public void onClick(View view) {
+            }
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -166,7 +175,7 @@ public class ContactList extends AppCompatActivity {
             public boolean onQueryTextChange(String searchQuery) {
                 //on every change in the search box - filter the list
                 adapter.filter(searchQuery.trim());
-                listView.invalidate();
+                recyclerView.invalidate();
                 return true;
             }
         });
@@ -347,38 +356,53 @@ public class ContactList extends AppCompatActivity {
 
     private void buildListView(final TreeSet<Contact> contacts) {
         ArrayList<Contact> contactsArrayList = new ArrayList<>(contacts);
-        listView = (ListView) findViewById(R.id.contacts_list);
-        adapter = new ContactsAdapter(ContactList.this,
+        recyclerView = (RecyclerView) findViewById(R.id.contacts_list);
+        mDividerItemDecoration = new DividerItemDecoration(
+                recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL
+        );
+        recyclerView.addItemDecoration(mDividerItemDecoration);
+
+        myLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(myLayoutManager);
+
+        adapter = new RecycleContactsAdapter(ContactList.this,
                 R.layout.contact_row, contactsArrayList);
-        listView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Contact contact = new Contact();
-                int i = 0;
-                for (Contact c : adapter.searchData) {
-                    if (i == position) {
-                        contact = c;
-                        break;
-                    }
-                    i++;
-                }
 
-                LinearLayout rowContainer = (LinearLayout) view.findViewById(R.id.row_container);
-                if (selectedContacts.contains(contact)) {
-                    rowContainer.setBackgroundColor(ContextCompat.getColor(ContactList.this, android.R.color.transparent));
-                    selectedContacts.remove(contact);
-                    contact.setSelected(false);
-                } else {
-                    rowContainer.setBackgroundColor(ContextCompat.getColor(ContactList.this, R.color.colorAccent));
-                    selectedContacts.add(contact);
-                    contact.setSelected(true);
-                }
-            }
-        });
+        adapter.setOnClick(this);
+//        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                Contact contact = new Contact();
+//                int i = 0;
+//                for (Contact c : adapter.searchData) {
+//                    if (i == position) {
+//                        contact = c;
+//                        break;
+//                    }
+//                    i++;
+//                }
+//
+//                LinearLayout rowContainer = (LinearLayout) view.findViewById(R.id.row_container);
+//                if (selectedContacts.contains(contact)) {
+//                    rowContainer.setBackgroundColor(ContextCompat.getColor(ContactList.this, android.R.color.transparent));
+//                    selectedContacts.remove(contact);
+//                    contact.setSelected(false);
+//                } else {
+//                    rowContainer.setBackgroundColor(ContextCompat.getColor(ContactList.this, R.color.colorAccent));
+//                    selectedContacts.add(contact);
+//                    contact.setSelected(true);
+//                }
+//            }
+//        });
 
         progressDialog.dismiss();
+
+        int resId = R.anim.layout_animation_fall_down;
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
+        recyclerView.setLayoutAnimation(animation);
     }
 
     private void checkFinished() {
@@ -388,6 +412,28 @@ public class ContactList extends AppCompatActivity {
             guestListIntent.putExtra("userType", userType);
             startActivity(guestListIntent);
             finish();
+        }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+        Contact contact = new Contact();
+        int i = 0;
+        for (Contact c : adapter.searchData) {
+            if (i == position) {
+                contact = c;
+                break;
+            }
+            i++;
+        }
+
+        if (selectedContacts.contains(contact)) {
+            selectedContacts.remove(contact);
+            contact.setSelected(false);
+        } else {
+            selectedContacts.add(contact);
+            contact.setSelected(true);
         }
     }
 

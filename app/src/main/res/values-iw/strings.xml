@@ -130,6 +130,15 @@
 
     <string name="error_email_not_valid">שגיאה - כתובת אימייל שגויה</string>
 
+    <string name="update_data">מעדכן נתונים</string>
+    <string name="import_excel">יבוא קובץ אקסל</string>
+    <string name="export_excel">יצוא קובץ אקסל</string>
+    <string name="guest_list_excel_name">רשימת מוזמנים - MyEvent</string>
+
+
+    <string name="deleted">נמחק</string>
+    <string name="undo">בטל</string>
+
 
 
     //Google String's: !!!

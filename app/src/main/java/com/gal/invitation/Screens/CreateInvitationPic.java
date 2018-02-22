@@ -84,7 +84,7 @@ public class CreateInvitationPic extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
     private boolean hasWRITE_EXTERNAL_STORAGEPermission = false;
     private boolean hasCAMERAPermission = false;
-    private static final String IMAGE_DIRECTORY = "/Invitation";
+    private static final String IMAGE_DIRECTORY = "/MyEvent";
     private InvitationPic userInvitationPic;
 
     View view;

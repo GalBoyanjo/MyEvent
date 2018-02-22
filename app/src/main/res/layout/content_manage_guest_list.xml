@@ -7,65 +7,27 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.gal.invitation.Screens.ManageGuestList"
     android:orientation="vertical"
-    tools:showIn="@layout/activity_manage_guest_list">
+    tools:showIn="@layout/activity_manage_guest_list"
+    android:id="@+id/manage_guest_list_layout">
 
 
 
-    <LinearLayout
+<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/profile_contact_list_filters"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="fill_vertical"
-        android:layout_marginTop="5dp"
-       android:layout_gravity="center">
-
-        <Button
-            android:id="@+id/profile_yes_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/yes"
-            android:background="@drawable/filter_box"
-            android:layout_marginEnd="-3dp"/>
-
-        <Button
-            android:id="@+id/profile_no_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/no"
-            android:background="@drawable/filter_box"
-            android:layout_marginEnd="-3dp"/>
-        <Button
-            android:id="@+id/profile_maybe_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/maybe"
-            android:background="@drawable/filter_box"
-            android:layout_marginEnd="-3dp"/>
-
-        <Button
-            android:id="@+id/profile_all_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/all"
-            android:background="@drawable/filter_box"/>
 
 
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/profile_contact_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/guest_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="100dp"
         android:paddingTop="20dp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        />
 
     </LinearLayout>
 
@@ -131,18 +93,32 @@
             fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_colorRipple="@color/colorPrimary"
             fab:fab_label="@string/new_contact"
-            fab:fab_size="mini" />
+            fab:fab_size="mini"/>
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_new_excel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_send_message"
+            app:srcCompat="@drawable/ic_excel_import"
             fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_colorRipple="@color/colorPrimary"
-            fab:fab_label="EXCEL"
+            fab:fab_label="@string/import_excel"
+            fab:fab_size="mini" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_write_excel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_excel_export"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
+            fab:fab_colorRipple="@color/colorPrimary"
+            fab:fab_label="@string/export_excel"
             fab:fab_size="mini" />
 
+
     </com.github.clans.fab.FloatingActionMenu>
+
+    <!--<View android:layout_width="match_parent"-->
+        <!--android:layout_height="5dp"-->
+        <!--android:background="@drawable/toolbar_dropshadow"/>-->
 
 
 </RelativeLayout>

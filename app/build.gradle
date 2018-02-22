@@ -38,5 +38,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //https://github.com/centic9/poi-on-android/releases
     implementation files('libs/poishadow-all.jar')
+
+    compile "com.android.support:recyclerview-v7:27.0.2"
 }
 apply plugin: 'com.google.gms.google-services'

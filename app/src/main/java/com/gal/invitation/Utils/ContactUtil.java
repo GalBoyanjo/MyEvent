@@ -43,7 +43,7 @@ public class ContactUtil {
         }
 
         Bitmap photo = BitmapFactory.decodeResource(context.getResources(),
-                R.mipmap.ic_launcher);
+                R.mipmap.ic_contact);
 
         try {
             InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(),

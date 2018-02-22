@@ -1,17 +1,16 @@
 package com.gal.invitation.Utils;
 
-/**
- * Created on 11/04/2017.
- */
-
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gal.invitation.Entities.Contact;
@@ -21,7 +20,11 @@ import com.gal.invitation.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class GuestListAdapter extends ArrayAdapter<Contact> {
+/**
+ * Created by Gal on 18/02/2018.
+ */
+
+public class RecycleGuestListAdapter extends RecyclerView.Adapter<RecycleGuestListAdapter.ViewHolder> {
 
     private UpdateGuestList updateGuestList;
     private Context context;
@@ -29,63 +32,82 @@ public class GuestListAdapter extends ArrayAdapter<Contact> {
     private ArrayList<Contact> data = new ArrayList<>();
     public ArrayList<Contact> searchData = new ArrayList<>();
 
-    public GuestListAdapter(Context context, int layoutResourceId, ArrayList<Contact> data,
-                            UpdateGuestList updateGuestList) {
-        super(context, layoutResourceId, data);
+
+    public RecycleGuestListAdapter(Context context,  int layoutResourceId, ArrayList<Contact> data,
+                                   UpdateGuestList updateGuestList){
+
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data.addAll(data);
         this.searchData.addAll(data);
         this.updateGuestList = updateGuestList;
+
+
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
+
+        TextView rowName;
+        TextView rowNumber;
+        TextView rowStatus;
+        ImageView rowImage;
+        ImageView rowEdit;
+        ImageView rowDelete;
+        LinearLayout row;
+
+        public ViewHolder(View row) {
+            super(row);
+
+            this.rowName = (TextView) row.findViewById(R.id.profile_row_name);
+            this.rowNumber = (TextView) row.findViewById(R.id.profile_row_number);
+            this.rowStatus = (TextView)row.findViewById(R.id.profile_row_status);
+            this.rowImage = (ImageView) row.findViewById(R.id.profile_row_image);
+            this.rowEdit = (ImageView) row.findViewById(R.id.profile_row_edit);
+            this.rowDelete = (ImageView) row.findViewById(R.id.profile_row_remove);
+            this.row = (LinearLayout) row.findViewById(R.id.guest_list_row_container);
+
+        }
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
+    public RecycleGuestListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+        View row = inflater.inflate(layoutResourceId, parent, false);
+        ViewHolder viewHolder = new ViewHolder(row);
+        return viewHolder;
     }
 
-    private View getCustomView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
-        ContactHolder holder = null;
-
-        if (row == null) {
-            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
-
-            holder = new ContactHolder();
-            holder.rowName = (TextView) row.findViewById(R.id.profile_row_name);
-            holder.rowNumber = (TextView) row.findViewById(R.id.profile_row_number);
-            holder.rowStatus = (TextView)row.findViewById(R.id.profile_row_status);
-            holder.rowImage = (ImageView) row.findViewById(R.id.profile_row_image);
-            holder.rowEdit = (ImageView) row.findViewById(R.id.profile_row_edit);
-            holder.rowDelete = (ImageView) row.findViewById(R.id.profile_row_remove);
-
-            row.setTag(holder);
-
-        } else {
-            holder = (ContactHolder) row.getTag();
-        }
-
+    @Override
+    public void onBindViewHolder(RecycleGuestListAdapter.ViewHolder holder, int position) {
 
         final Contact contact = searchData.get(position);
 
-     row.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-             for(Contact tempContact : searchData){
-                 if (tempContact.equals(contact))
-                     tempContact.setSelected(true);
-                 else
-                     tempContact.setSelected(false);
-             }
-             contact.setSelected(true);
-             notifyDataSetChanged();
-         }
-     });
+        holder.row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for(Contact tempContact : searchData){
+                    if (tempContact.equals(contact))
+                        tempContact.setSelected(true);
+                    else
+                        tempContact.setSelected(false);
+                }
+                contact.setSelected(true);
+                notifyDataSetChanged();
+            }
+        });
         if(contact.isSelected()) {
 
             holder.rowDelete.setVisibility(View.VISIBLE);
             holder.rowEdit.setVisibility(View.VISIBLE);
+
+            Animation slide = AnimationUtils.loadAnimation(context,R.anim.slide_item);
+            holder.rowDelete.startAnimation(slide);
+            holder.rowEdit.startAnimation(slide);
+
+//            Animation expand = AnimationUtils.loadAnimation(context,R.anim.expand_item);
+//            holder.row.startAnimation(expand);
+
+
 //            row.setBackgroundColor(ContextCompat.getColor(context,R.color.colorAccent));
 
 
@@ -100,6 +122,8 @@ public class GuestListAdapter extends ArrayAdapter<Contact> {
             @Override
             public void onClick(View view) {
                 updateGuestList.deleteContact(contact);
+                data.remove(contact);
+
 
             }
         });
@@ -137,39 +161,18 @@ public class GuestListAdapter extends ArrayAdapter<Contact> {
             if (contact.getImage()!=null)
                 holder.rowImage.setImageBitmap(contact.getImage());
             else
-                holder.rowImage.setImageResource(R.mipmap.ic_launcher);
-
-            return row;
+                holder.rowImage.setImageResource(R.mipmap.ic_contact);
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return row;
+
     }
 
     @Override
-    public int getViewTypeCount() {
-        return 1;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    private static class ContactHolder {
-        TextView rowName;
-        TextView rowNumber;
-        TextView rowStatus;
-        ImageView rowImage;
-        ImageView rowEdit;
-        ImageView rowDelete;
-
-    }
-    @Override
-    public int getCount() {
+    public int getItemCount() {
         return searchData.size();
     }
 
@@ -217,5 +220,12 @@ public class GuestListAdapter extends ArrayAdapter<Contact> {
         notifyDataSetChanged();
     }
 
+    public void add(Contact contact){
+        data.add(contact);
+    }
+
+    public void remove(Contact contact){
+        data.remove(contact);
+    }
 
 }

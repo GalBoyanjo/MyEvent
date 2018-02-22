@@ -44,9 +44,7 @@ public class NetworkUtil {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(Constants.TAG_SUCCESS) == 1) {
-                            Toast.makeText(context,
-                                    context.getString(R.string.contact_saves_in_db),
-                                    Toast.LENGTH_LONG).show();
+
                         }
                         generalRequestCallbacks.onSuccess();
                     } catch (JSONException e) {

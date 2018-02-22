@@ -1,11 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="start"
     android:layout_gravity="start"
     android:paddingBottom="3dp"
     android:paddingTop="3dp"
-    android:id="@+id/profile_row_container">
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:id="@+id/guest_list_row_container">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
@@ -14,14 +16,14 @@
 
         <com.gal.invitation.Utils.RoundedImageView
             android:id="@+id/profile_row_image"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_margin="1dp"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_contact" />
 
         <LinearLayout
             android:id="@+id/profile_row_contact"
@@ -29,7 +31,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/profile_row_image"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:paddingStart="10dp"
+            android:paddingEnd="5dp">
         <TextView
             android:id="@+id/profile_row_name"
             android:layout_width="wrap_content"
