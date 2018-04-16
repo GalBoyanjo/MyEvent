@@ -24,4 +24,9 @@
         <!--<item name="tabTextAppearance">@style/CustomTabTextAppearance</item>-->
         <item name="tabSelectedTextColor">@android:color/white</item>
     </style>
+
+    <style name="MaterialAnimations" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
 </resources>

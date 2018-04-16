@@ -1,6 +1,7 @@
 package com.gal.invitation.Screens;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +36,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.features.ReturnMode;
+import com.esafirm.imagepicker.model.Image;
 import com.gal.invitation.Entities.InvitationPic;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.R;
@@ -103,7 +107,7 @@ public class CreateInvitationPic extends AppCompatActivity {
         setContentView(R.layout.activity_create_invitation_pic);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         netRequestQueue = Volley.newRequestQueue(this);
@@ -131,8 +135,8 @@ public class CreateInvitationPic extends AppCompatActivity {
                 == PackageManager.PERMISSION_GRANTED;
 
 
-        addPic = (Button) findViewById(R.id.eventAddPic);
-        imgEventPic = (ImageView) findViewById(R.id.eventPic);
+        addPic = findViewById(R.id.eventAddPic);
+        imgEventPic = findViewById(R.id.eventPic);
 
         addPic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,40 +233,52 @@ public class CreateInvitationPic extends AppCompatActivity {
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
+
+//        ImagePicker.create(this)
+//                .returnMode(ReturnMode.ALL) // set whether pick and / or camera action should return immediate result or not.
+//                .folderMode(true) // folder mode (false by default)
+//                .toolbarFolderTitle("Folder") // folder selection title
+//                .toolbarImageTitle("Tap to select") // image selection title
+//                .toolbarArrowColor(Color.BLACK) // Toolbar 'up' arrow color
+//                .single() // single mode
+//                .limit(1) // max images can be selected (99 by default)
+//                .showCamera(true) // show camera or not (true by default)
+//                .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
+//                .enableLog(false) // disabling log
+//                .start(); // start image picker activity with request code
     }
 
     private void takePhotoFromCamera() {
+//        ImagePicker.cameraOnly().start(this);
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//        try{
-//            if(requestCode == RESULT_LOAD_IMG && requestCode == RESULT_OK && null !=data){
-//
-//                Uri selectedImage = data.getData();
-//                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//
-//
-//                //get the cursor
-//                Cursor cursor = getContentResolver().query(selectedImage,filePathColumn,null,null,null);
-//                //move to first row
-//                cursor.moveToFirst();
-//
-//                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                imgDecodableString = cursor.getString(columnIndex);
-//                cursor.close();
-//                ImageView imgEventPic = (ImageView)findViewById(R.id.imgEventPic);
-//                imgEventPic.setImageBitmap(BitmapFactory.decodeFile(imgDecodableString));
-//
-//            }
-//            else{
-//                Toast.makeText(this,"ERROR picking pic",Toast.LENGTH_SHORT).show();
-//            }
 
-        if (resultCode == this.RESULT_CANCELED) {
+//        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+//
+//            //get a single image
+//            Image image = ImagePicker.getFirstImageOrNull(data);
+//            File imgFile = new File(image.getPath());
+//            if (imgFile.exists()) {
+//
+//                    eventPic = (Bitmap) data.getExtras().get("data");
+//
+//                    eventPicPath = image.getPath();
+//                    Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+//                    imgEventPic.setImageBitmap(eventPic);
+//                    noPic = false;
+//
+//            }
+//        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+
+        if (resultCode == RESULT_CANCELED) {
             return;
         }
         if (requestCode == RESULT_LOAD_IMG) {
@@ -288,10 +304,7 @@ public class CreateInvitationPic extends AppCompatActivity {
             imgEventPic.setImageBitmap(eventPic);
             noPic = false;
         }
-//
-//        }catch(Exception e){
-//            Toast.makeText(this,"ERROR",Toast.LENGTH_SHORT).show();
-//        }
+
     }
 
     public String saveImage(Bitmap myBitmap) {
@@ -515,7 +528,7 @@ public class CreateInvitationPic extends AppCompatActivity {
                     conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
                     conn.setRequestProperty("uploaded_file", fileName);
                     conn.setRequestProperty("USERID", String.valueOf(user.getID()));
-                //    conn.getOutputStream().write(postDataBytes);
+                    //    conn.getOutputStream().write(postDataBytes);
 
                     dos = new DataOutputStream(conn.getOutputStream());
 

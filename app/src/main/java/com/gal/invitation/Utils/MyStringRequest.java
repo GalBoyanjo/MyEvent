@@ -1,7 +1,7 @@
 package com.gal.invitation.Utils;
 
 /**
- * Created by Gal on 10/04/2017.
+ * Created on 10/04/2017.
  */
 
 

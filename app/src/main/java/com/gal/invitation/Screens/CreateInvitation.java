@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.icu.util.Calendar;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
@@ -34,14 +33,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.gal.invitation.Entities.Invitation;
 import com.gal.invitation.Entities.User;
+import com.gal.invitation.Interfaces.InvitationRequestCallbacks;
 import com.gal.invitation.R;
 import com.gal.invitation.Utils.MyStringRequest;
+import com.gal.invitation.Utils.NetworkUtil;
 import com.gal.invitation.Utils.ScreenUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -253,21 +255,42 @@ public class CreateInvitation extends AppCompatActivity {
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage(getString(R.string.please_wait));
                 progressDialog.show();
-                updateDB();
+
+                NetworkUtil.createInvitation(CreateInvitation.this, url_update_invitation,
+                        String.valueOf(user.getID()),
+                        eventType.getSelectedItem().toString(),
+                        date.getText().toString(),
+                        time.getText().toString(),
+                        eventPlaceType.getSelectedItem().toString(),
+                        eventPlaceName.getText().toString(),
+                        eventAddress.getText().toString(),
+                        freeText.getText().toString(),
+                        brideName.getText().toString(),
+                        groomName.getText().toString(),
+                        new InvitationRequestCallbacks() {
+                            @Override
+                            public void onSuccess() {
+                                progressDialog.dismiss();
+                                Intent addPicIntent = new Intent(CreateInvitation.this, CreateInvitationPic.class);
+                                addPicIntent.putExtra("user", user);
+                                addPicIntent.putExtra("userType", userType);
+                                startActivity(addPicIntent);
+                                finish();
+                            }
+
+                            @Override
+                            public void onError(String errorMessage) {
+                                Toast.makeText(CreateInvitation.this,
+                                        (getString(R.string.saving_invitation_faild_please_try_again)),
+                                        Toast.LENGTH_LONG).show();
+                                progressDialog.dismiss();
+                            }
+                        });
 
             }
         }
 
-//            if (selectedContacts.isEmpty())
-//                checkFinished();
-//            else
-//                for (Contact contact : selectedContacts) {
-//                    requestsStack++;
-//                    updateDB(contact);
         return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
     }
 
     public void onConfigurationChanged(Configuration newConfig) {

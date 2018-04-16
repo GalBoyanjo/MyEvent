@@ -123,6 +123,7 @@ public class RecycleGuestListAdapter extends RecyclerView.Adapter<RecycleGuestLi
             public void onClick(View view) {
                 updateGuestList.deleteContact(contact);
                 data.remove(contact);
+                notifyDataSetChanged();
 
 
             }
@@ -131,6 +132,8 @@ public class RecycleGuestListAdapter extends RecyclerView.Adapter<RecycleGuestLi
             @Override
             public void onClick(View view) {
                 updateGuestList.editContactDialog(contact);
+                notifyDataSetChanged();
+
             }
         });
 

@@ -1,14 +1,13 @@
 package com.gal.invitation.Screens;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.icu.util.Calendar;
 import android.os.Build;
-import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -39,7 +38,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.Entities.User;
+import com.gal.invitation.Excel;
 import com.gal.invitation.Interfaces.GeneralRequestCallbacks;
+import com.gal.invitation.Interfaces.GuestUpdateCallbacks;
 import com.gal.invitation.Interfaces.UpdateGuestList;
 import com.gal.invitation.R;
 import com.gal.invitation.Utils.ContactUtil;
@@ -50,26 +51,13 @@ import com.gal.invitation.Utils.ScreenUtil;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -81,7 +69,7 @@ public class ManageGuestList extends AppCompatActivity {
     private String userType = null;
     private static boolean hasContactsPermission = false;
     private ProgressDialog progressDialog;
-//    private GuestListAdapter adapter;
+    //    private GuestListAdapter adapter;
     private RecycleGuestListAdapter adapter;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager myLayoutManager;
@@ -102,10 +90,8 @@ public class ManageGuestList extends AppCompatActivity {
     private FloatingActionMenu fabMenu;
     private FloatingActionButton fabNewContact;
     private FloatingActionButton fabFromContacts;
-    private FloatingActionButton fabExcelRead;
-    private FloatingActionButton fabExcelWrite;
+    private FloatingActionButton fabExcel;
 
-    public static final int FILE_SELECT_CODE = 1212;
 
     private ArrayList<Contact> excelContacts = new ArrayList<>();
 
@@ -206,35 +192,37 @@ public class ManageGuestList extends AppCompatActivity {
         );
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
-        fabExcelRead = (FloatingActionButton) findViewById(R.id.fab_new_excel);
-        fabExcelRead.setOnClickListener(new View.OnClickListener() {
+        fabExcel = (FloatingActionButton) findViewById(R.id.fab_excel);
+        fabExcel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-//                ExcelWrite();
-                Intent intent = new Intent();
-                intent.setType("*/*");
-                if (Build.VERSION.SDK_INT < 19) {
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    intent = Intent.createChooser(intent, "Select file");
-                } else {
-                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                }
-                startActivityForResult(Intent.createChooser(intent, "Select Excel File"), FILE_SELECT_CODE);
+
+                Intent intent = new Intent(ManageGuestList.this, Excel.class);
+
+                View sharedView = fabExcel;
+                String transitionName = getString(R.string.excelTransitionName);
+
+                intent.putExtra("user", user);
+                intent.putExtra("userType", userType);
+                ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(ManageGuestList.this, sharedView, transitionName);
+                startActivity(intent, transitionActivityOptions.toBundle());
+
+
+//                Intent intent = new Intent();
+//                intent.setType("*/*");
+//                if (Build.VERSION.SDK_INT < 19) {
+//                    intent.setAction(Intent.ACTION_GET_CONTENT);
+//                    intent = Intent.createChooser(intent, "Select file");
+//                } else {
+//                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+//                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                }
+//                startActivityForResult(Intent.createChooser(intent, "Select Excel File"), FILE_SELECT_CODE);
             }
         });
 
-        fabExcelWrite = (FloatingActionButton) findViewById(R.id.fab_write_excel);
 
-        if (hasGuests) {
-            fabExcelWrite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ExcelWrite();
-                }
-            });
-        }
         fabFromContacts = (FloatingActionButton) findViewById(R.id.fab_from_contacts);
         fabFromContacts.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,11 +270,13 @@ public class ManageGuestList extends AppCompatActivity {
                                         final Contact contact = new Contact();
                                         contact.setName(setContactName);
                                         contact.setPhone(setContactPhone);
-                                        NetworkUtil.updateDB(ManageGuestList.this, user, contact, new GeneralRequestCallbacks() {
+                                        NetworkUtil.updateGuest(ManageGuestList.this, user, contact, new GuestUpdateCallbacks() {
                                             @Override
-                                            public void onSuccess() {
-                                                adapter.add(contact);
-                                                adapter.notifyDataSetChanged();
+                                            public void onSuccess(Contact contact) {
+                                                if (hasGuests) {
+                                                    adapter.add(contact);
+                                                    adapter.notifyDataSetChanged();
+                                                }
                                                 finish();
                                                 startActivity(getIntent());
 
@@ -370,27 +360,7 @@ public class ManageGuestList extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode,
-                                 Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case FILE_SELECT_CODE: {
-                if (resultCode == RESULT_OK && data != null) {
-                    progressDialog = new ProgressDialog(this);
-                    progressDialog.setTitle(getString(R.string.update_data));
-                    progressDialog.setCancelable(false);
-                    progressDialog.setIndeterminate(true);
-                    progressDialog.setMessage(getString(R.string.please_wait));
-                    progressDialog.show();
-                    ExcelRead(data);
-                }
-                break;
-            }
-            default:
-                break;
-        }
-    }
+
 
     private void getUserContacts() {
         try {
@@ -533,9 +503,9 @@ public class ManageGuestList extends AppCompatActivity {
                                             setAction(getString(R.string.undo), new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    NetworkUtil.updateDB(ManageGuestList.this, user, contact, new GeneralRequestCallbacks() {
+                                                    NetworkUtil.updateGuest(ManageGuestList.this, user, contact, new GuestUpdateCallbacks() {
                                                         @Override
-                                                        public void onSuccess() {
+                                                        public void onSuccess(Contact contact) {
                                                             adapter.add(contact);
                                                             adapter.notifyDataSetChanged();
                                                             finish();
@@ -693,176 +663,6 @@ public class ManageGuestList extends AppCompatActivity {
 
     }
 
-    private void ExcelRead(Intent data){
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(data.getData());
-            if (inputStream==null) {
-                System.out.println("Can't get file");
-                return;
-            }
-
-            System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
-            System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
-            System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
-
-            Workbook wb = null;
-            try {
-                wb = new XSSFWorkbook(inputStream);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            Sheet datatypeSheet = wb.getSheetAt(0);
-            Iterator<Row> iterator = datatypeSheet.iterator();
-
-            excelContacts.clear();
-
-            while (iterator.hasNext()) {
-
-                Row currentRow = iterator.next();
-                Iterator<Cell> cellIterator = currentRow.iterator();
-
-                Contact contact = new Contact();
-                int curCell = 0;
-                while (cellIterator.hasNext()) {
-
-                    curCell++;
-
-                    Cell currentCell = cellIterator.next();
-                    //getCellTypeEnum shown as deprecated for version 3.15
-                    //getCellTypeEnum ill be renamed to getCellType starting from version 4.0
-                    if (currentCell.getCellTypeEnum() == CellType.STRING) {
-                        System.out.print(currentCell.getStringCellValue() + "--");
-                    } else if (currentCell.getCellTypeEnum() == CellType.NUMERIC) {
-                        System.out.print(currentCell.getNumericCellValue() + "--");
-                    }
-                    if (curCell == 1){
-                        if (!currentCell.getStringCellValue().isEmpty()){
-                            contact.setName(currentCell.getStringCellValue());
-                        }
-                    }
-                    if (curCell == 2){
-                        if (!currentCell.getStringCellValue().isEmpty()){
-                            contact.setPhone(currentCell.getStringCellValue());
-                        }
-                    }
-
-
-
-                }
-                System.out.println();
-
-                if ((!contact.getName().isEmpty())&&(!contact.getPhone().isEmpty())) {
-                    excelContacts.add(contact);
-                }
-
-            }
-//                        excelContacts.size();
-            UploadExcelContacts();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void ExcelWrite(){
-
-        System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
-        System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
-        System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
-
-
-
-        XSSFWorkbook workbook = null;
-        try {
-            workbook = new XSSFWorkbook();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        XSSFSheet sheet = workbook.createSheet(getString(R.string.guest_list_excel_name));
-
-        int rowNum = 0;
-        System.out.println("Creating excel");
-
-        //Enter guest-list to excel
-
-        for (Contact contact : userContacts){
-            Row row = sheet.createRow(rowNum++);
-            int colNum = 0;
-            Cell cell = row.createCell(colNum++);
-            cell.setCellValue((String)contact.getName());
-
-            cell = row.createCell(colNum++);
-            cell.setCellValue((String)contact.getPhone());
-
-            cell = row.createCell(colNum++);
-            cell.setCellValue((Integer)contact.getStatus());
-
-        }
-
-
-        try {
-            File fileDirectory = new File(
-                    Environment.getExternalStorageDirectory() + FILE_DIRECTORY);
-            if (!fileDirectory.exists()) {
-                fileDirectory.mkdirs();
-            }
-            File file = new File(fileDirectory,getString(R.string.guest_list_excel_name) + Calendar.getInstance()
-                    .getTimeInMillis()+ ".xlsx");
-            file.createNewFile();
-            FileOutputStream outputStream = new FileOutputStream(file);
-            workbook.write(outputStream);
-            workbook.close();
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Done");
-    }
-
-    private void UploadExcelContacts(){
-        if (excelContacts.isEmpty())
-            checkFinished();
-        else {
-            for (Contact contact : excelContacts) {
-                requestsStack++;
-                NetworkUtil.updateDB(this, user, contact, new GeneralRequestCallbacks() {
-                    @Override
-                    public void onSuccess() {
-                        requestsStack--;
-                        checkFinished();
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        requestsStack--;
-                        checkFinished();
-                        Toast.makeText(ManageGuestList.this,
-                                errorMessage,
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }
-
-    }
-
-    private void checkFinished() {
-        if (requestsStack == 0) {
-            progressDialog.dismiss();
-            finish();
-            startActivity(getIntent());
-//            Intent guestListIntent = new Intent(ManageGuestList.this, Profile.class);
-//            guestListIntent.putExtra("user", user);
-//            guestListIntent.putExtra("userType", userType);
-//            startActivity(guestListIntent);
-//            finish();
-        }
-    }
 
 
 }

@@ -141,6 +141,9 @@
     <string name="undo">UNDO</string>
 
 
+    <string name="excelTransitionName">excelTransitionName</string>
+
+
     //Google String's: !!!
     <string name="signed_in_fmt">Signed in as: %s</string>
     <string name="signed_in">Signed in</string>
@@ -188,7 +191,6 @@
 
     <string name="facebook_login_btn">Login with Facebook</string>
     <string name="google_login_btn">Login with Google</string>
-    <string name="title_activity_main">MainActivity</string>
 
 
 </resources>

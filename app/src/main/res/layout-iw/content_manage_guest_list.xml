@@ -80,6 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_contacts"
+            fab:fab_colorNormal="@color/colorPrimary"
             fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_colorRipple="@color/colorPrimary"
             fab:fab_label="@string/from_contacts"
@@ -90,28 +91,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_add"
+            fab:fab_colorNormal="@color/colorPrimary"
             fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_colorRipple="@color/colorPrimary"
             fab:fab_label="@string/new_contact"
             fab:fab_size="mini" />
+
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_new_excel"
+            android:id="@+id/fab_excel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_excel_import"
+            fab:fab_colorNormal="@color/colorPrimary"
             fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_colorRipple="@color/colorPrimary"
             fab:fab_label="@string/import_excel"
-            fab:fab_size="mini" />
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_write_excel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_excel_export"
-            fab:fab_colorPressed="@color/colorPrimaryDark"
-            fab:fab_colorRipple="@color/colorPrimary"
-            fab:fab_label="@string/export_excel"
-            fab:fab_size="mini" />
+            fab:fab_size="mini"
+            android:transitionName="@string/excelTransitionName"
+            android:visibility="gone"/>
+
 
     </com.github.clans.fab.FloatingActionMenu>
 

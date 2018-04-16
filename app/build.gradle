@@ -3,14 +3,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.gal.invitation"
         minSdkVersion 17
         targetSdkVersion 26
-        versionCode 3
-        versionName "1.0.0"
+        versionCode 4
+        versionName "1.0.1"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -19,26 +19,39 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    compile "com.android.support:design:${rootProject.ext.supportLibVersion}"
-    compile "com.android.support:support-v13:${rootProject.ext.supportLibVersion}"
-    compile "com.android.support:support-vector-drawable:${rootProject.ext.supportLibVersion}"
-    compile 'com.android.volley:volley:1.0.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile "com.google.android.gms:play-services-auth:${rootProject.ext.playServicesVersion}"
-    compile "com.facebook.android:facebook-android-sdk:${rootProject.ext.facebookVersion}"
+    implementation 'com.android.support:support-v4:27.1.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:support-v13:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:support-vector-drawable:${rootProject.ext.supportLibVersion}"
+    implementation 'com.android.volley:volley:1.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation "com.google.android.gms:play-services-auth:${rootProject.ext.playServicesVersion}"
+    implementation "com.facebook.android:facebook-android-sdk:${rootProject.ext.facebookVersion}"
     //    compile "com.google.android.gms:play-services:${rootProject.ext.playServicesVersion}"
-    compile 'com.github.ybq:Android-SpinKit:1.1.0'
+    implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     // anim for loading
-    compile project(':clans_fab')
-    testCompile 'junit:junit:4.12'
+    implementation project(':clans_fab')
+    testImplementation 'junit:junit:4.12'
     //https://github.com/centic9/poi-on-android/releases
     implementation files('libs/poishadow-all.jar')
 
-    compile "com.android.support:recyclerview-v7:27.0.2"
+    implementation "com.android.support:recyclerview-v7:27.1.0"
+
+    implementation 'com.android.support:multidex:1.0.3'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //https://github.com/esafirm/android-image-picker
+    implementation 'com.github.esafirm.android-image-picker:imagepicker:1.12.0'
+    // for experimental rx picker
+    implementation 'com.github.esafirm.android-image-picker:rximagepicker:1.12.0'
+    // If you have a problem with Glide, please use the same Glide version or simply open an issue
+    implementation 'com.github.bumptech.glide:glide:4.5.0'
 }
 apply plugin: 'com.google.gms.google-services'

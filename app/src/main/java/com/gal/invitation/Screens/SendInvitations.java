@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -43,7 +44,6 @@ public class SendInvitations extends Activity {
     private boolean hasSMSPermission = false;
     private Button sendBtn;
     private String phoneNo;
-    private String message;
     private ArrayList<Contact> contactArrayList = new ArrayList<>();
     private User user;
     private String userType = null;
@@ -81,6 +81,7 @@ public class SendInvitations extends Activity {
             public void onClick(View view) {
                 if (hasSMSPermission) {
                     sendSMSMessage();
+//                    onClickWhatsApp(view);
                 } else {
                     requestSMSPermission();
                 }
@@ -128,9 +129,6 @@ public class SendInvitations extends Activity {
         for (Contact contact : contactArrayList) {
 
             phoneNo = contact.getPhone();
-            message = textMessage.getText() + "\n" +
-                    "http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" +
-                    contact.getCode() + "&By=" + user.getID();
 
             SmsManager smsManager = SmsManager.getDefault();
             if (android.os.Build.VERSION.SDK_INT >= 22) {
@@ -143,7 +141,12 @@ public class SendInvitations extends Activity {
                     smsManager = SmsManager.getSmsManagerForSubscriptionId(1);
                 }
             }
-            smsManager.sendTextMessage(phoneNo, null, message, null, null);
+
+            ArrayList<String> message = smsManager.divideMessage( textMessage.getText() + "\n" +
+                    "http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" +
+                    contact.getCode() + "&By=" + user.getID() );
+
+            smsManager.sendMultipartTextMessage(phoneNo, null, message, null, null);
             Toast.makeText(SendInvitations.this,
                     (getString(R.string.SMS_sent)),
                     Toast.LENGTH_LONG).show();
@@ -233,6 +236,35 @@ public class SendInvitations extends Activity {
         else if(type.equals(getString(R.string.clear))) {
             textMessage.setText("");
         }
+    }
+
+
+    public void onClickWhatsApp(View view) {
+
+        PackageManager pm=getPackageManager();
+        try {
+
+            for (Contact contact : contactArrayList) {
+                Intent waIntent = new Intent(Intent.ACTION_SEND);
+                waIntent.setType("text/plain");
+                String text = textMessage.getText() + "\n" +
+                        "http://master1590.a2hosted.com/invitations/confirmation_page/index.php?Code=" +
+                        contact.getCode() + "&By=" + user.getID();
+
+
+                PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+                //Check if package exists or not. If not then code
+                //in catch block will be called
+                waIntent.setPackage("com.whatsapp");
+
+                waIntent.putExtra(Intent.EXTRA_TEXT, text);
+                startActivity(Intent.createChooser(waIntent, "Share with"));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Toast.makeText(this, "WhatsApp not Installed", Toast.LENGTH_SHORT)
+                    .show();
+        }
+
     }
 
 
