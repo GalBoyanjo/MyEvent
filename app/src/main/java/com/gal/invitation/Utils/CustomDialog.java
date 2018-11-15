@@ -78,11 +78,11 @@ public class CustomDialog extends AlertDialog.Builder {
             }
         });
 
-        radioGroup = (RadioGroup) view.findViewById(R.id.radio_grp);
-        chooseAll = (RadioButton) view.findViewById(R.id.radio_select_all);
-        chooseYetAnswered = (RadioButton) view.findViewById(R.id.radio_select_maybe);
-        chooseManually = (RadioButton) view.findViewById(R.id.radio_select_manually);
-        checkBoxesContainer = (LinearLayout) view.findViewById(R.id.checkboxes_container);
+        radioGroup = view.findViewById(R.id.radio_grp);
+        chooseAll = view.findViewById(R.id.radio_select_all);
+        chooseYetAnswered = view.findViewById(R.id.radio_select_maybe);
+        chooseManually = view.findViewById(R.id.radio_select_manually);
+        checkBoxesContainer = view.findViewById(R.id.checkboxes_container);
 
 
         chooseAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

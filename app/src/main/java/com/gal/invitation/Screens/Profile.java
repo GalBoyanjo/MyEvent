@@ -1,6 +1,7 @@
 package com.gal.invitation.Screens;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -130,7 +131,7 @@ public class Profile extends AppCompatActivity{
         ScreenUtil.setLocale(Profile.this, getString(R.string.app_name));
         setContentView(R.layout.activity_profile);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
+        Toolbar toolbar = findViewById(R.id.profile_toolbar);
         setSupportActionBar(toolbar);
 
         netRequestQueue = Volley.newRequestQueue(this);
@@ -155,7 +156,7 @@ public class Profile extends AppCompatActivity{
 
 
 
-        final LinearLayout sendInvitationsSms = (LinearLayout) findViewById(R.id.profile_send_invitation_btn);
+        final LinearLayout sendInvitationsSms = findViewById(R.id.profile_send_invitation_btn);
 
         sendInvitationsSms.setOnClickListener(new OnClickListener() {
             @Override
@@ -190,11 +191,11 @@ public class Profile extends AppCompatActivity{
             }
         });
 
-        final LinearLayout createInvitation = (LinearLayout) findViewById(R.id.profile_design_invitation_btn);
+        final LinearLayout createInvitation = findViewById(R.id.profile_design_invitation_btn);
 
-        final LinearLayout invitationPreview = (LinearLayout) findViewById(R.id.profile_invitation_preview_btn);
+        final LinearLayout invitationPreview = findViewById(R.id.profile_invitation_preview_btn);
 
-        final LinearLayout manageGuestList = (LinearLayout) findViewById(R.id.profile_edit_guest_btn);
+        final LinearLayout manageGuestList = findViewById(R.id.profile_edit_guest_btn);
 
         manageGuestList.setOnClickListener(new OnClickListener() {
             @Override
@@ -553,11 +554,11 @@ public class Profile extends AppCompatActivity{
 
     private void showStatus(int statusYes, int statusNo, int statusMaybe) {
 
-        TextView yesRow = (TextView) findViewById(R.id.row_yes);
+        TextView yesRow = findViewById(R.id.row_yes);
         yesRow.setText(String.valueOf(statusYes));
-        TextView noRow = (TextView) findViewById(R.id.row_no);
+        TextView noRow = findViewById(R.id.row_no);
         noRow.setText(String.valueOf(statusNo));
-        TextView maybeRow = (TextView) findViewById(R.id.row_maybe);
+        TextView maybeRow = findViewById(R.id.row_maybe);
         maybeRow.setText(String.valueOf(statusMaybe));
 
     }
@@ -688,16 +689,17 @@ public class Profile extends AppCompatActivity{
 
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     private void getUserCountDown(){
         if(userInvitation.getType()!=null && !userInvitation.getType().isEmpty()) {
 
             long milliseconds = 0;
             long diff;
 
-            countDownDaysView = (TextView) findViewById(R.id.profile_count_down_days);
-            countDownHoursView = (TextView) findViewById(R.id.profile_count_down_hours);
-            countDownMinutesView = (TextView) findViewById(R.id.profile_count_down_minutes);
-            countDownSecondsView = (TextView) findViewById(R.id.profile_count_down_seconds);
+            countDownDaysView = findViewById(R.id.profile_count_down_days);
+            countDownHoursView = findViewById(R.id.profile_count_down_hours);
+            countDownMinutesView = findViewById(R.id.profile_count_down_minutes);
+            countDownSecondsView = findViewById(R.id.profile_count_down_seconds);
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy, HH:mm");
             formatter.setLenient(false);

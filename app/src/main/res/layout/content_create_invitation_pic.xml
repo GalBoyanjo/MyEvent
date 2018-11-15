@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_contacts_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,28 +10,19 @@
     tools:context="com.gal.invitation.Screens.CreateInvitation"
     tools:showIn="@layout/activity_create_invitation_pic">
 
-    <RelativeLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="15dp"
+        card_view:cardCornerRadius="4dp">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/round_frame"
-            android:fitsSystemWindows="true"
-            android:isScrollContainer="true"
-            android:orientation="vertical"
-            tools:context="com.gal.invitation.Screens.CreateInvitationPic">
-
+            android:orientation="vertical">
             <Button
                 android:id="@+id/eventAddPic"
                 android:layout_width="match_parent"
@@ -40,26 +32,20 @@
                 android:layout_gravity="center"
                 android:layout_margin="15dp"
                 android:textColor="#FFFFFF"
-                android:background="@drawable/round_button"/>
+                android:background="@drawable/round_button" />
 
             <com.gal.invitation.Utils.RoundedImageView
                 android:id="@+id/eventPic"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:layout_margin="16dp"
                 android:layout_marginTop="20dp"
-                android:background="@android:color/transparent"
                 android:scaleType="fitXY"
+                android:src="@mipmap/ic_image"
                 android:layout_gravity="center"/>
 
         </LinearLayout>
 
-    </RelativeLayout>
-
-    <View android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@drawable/toolbar_dropshadow"/>
-
-
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

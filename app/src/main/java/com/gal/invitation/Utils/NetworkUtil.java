@@ -132,20 +132,20 @@ public class NetworkUtil {
                         loginRequestCallbacks.onSuccess(user);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        loginRequestCallbacks.onError(context.getString(R.string.error_bad_email_password));
+                        loginRequestCallbacks.onError(context.getString(R.string.error_bad_email_password)+"...");
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("Error", error.toString());
-                    loginRequestCallbacks.onError(context.getString(R.string.error_bad_email_password));
+                    loginRequestCallbacks.onError(context.getString(R.string.error_bad_email_password)+"..");
                 }
             });
             requestQueue.add(request);
         } catch (Exception e) {
             e.printStackTrace();
-            loginRequestCallbacks.onError(context.getString(R.string.error_bad_email_password));
+            loginRequestCallbacks.onError(context.getString(R.string.error_bad_email_password)+".");
         }
 
     }

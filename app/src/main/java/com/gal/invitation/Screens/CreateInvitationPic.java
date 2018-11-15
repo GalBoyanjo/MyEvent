@@ -229,81 +229,88 @@ public class CreateInvitationPic extends AppCompatActivity {
     }
 
     public void choosePhotoFromGallery() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+//                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//
+//        startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
 
-        startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
-
-//        ImagePicker.create(this)
-//                .returnMode(ReturnMode.ALL) // set whether pick and / or camera action should return immediate result or not.
-//                .folderMode(true) // folder mode (false by default)
-//                .toolbarFolderTitle("Folder") // folder selection title
-//                .toolbarImageTitle("Tap to select") // image selection title
-//                .toolbarArrowColor(Color.BLACK) // Toolbar 'up' arrow color
-//                .single() // single mode
-//                .limit(1) // max images can be selected (99 by default)
-//                .showCamera(true) // show camera or not (true by default)
-//                .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
-//                .enableLog(false) // disabling log
-//                .start(); // start image picker activity with request code
+        ImagePicker.create(this)
+                .returnMode(ReturnMode.ALL) // set whether pick and / or camera action should return immediate result or not.
+                .folderMode(true) // folder mode (false by default)
+                .toolbarFolderTitle("Folder") // folder selection title
+                .toolbarImageTitle("Tap to select") // image selection title
+                .toolbarArrowColor(Color.BLACK) // Toolbar 'up' arrow color
+                .single() // single mode
+                .limit(1) // max images can be selected (99 by default)
+                .showCamera(true) // show camera or not (true by default)
+                .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
+                .enableLog(false) // disabling log
+                .start(); // start image picker activity with request code
     }
 
     private void takePhotoFromCamera() {
-//        ImagePicker.cameraOnly().start(this);
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, CAMERA);
+        ImagePicker.cameraOnly().start(this);
+//        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivityForResult(cameraIntent, CAMERA);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-//        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+
+            //get a single image
+            Image image = ImagePicker.getFirstImageOrNull(data);
+            File imgFile = new File(image.getPath());
+            if (imgFile.exists()) {
+
+                Uri contentURI = data.getData();
+                try {
+                    eventPic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
+                    eventPic = (Bitmap) data.getExtras().get("data");
+                    eventPicPath = saveImage(eventPic);
+                    eventPicPath = image.getPath();
+                    Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+                    imgEventPic.setImageBitmap(eventPic);
+                    noPic = false;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 //
-//            //get a single image
-//            Image image = ImagePicker.getFirstImageOrNull(data);
-//            File imgFile = new File(image.getPath());
-//            if (imgFile.exists()) {
-//
-//                    eventPic = (Bitmap) data.getExtras().get("data");
-//
-//                    eventPicPath = image.getPath();
-//                    Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
-//                    imgEventPic.setImageBitmap(eventPic);
-//                    noPic = false;
-//
-//            }
-//        }
+
+            }
+        }
 
         super.onActivityResult(requestCode, resultCode, data);
 
 
 
-        if (resultCode == RESULT_CANCELED) {
-            return;
-        }
-        if (requestCode == RESULT_LOAD_IMG) {
-            if (data != null) {
-                Uri contentURI = data.getData();
-                try {
-                    eventPic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
-                    eventPicPath = saveImage(eventPic);
-                    Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
-                    imgEventPic.setImageBitmap(eventPic);
-                    noPic = false;
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(CreateInvitationPic.this, "Failed!", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-        } else if (requestCode == CAMERA) {
-            eventPic = (Bitmap) data.getExtras().get("data");
-            eventPicPath = saveImage(eventPic);
-            Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
-            imgEventPic.setImageBitmap(eventPic);
-            noPic = false;
-        }
+//        if (resultCode == RESULT_CANCELED) {
+//            return;
+//        }
+//        if (requestCode == RESULT_LOAD_IMG) {
+//            if (data != null) {
+//                Uri contentURI = data.getData();
+//                try {
+//                    eventPic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
+//                    eventPicPath = saveImage(eventPic);
+//                    Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+//                    imgEventPic.setImageBitmap(eventPic);
+//                    noPic = false;
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(CreateInvitationPic.this, "Failed!", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//        } else if (requestCode == CAMERA) {
+//            eventPic = (Bitmap) data.getExtras().get("data");
+//            eventPicPath = saveImage(eventPic);
+//            Toast.makeText(CreateInvitationPic.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+//            imgEventPic.setImageBitmap(eventPic);
+//            noPic = false;
+//        }
 
     }
 

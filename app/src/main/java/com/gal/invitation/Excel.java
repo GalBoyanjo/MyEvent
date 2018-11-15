@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -22,6 +24,7 @@ import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.Entities.User;
 import com.gal.invitation.Interfaces.GeneralRequestCallbacks;
 import com.gal.invitation.Utils.ContactUtil;
+import com.gal.invitation.Utils.CustomCheckbox;
 import com.gal.invitation.Utils.MyStringRequest;
 import com.gal.invitation.Utils.NetworkUtil;
 
@@ -45,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -75,6 +79,11 @@ public class Excel extends AppCompatActivity {
 
     Button btnExcelRead;
     Button btnExcelWrite;
+    Button btnExcelOK;
+
+    private LinearLayout checkBoxesContainer;
+    private List<Contact> selectedContacts = new ArrayList<>();
+
 
 
     @Override
@@ -82,7 +91,7 @@ public class Excel extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_excel);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.excel_toolbar);
+        Toolbar toolbar = findViewById(R.id.excel_toolbar);
         setSupportActionBar(toolbar);
 
         netRequestQueue = Volley.newRequestQueue(this);
@@ -90,7 +99,10 @@ public class Excel extends AppCompatActivity {
         user = (User) getIntent().getSerializableExtra("user");
         userType = getIntent().getStringExtra("userType");
 
-        btnExcelRead = (Button) findViewById(R.id.excel_import);
+        checkBoxesContainer = findViewById(R.id.excel_checkboxes_container);
+
+
+        btnExcelRead = findViewById(R.id.excel_import);
         btnExcelRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,7 +121,7 @@ public class Excel extends AppCompatActivity {
             }
         });
 
-        btnExcelWrite = (Button) findViewById(R.id.excel_export);
+        btnExcelWrite = findViewById(R.id.excel_export);
 
         if (hasGuests) {
             btnExcelWrite.setOnClickListener(new View.OnClickListener() {
@@ -119,8 +131,16 @@ public class Excel extends AppCompatActivity {
                 }
             });
         }
-    }
 
+        btnExcelOK = findViewById(R.id.excel_import_ok);
+        btnExcelOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // UploadExcelContacts();
+                if(selectedContacts.isEmpty());
+            }
+        });
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode,
                                  Intent data) {
@@ -207,11 +227,38 @@ public class Excel extends AppCompatActivity {
                 }
 
             }
+
+            selectedContacts.clear();
+            selectedContacts.addAll(excelContacts);
+            checkBoxesContainer.setVisibility(View.VISIBLE);
+            btnExcelOK.setVisibility(View.VISIBLE);
+            btnExcelRead.setVisibility(View.GONE);
+            btnExcelWrite.setVisibility(View.GONE);
+
+            for (final Contact contact : excelContacts) {
+
+
+                CustomCheckbox checkBox = new CustomCheckbox(Excel.this);
+                checkBox.setText(contact.getName()+" \n"+contact.getPhone());
+                checkBox.setChecked(true);
+
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                        if (checked)
+                            selectedContacts.add(contact);
+                        else
+                            selectedContacts.remove(contact);
+                    }
+                });
+                checkBoxesContainer.addView(checkBox);
+                progressDialog.dismiss();
+            }
 //                        excelContacts.size();
-            UploadExcelContacts();
 
         } catch (Exception ex) {
             ex.printStackTrace();
+            progressDialog.dismiss();
         }
     }
 
@@ -275,10 +322,10 @@ public class Excel extends AppCompatActivity {
     }
 
     private void UploadExcelContacts(){
-        if (excelContacts.isEmpty())
+        if (selectedContacts.isEmpty())
             checkFinished();
         else {
-            for (Contact contact : excelContacts) {
+            for (Contact contact : selectedContacts) {
                 requestsStack++;
                 NetworkUtil.updateDB(this, user, contact, new GeneralRequestCallbacks() {
                     @Override

@@ -43,6 +43,7 @@
     <string name="create">CREATE</string>
     <string name="welcome">"WELCOME"</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="event_type">Event type</string>
     <string name="wedding">"Wedding"</string>
     <string name="other">"Other"</string>
     <string name="functions_hall">"Functions hall"</string>
@@ -51,6 +52,7 @@
     <string name="reception_time">"Reception time"</string>
     <string name="time">"Time"</string>
     <string name="event_place">"Event place"</string>
+    <string name="event_place_type">"Event place type"</string>
     <string name="event_address">"Event address"</string>
     <string name="free_text">"Free text…"</string>
     <string name="add_pic">"Add Pic"</string>
@@ -142,6 +144,7 @@
 
 
     <string name="excelTransitionName">excelTransitionName</string>
+    <string name="loadingTransitionName">loadingTransitionName</string>
 
 
     //Google String's: !!!

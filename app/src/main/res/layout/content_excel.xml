@@ -12,15 +12,50 @@
 
 
 
-<Button
+    <Button
         android:id="@+id/excel_export"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/export_excel"/>
+        android:text="@string/export_excel"
+        android:layout_gravity="center"
+        android:layout_margin="15dp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/round_button"/>
     <Button
         android:id="@+id/excel_import"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/import_excel"/>
+        android:text="@string/import_excel"
+        android:layout_gravity="center"
+        android:layout_margin="15dp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/round_button"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/excel_checkboxes_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/excel_import_ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ok"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/round_button"
+        android:visibility="visible" />
+
 
 </LinearLayout>

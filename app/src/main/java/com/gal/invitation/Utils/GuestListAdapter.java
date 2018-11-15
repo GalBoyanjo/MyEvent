@@ -53,12 +53,12 @@ public class GuestListAdapter extends ArrayAdapter<Contact> {
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ContactHolder();
-            holder.rowName = (TextView) row.findViewById(R.id.profile_row_name);
-            holder.rowNumber = (TextView) row.findViewById(R.id.profile_row_number);
-            holder.rowStatus = (TextView)row.findViewById(R.id.profile_row_status);
-            holder.rowImage = (ImageView) row.findViewById(R.id.profile_row_image);
-            holder.rowEdit = (ImageView) row.findViewById(R.id.profile_row_edit);
-            holder.rowDelete = (ImageView) row.findViewById(R.id.profile_row_remove);
+            holder.rowName = row.findViewById(R.id.profile_row_name);
+            holder.rowNumber = row.findViewById(R.id.profile_row_number);
+            holder.rowStatus = row.findViewById(R.id.profile_row_status);
+            holder.rowImage = row.findViewById(R.id.profile_row_image);
+            holder.rowEdit = row.findViewById(R.id.profile_row_edit);
+            holder.rowDelete = row.findViewById(R.id.profile_row_remove);
 
             row.setTag(holder);
 

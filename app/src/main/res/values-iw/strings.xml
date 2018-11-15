@@ -44,6 +44,7 @@
     <string name="register">הרשמה</string>
     <string name="create">צור משתמש</string>
     <string name="welcome">"ברוך הבא"</string>
+    <string name="event_type">סוג האירוע</string>
     <string name="wedding">"חתונה"</string>
     <string name="other">"אחר"</string>
     <string name="functions_hall">"אולם האירועים"</string>
@@ -52,6 +53,7 @@
     <string name="reception_time">"שעת קבלת פנים"</string>
     <string name="time">"שעה"</string>
     <string name="event_place">"שם המקום"</string>
+    <string name="event_place_type">"סוג המקום"</string>
     <string name="event_address">"כתובת"</string>
     <string name="free_text">"טקסט חופשי…"</string>
     <string name="add_pic">"הוסף תמונה"</string>
@@ -141,6 +143,7 @@
 
 
     <string name="excelTransitionName">excelTransitionName</string>
+    <string name="loadingTransitionName">loadingTransitionName</string>
 
 
     //Google String's: !!!

@@ -11,18 +11,15 @@
     android:orientation="vertical"
     android:background="@drawable/background_gradient_list">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
+
     <ImageView
         android:id="@+id/my_logo_loading"
         android:layout_width="@dimen/logo_size"
         android:layout_height="@dimen/logo_size"
-        android:layout_gravity="center_vertical"
-        android:src="@mipmap/ic_my_logo" />
-
-    </RelativeLayout>
+        android:layout_gravity="center"
+        android:src="@mipmap/ic_my_logo"
+        android:padding="10dp"
+        android:transitionName="@string/loadingTransitionName"/>
 
 
     <com.github.ybq.android.spinkit.SpinKitView
@@ -32,7 +29,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:SpinKit_Color="@color/colorWhite"/>
+        app:SpinKit_Color="@color/colorWhite"
+        android:layout_marginTop="15dp"/>
+
+
 
 
 </LinearLayout>

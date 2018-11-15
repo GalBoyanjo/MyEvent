@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.button.MaterialButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -45,9 +47,9 @@ public class Register extends AppCompatActivity {
 
     private User user;
 
-    private EditText ReEmail;
-    private EditText ReName;
-    private EditText RePassword;
+    private TextInputLayout ReEmail;
+    private TextInputLayout ReName;
+    private TextInputLayout RePassword;
     private Button btnRegister;
     private TextView lblWelcome;
 
@@ -59,11 +61,10 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ScreenUtil.setLocale(Register.this, getString(R.string.title_activity_register));
         setContentView(R.layout.content_register);
-        ReEmail = (EditText) findViewById(R.id.ReEmail);
-        ReName = (EditText) findViewById(R.id.ReName);
-        RePassword = (EditText) findViewById(R.id.RePassword);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        btnRegister.setText(getText(R.string.create));
+        ReEmail = findViewById(R.id.ReEmail);
+        ReName = findViewById(R.id.ReName);
+        RePassword = findViewById(R.id.RePassword);
+        btnRegister = findViewById(R.id.btnRegister);
         //lblWelcome = (TextView) findViewById(R.id.lblWelcome);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -73,10 +74,11 @@ public class Register extends AppCompatActivity {
                 checkEmptyField();
 
                 if (checkEmptyField()){
-                    if (isValidEmail(ReEmail.getText().toString())) {
+                    if (isValidEmail(ReEmail.getEditText().getText().toString())) {
 
-                        NetworkUtil.createUser(Register.this, url_create_user, ReEmail.getText().toString(), RePassword.getText().toString(),
-                                ReName.getText().toString(), "Regular", "",
+                        NetworkUtil.createUser(Register.this, url_create_user, ReEmail.getEditText().getText().toString(),
+                                RePassword.getEditText().getText().toString(),
+                                ReName.getEditText().getText().toString(), "Regular", "",
                                 new LoginRequestCallbacks() {
 
                                     @Override
@@ -224,21 +226,21 @@ public class Register extends AppCompatActivity {
     public boolean checkEmptyField() {
         allNotEmpty = true;
 
-        if(ReEmail.getText().toString().isEmpty()) {
+        if(ReEmail.getEditText().getText().toString().isEmpty()) {
             ReEmail.setError(getString(R.string.empty_field));
             allNotEmpty = false;
 
         }else {
             ReEmail.setError(null);
         }
-        if (ReName.getText().toString().isEmpty()) {
+        if (ReName.getEditText().getText().toString().isEmpty()) {
             ReName.setError(getString(R.string.empty_field));
             allNotEmpty = false;
 
         }else {
             ReName.setError(null);
         }
-        if (RePassword.getText().toString().isEmpty()) {
+        if (RePassword.getEditText().getText().toString().isEmpty()) {
             RePassword.setError(getString(R.string.empty_field));
             allNotEmpty = false;
 

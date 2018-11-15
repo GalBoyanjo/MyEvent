@@ -82,7 +82,7 @@ public class ContactList extends AppCompatActivity implements RecycleContactsAda
         ScreenUtil.setLocale(ContactList.this, getString(R.string.title_activity_contacts_list));
         setContentView(R.layout.activity_contacts_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         progressDialog = new ProgressDialog(this);
@@ -356,7 +356,7 @@ public class ContactList extends AppCompatActivity implements RecycleContactsAda
 
     private void buildListView(final TreeSet<Contact> contacts) {
         ArrayList<Contact> contactsArrayList = new ArrayList<>(contacts);
-        recyclerView = (RecyclerView) findViewById(R.id.contacts_list);
+        recyclerView = findViewById(R.id.contacts_list);
         mDividerItemDecoration = new DividerItemDecoration(
                 recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL

@@ -45,9 +45,9 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ContactHolder();
-            holder.rowName = (TextView) row.findViewById(R.id.row_name);
-            holder.rowNumber = (TextView) row.findViewById(R.id.row_number);
-            holder.rowImage = (ImageView) row.findViewById(R.id.row_image);
+            holder.rowName = row.findViewById(R.id.row_name);
+            holder.rowNumber = row.findViewById(R.id.row_number);
+            holder.rowImage = row.findViewById(R.id.row_image);
 
             row.setTag(holder);
 

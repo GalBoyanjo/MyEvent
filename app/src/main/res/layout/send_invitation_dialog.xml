@@ -18,34 +18,34 @@
         android:id="@+id/radio_grp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-    <RadioButton
-        android:id="@+id/radio_select_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send_all_contacts"/>
-    <RadioButton
-        android:id="@+id/radio_select_maybe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send_all_not_answer_yet"/>
-    <RadioButton
-        android:id="@+id/radio_select_manually"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send_manually" />
+        <RadioButton
+            android:id="@+id/radio_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send_all_contacts"/>
+        <RadioButton
+            android:id="@+id/radio_select_maybe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send_all_not_answer_yet"/>
+        <RadioButton
+            android:id="@+id/radio_select_manually"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send_manually" />
     </RadioGroup>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <LinearLayout
-        android:id="@+id/checkboxes_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        <LinearLayout
+            android:id="@+id/checkboxes_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-    </LinearLayout>
+        </LinearLayout>
 
     </ScrollView>
 

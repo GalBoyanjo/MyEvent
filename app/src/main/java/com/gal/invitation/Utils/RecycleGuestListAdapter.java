@@ -58,13 +58,13 @@ public class RecycleGuestListAdapter extends RecyclerView.Adapter<RecycleGuestLi
         public ViewHolder(View row) {
             super(row);
 
-            this.rowName = (TextView) row.findViewById(R.id.profile_row_name);
-            this.rowNumber = (TextView) row.findViewById(R.id.profile_row_number);
-            this.rowStatus = (TextView)row.findViewById(R.id.profile_row_status);
-            this.rowImage = (ImageView) row.findViewById(R.id.profile_row_image);
-            this.rowEdit = (ImageView) row.findViewById(R.id.profile_row_edit);
-            this.rowDelete = (ImageView) row.findViewById(R.id.profile_row_remove);
-            this.row = (LinearLayout) row.findViewById(R.id.guest_list_row_container);
+            this.rowName = row.findViewById(R.id.profile_row_name);
+            this.rowNumber = row.findViewById(R.id.profile_row_number);
+            this.rowStatus = row.findViewById(R.id.profile_row_status);
+            this.rowImage = row.findViewById(R.id.profile_row_image);
+            this.rowEdit = row.findViewById(R.id.profile_row_edit);
+            this.rowDelete = row.findViewById(R.id.profile_row_remove);
+            this.row = row.findViewById(R.id.guest_list_row_container);
 
         }
     }

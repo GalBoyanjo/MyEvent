@@ -4,15 +4,20 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,8 +36,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.gal.invitation.Entities.Contact;
 import com.gal.invitation.Entities.Invitation;
 import com.gal.invitation.Entities.User;
+import com.gal.invitation.Interfaces.GuestUpdateCallbacks;
 import com.gal.invitation.Interfaces.InvitationRequestCallbacks;
 import com.gal.invitation.R;
 import com.gal.invitation.Utils.MyStringRequest;
@@ -47,6 +54,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
+
 public class CreateInvitation extends AppCompatActivity {
 
     public static String systemLanguage;
@@ -57,17 +66,22 @@ public class CreateInvitation extends AppCompatActivity {
     private User user = null;
     private String userType = null;
 
-    Button date;
-    Button time;
-    EditText eventPlaceName;
-    EditText groomName;
-    EditText brideName;
-    EditText parentsName;
-    EditText freeText;
-    EditText eventAddress;
-    Spinner eventType;
-    Spinner eventPlaceType;
+    TextInputLayout date;
+    TextInputLayout time;
+    TextInputLayout eventPlaceName;
+    TextInputLayout groomName;
+    TextInputLayout brideName;
+    TextInputLayout parentsName;
+    TextInputLayout freeText;
+    TextInputLayout eventAddress;
+    TextInputLayout eventType;
+    TextInputLayout eventPlaceType;
     DatePickerDialog datePickerDialog;
+
+    TextInputEditText dateET;
+    TextInputEditText timeET;
+    TextInputEditText typeET;
+    TextInputEditText placeET;
 
     boolean allNotEmpty;
     private Invitation userInvitation;
@@ -82,7 +96,7 @@ public class CreateInvitation extends AppCompatActivity {
         ScreenUtil.setLocale(CreateInvitation.this, getString(R.string.title_activity_create_invitations));
         setContentView(R.layout.activity_create_invitation);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.create_invitation_toolbar);
         setSupportActionBar(toolbar);
 
         netRequestQueue = Volley.newRequestQueue(this);
@@ -92,17 +106,33 @@ public class CreateInvitation extends AppCompatActivity {
 
 
 
-        eventPlaceName = (EditText)findViewById(R.id.EventPlace);
-        groomName = (EditText)findViewById(R.id.eventGroom);
-        brideName = (EditText)findViewById(R.id.eventBride);
-        parentsName = (EditText)findViewById(R.id.eventParents);
-        freeText  =(EditText)findViewById(R.id.EventText);
-        eventAddress = (EditText)findViewById(R.id.EventPlaceAddress);
-        date = (Button) findViewById(R.id.eventDate);
-        eventType = (Spinner) findViewById(R.id.eventType);
-        time = (Button) findViewById(R.id.eventTime);
-        eventPlaceType = (Spinner) findViewById(R.id.eventPlaceType);
+        eventPlaceName = findViewById(R.id.EventPlace);
+        groomName = findViewById(R.id.eventGroom);
+        brideName = findViewById(R.id.eventBride);
+        parentsName = findViewById(R.id.eventParents);
+        freeText  = findViewById(R.id.EventText);
+        eventAddress = findViewById(R.id.EventPlaceAddress);
+        date = findViewById(R.id.eventDate);
+        eventType = findViewById(R.id.eventType);
+        time = findViewById(R.id.eventTime);
+        eventPlaceType = findViewById(R.id.eventPlaceType);
 
+        dateET = findViewById(R.id.eventDateET);
+        timeET = findViewById(R.id.eventTimeET);
+        typeET = findViewById(R.id.eventTypeET);
+        placeET = findViewById(R.id.eventPlaceTypeET);
+
+        dateET.setFocusable(false);
+        dateET.setClickable(true);
+
+        timeET.setFocusable(false);
+        timeET.setClickable(true);
+
+        typeET.setFocusable(false);
+        typeET.setClickable(true);
+
+        placeET.setFocusable(false);
+        placeET.setClickable(true);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.loading_invitation));
@@ -120,35 +150,36 @@ public class CreateInvitation extends AppCompatActivity {
         createEventPlaceType();
 
 
+
     }
 
     public void createEventType(){
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(CreateInvitation.this,
-                R.array.type, android.R.layout.simple_spinner_item);
+        final String[] listItems = getResources().getStringArray(R.array.type);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        eventType.setAdapter(adapter);
-
-
-        eventType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        typeET.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                eventSelected();
+            public void onClick(View view) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(CreateInvitation.this);
+
+                builder.setTitle(R.string.event_type)
+                        .setItems(listItems, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                                eventType.getEditText().setText(listItems[which]);
+
+                            }
+                        });
+                builder.create();
+
+                builder.show();
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                return;
-
-            }
         });
-
-
     }
 
     public void createEventDate(){
-        date.setOnClickListener(new View.OnClickListener() {
+        dateET.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
@@ -164,7 +195,7 @@ public class CreateInvitation extends AppCompatActivity {
                             @SuppressLint("SetTextI18n")
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int day) {
-                                date.setText(day + "/" + (month + 1) + "/" + year);
+                                date.getEditText().setText(day + "/" + (month + 1) + "/" + year);
                             }
                         }, eventYear, eventMonth, eventDay);
                 datePickerDialog.show();
@@ -174,7 +205,7 @@ public class CreateInvitation extends AppCompatActivity {
 
     public void createEventTime(){
 
-        time.setOnClickListener(new View.OnClickListener() {
+        timeET.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
@@ -186,9 +217,9 @@ public class CreateInvitation extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         if(selectedMinute<10)
-                            time.setText((selectedHour + ":" + "0" + selectedMinute));
+                            time.getEditText().setText((selectedHour + ":" + "0" + selectedMinute));
                         else
-                            time.setText((selectedHour + ":" + selectedMinute));
+                            time.getEditText().setText((selectedHour + ":" + selectedMinute));
                     }
                 }, hour, minute, true);
                 timePickerDialog.setTitle("Select Time");
@@ -200,25 +231,27 @@ public class CreateInvitation extends AppCompatActivity {
 
     public void createEventPlaceType(){
 
-        ArrayAdapter<CharSequence> placeTypeAdapter = ArrayAdapter.createFromResource(CreateInvitation.this,
-                R.array.placeType, android.R.layout.simple_spinner_item);
+        final String[] placeListItems = getResources().getStringArray(R.array.placeType);
 
-        placeTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        eventPlaceType.setAdapter(placeTypeAdapter);
-
-
-        eventPlaceType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        placeET.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                eventPlaceTypeSelected(eventPlaceType);
+            public void onClick(View view) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(CreateInvitation.this);
+
+                builder.setTitle(R.string.event_place)
+                        .setItems(placeListItems, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                                eventPlaceType.getEditText().setText(placeListItems[which]);
+
+                            }
+                        });
+                builder.create();
+
+                builder.show();
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                return;
-
-            }
         });
 
     }
@@ -258,15 +291,15 @@ public class CreateInvitation extends AppCompatActivity {
 
                 NetworkUtil.createInvitation(CreateInvitation.this, url_update_invitation,
                         String.valueOf(user.getID()),
-                        eventType.getSelectedItem().toString(),
-                        date.getText().toString(),
-                        time.getText().toString(),
-                        eventPlaceType.getSelectedItem().toString(),
-                        eventPlaceName.getText().toString(),
-                        eventAddress.getText().toString(),
-                        freeText.getText().toString(),
-                        brideName.getText().toString(),
-                        groomName.getText().toString(),
+                        eventType.getEditText().getText().toString(),
+                        date.getEditText().getText().toString(),
+                        time.getEditText().getText().toString(),
+                        eventPlaceType.getEditText().getText().toString(),
+                        eventPlaceName.getEditText().getText().toString(),
+                        eventAddress.getEditText().getText().toString(),
+                        freeText.getEditText().getText().toString(),
+                        brideName.getEditText().getText().toString(),
+                        groomName.getEditText().getText().toString(),
                         new InvitationRequestCallbacks() {
                             @Override
                             public void onSuccess() {
@@ -309,7 +342,7 @@ public class CreateInvitation extends AppCompatActivity {
     }
 
     public void eventSelected(){
-        String type = eventType.getSelectedItem().toString();
+        String type = eventType.getEditText().getText().toString();
 
 
         if (type.equals(getString(R.string.wedding))){
@@ -321,7 +354,7 @@ public class CreateInvitation extends AppCompatActivity {
             groomName.setVisibility(View.VISIBLE);
             brideName.setVisibility(View.VISIBLE);
             parentsName.setVisibility(View.GONE);
-            }
+        }
         if (type.equals(getString(R.string.other))) {
             groomName.setVisibility(View.GONE);
             brideName.setVisibility(View.GONE);
@@ -335,14 +368,14 @@ public class CreateInvitation extends AppCompatActivity {
 
     public boolean checkEmptyField(){
         allNotEmpty = true;
-        
-        if (date.getText().toString().isEmpty()) {
+
+        if (date.getEditText().getText().toString().isEmpty()) {
             date.setError(getString(R.string.empty_field));
             allNotEmpty = false;
         } else {
             date.setError(null);
         }
-        if (time.getText().toString().isEmpty()) {
+        if (time.getEditText().getText().toString().isEmpty()) {
             time.setError(getString(R.string.empty_field));
             allNotEmpty = false;
         } else {
@@ -351,11 +384,11 @@ public class CreateInvitation extends AppCompatActivity {
 
         checkField(eventPlaceName);
         checkField(eventAddress);
-        if(eventType.getSelectedItem().toString().equals(getString(R.string.wedding))){
+        if(eventType.getEditText().getText().toString().equals(getString(R.string.wedding))){
             checkField(groomName);
             checkField(brideName);
         }
-        if (eventType.getSelectedItem().toString().equals(getString(R.string.other)))
+        if (eventType.getEditText().getText().toString().equals(getString(R.string.other)))
             checkField(parentsName);
 
 
@@ -363,9 +396,9 @@ public class CreateInvitation extends AppCompatActivity {
         return allNotEmpty;
     }
 
-    public void checkField(EditText field){
+    public void checkField(TextInputLayout field){
 
-        if (field.getText().toString().isEmpty()) {
+        if (field.getEditText().getText().toString().isEmpty()) {
             field.setError(getString(R.string.empty_field));
             allNotEmpty = false;
         } else {
@@ -377,15 +410,15 @@ public class CreateInvitation extends AppCompatActivity {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("UserID", String.valueOf(user.getID()));
-            params.put("Type", eventType.getSelectedItem().toString());
-            params.put("Date", date.getText().toString());
-            params.put("Time", time.getText().toString());
-            params.put("PlaceType", eventPlaceType.getSelectedItem().toString());
-            params.put("Place", eventPlaceName.getText().toString());
-            params.put("Address", eventAddress.getText().toString());
-            params.put("FreeText", freeText.getText().toString());
-            params.put("Bride", brideName.getText().toString());
-            params.put("Groom", groomName.getText().toString());
+            params.put("Type", eventType.getEditText().getText().toString());
+            params.put("Date", date.getEditText().getText().toString());
+            params.put("Time", time.getEditText().getText().toString());
+            params.put("PlaceType", eventPlaceType.getEditText().getText().toString());
+            params.put("Place", eventPlaceName.getEditText().getText().toString());
+            params.put("Address", eventAddress.getEditText().getText().toString());
+            params.put("FreeText", freeText.getEditText().getText().toString());
+            params.put("Bride", brideName.getEditText().getText().toString());
+            params.put("Groom", groomName.getEditText().getText().toString());
 
             MyStringRequest request = new MyStringRequest(Request.Method.POST,
                     url_update_invitation, params, new Response.Listener<String>() {
@@ -451,11 +484,11 @@ public class CreateInvitation extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getInt(TAG_SUCCESS) == 1) {
-                                userInvitation=new Invitation(jsonObject.getString("Type")
-                                        ,jsonObject.getString("Date") , jsonObject.getString("Time")
-                                        , jsonObject.getString("PlaceType") , jsonObject.getString("Place")
-                                        , jsonObject.getString("Address") , jsonObject.getString("FreeText")
-                                        , jsonObject.getString("Bride") , jsonObject.getString("Groom"));
+                            userInvitation=new Invitation(jsonObject.getString("Type")
+                                    ,jsonObject.getString("Date") , jsonObject.getString("Time")
+                                    , jsonObject.getString("PlaceType") , jsonObject.getString("Place")
+                                    , jsonObject.getString("Address") , jsonObject.getString("FreeText")
+                                    , jsonObject.getString("Bride") , jsonObject.getString("Groom"));
 
                             showInvitation();
                         }
@@ -496,14 +529,15 @@ public class CreateInvitation extends AppCompatActivity {
 
         //params.put("Type", eventType.getSelectedItem().toString());
         //if(eventPlaceType.getSelectedItem().toString()==userInvitation.getPlace())
-
-        date.setText(String.valueOf(userInvitation.getDate()));
-        time.setText(String.valueOf(userInvitation.getTime()));
-        eventPlaceName.setText(String.valueOf(userInvitation.getPlace()));
-        eventAddress.setText(String.valueOf(userInvitation.getAddress()));
-        freeText.setText(String.valueOf(userInvitation.getFreeText()));
-        brideName.setText(String.valueOf(userInvitation.getBride()));
-        groomName.setText(String.valueOf(userInvitation.getGroom()));
+        eventType.getEditText().setText(String.valueOf(userInvitation.getType()));
+        eventPlaceType.getEditText().setText(String.valueOf(userInvitation.getPlacetype()));
+        date.getEditText().setText(String.valueOf(userInvitation.getDate()));
+        time.getEditText().setText(String.valueOf(userInvitation.getTime()));
+        eventPlaceName.getEditText().setText(String.valueOf(userInvitation.getPlace()));
+        eventAddress.getEditText().setText(String.valueOf(userInvitation.getAddress()));
+        freeText.getEditText().setText(String.valueOf(userInvitation.getFreeText()));
+        brideName.getEditText().setText(String.valueOf(userInvitation.getBride()));
+        groomName.getEditText().setText(String.valueOf(userInvitation.getGroom()));
 
 
         progressDialog.dismiss();

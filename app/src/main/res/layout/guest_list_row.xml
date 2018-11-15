@@ -9,84 +9,93 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:id="@+id/guest_list_row_container">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="2dp">
+        android:padding="2dp"
+        android:weightSum="15"
+        android:gravity="center">
 
-        <com.gal.invitation.Utils.RoundedImageView
-            android:id="@+id/profile_row_image"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="1dp"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            android:src="@mipmap/ic_contact" />
+            android:layout_weight="3">
+            <com.gal.invitation.Utils.RoundedImageView
+                android:id="@+id/profile_row_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_contact"
+                />
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/profile_row_contact"
             android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/profile_row_image"
-            android:layout_centerVertical="true"
             android:paddingStart="10dp"
-            android:paddingEnd="5dp">
-        <TextView
-            android:id="@+id/profile_row_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryText"
-            android:text="Name"
-            android:maxWidth="200dp"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:paddingEnd="5dp"
+            android:layout_weight="6">
+            <TextView
+                android:id="@+id/profile_row_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryText"
+                android:text="Name"
+                android:maxWidth="200dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
-            android:id="@+id/profile_row_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Number"
-            android:textColor="@color/colorSecondaryText"
-            android:maxWidth="200dp"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView
+                android:id="@+id/profile_row_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number"
+                android:textColor="@color/colorSecondaryText"
+                android:maxWidth="200dp"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2">
         <TextView
             android:id="@+id/profile_row_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/profile_row_contact"
             android:gravity="center"
             android:minHeight="@dimen/row_circle_size"
             android:minWidth="@dimen/row_circle_size"
             android:textColor="@android:color/white"
             android:layout_centerVertical="true"
+            android:background="@drawable/red_circle"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
+        </RelativeLayout>
 
         <ImageButton
             android:id="@+id/profile_row_edit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:layout_marginStart="15dp"
             android:src="@drawable/edit"
             android:background="@android:color/transparent"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            android:layout_weight="2"/>
 
         <ImageButton
             android:id="@+id/profile_row_remove"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/profile_row_edit"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="5dp"
             android:src="@drawable/remove"
             android:background="@android:color/transparent"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            android:layout_weight="2"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -59,8 +60,8 @@ public class Login extends AppCompatActivity {
 
     private User user;
 
-    private EditText txtEmail;
-    private EditText txtPassword;
+    private TextInputLayout txtEmail;
+    private TextInputLayout txtPassword;
     private Button btnLogin;
 
     private ProgressDialog progressDialog;
@@ -95,7 +96,7 @@ public class Login extends AppCompatActivity {
         loginDialog.setMessage(getString(R.string.please_wait));
 
         facebookCallbackManager = CallbackManager.Factory.create();
-        facebookLoginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
+        facebookLoginButton = findViewById(R.id.facebook_sign_in_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_friends"));
 
         facebookLoginButton.registerCallback(facebookCallbackManager, new FacebookCallback<LoginResult>() {
@@ -125,7 +126,7 @@ public class Login extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        googleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
+        googleSignInButton = findViewById(R.id.google_sign_in_button);
 
         setGooglePlusButtonText(googleSignInButton, getString(R.string.google_login_btn));
 
@@ -140,12 +141,12 @@ public class Login extends AppCompatActivity {
         });
 
 
-        txtEmail = (EditText) findViewById(R.id.txtEmail);
-        txtPassword = (EditText) findViewById(R.id.txtPassword);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
+        txtEmail = findViewById(R.id.txtEmail);
+        txtPassword = findViewById(R.id.txtPassword);
+        btnLogin = findViewById(R.id.btnLogin);
 
 
-        final TextView RegisterLink = (TextView) findViewById(R.id.Register);
+        final TextView RegisterLink = findViewById(R.id.Register);
         RegisterLink.setText(getText(R.string.register));
 
 
@@ -161,7 +162,7 @@ public class Login extends AppCompatActivity {
                     loginDialog.show();
 
                     String userType = getString(R.string.user_type_regular);
-                    getUser(txtEmail.getText().toString(), txtPassword.getText().toString(), "", userType, "");
+                    getUser(txtEmail.getEditText().getText().toString(), txtPassword.getEditText().getText().toString(), "", userType, "");
                 }
             }
         });
@@ -447,7 +448,7 @@ public class Login extends AppCompatActivity {
     public boolean checkEmptyField() {
         allNotEmpty = true;
 
-        if(txtEmail.getText().toString().isEmpty()) {
+        if(txtEmail.getEditText().getText().toString().isEmpty()) {
             txtEmail.setError(getString(R.string.empty_field));
             allNotEmpty = false;
 
@@ -455,7 +456,7 @@ public class Login extends AppCompatActivity {
             txtEmail.setError(null);
         }
 
-        if (txtPassword.getText().toString().isEmpty()) {
+        if (txtPassword.getEditText().getText().toString().isEmpty()) {
             txtPassword.setError(getString(R.string.empty_field));
             allNotEmpty = false;
 

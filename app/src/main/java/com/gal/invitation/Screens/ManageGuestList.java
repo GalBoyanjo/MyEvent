@@ -112,11 +112,11 @@ public class ManageGuestList extends AppCompatActivity {
         ScreenUtil.setLocale(ManageGuestList.this, getString(R.string.title_activity_manage_guest_list));
         setContentView(R.layout.activity_manage_guest_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.manage_guest_toolbar);
+        Toolbar toolbar = findViewById(R.id.manage_guest_toolbar);
         setSupportActionBar(toolbar);
 
         // Create an instance of the tab layout from the view.
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
         // Set the text for each tab.
         tabLayout.addTab(tabLayout.newTab().setText(R.string.all));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.yes));
@@ -183,7 +183,7 @@ public class ManageGuestList extends AppCompatActivity {
         });
 
 
-        recyclerView = (RecyclerView) findViewById(R.id.guest_list);
+        recyclerView = findViewById(R.id.guest_list);
 
         //Add divider for list
         mDividerItemDecoration = new DividerItemDecoration(
@@ -192,7 +192,7 @@ public class ManageGuestList extends AppCompatActivity {
         );
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
-        fabExcel = (FloatingActionButton) findViewById(R.id.fab_excel);
+        fabExcel = findViewById(R.id.fab_excel);
         fabExcel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -223,7 +223,7 @@ public class ManageGuestList extends AppCompatActivity {
         });
 
 
-        fabFromContacts = (FloatingActionButton) findViewById(R.id.fab_from_contacts);
+        fabFromContacts = findViewById(R.id.fab_from_contacts);
         fabFromContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -234,7 +234,7 @@ public class ManageGuestList extends AppCompatActivity {
             }
         });
 
-        fabNewContact = (FloatingActionButton) findViewById(R.id.fab_new_contact);
+        fabNewContact = findViewById(R.id.fab_new_contact);
         fabNewContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -248,8 +248,8 @@ public class ManageGuestList extends AppCompatActivity {
 
                     builder.setView(contactEditView);
 
-                    final EditText contactName = (EditText) contactEditView.findViewById(R.id.contact_name);
-                    final EditText contactPhone = (EditText) contactEditView.findViewById(R.id.contact_phone);
+                    final EditText contactName = contactEditView.findViewById(R.id.contact_name);
+                    final EditText contactPhone = contactEditView.findViewById(R.id.contact_phone);
 
 
                     builder
@@ -479,7 +479,7 @@ public class ManageGuestList extends AppCompatActivity {
 
     private void showContact() {
         ArrayList<Contact> contactsArrayList = new ArrayList<>(userContacts);
-        recyclerView = (RecyclerView) findViewById(R.id.guest_list);
+        recyclerView = findViewById(R.id.guest_list);
         myLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(myLayoutManager);
         adapter = new RecycleGuestListAdapter(ManageGuestList.this,
@@ -560,8 +560,8 @@ public class ManageGuestList extends AppCompatActivity {
 
                 builder.setView(contactEditView);
 
-                final EditText contactName = (EditText) contactEditView.findViewById(R.id.contact_name);
-                final EditText contactPhone = (EditText) contactEditView.findViewById(R.id.contact_phone);
+                final EditText contactName = contactEditView.findViewById(R.id.contact_name);
+                final EditText contactPhone = contactEditView.findViewById(R.id.contact_phone);
 
                 contactName.setHint(String.valueOf(contact.getName()));
                 contactPhone.setHint(String.valueOf(contact.getPhone()));

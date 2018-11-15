@@ -61,11 +61,11 @@ public class RecycleContactsAdapter extends RecyclerView.Adapter<RecycleContacts
         public ViewHolder(View row) {
             super(row);
 
-            this.rowName = (TextView) row.findViewById(R.id.row_name);
-            this.rowNumber = (TextView) row.findViewById(R.id.row_number);
-            this.rowImage = (ImageView) row.findViewById(R.id.row_image);
-            this.rowCheck = (ImageView) row.findViewById(R.id.row_check);
-            this.row = (LinearLayout) row.findViewById(R.id.row_container);
+            this.rowName = row.findViewById(R.id.row_name);
+            this.rowNumber = row.findViewById(R.id.row_number);
+            this.rowImage = row.findViewById(R.id.row_image);
+            this.rowCheck = row.findViewById(R.id.row_check);
+            this.row = row.findViewById(R.id.row_container);
 
         }
     }

@@ -33,8 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/row_image"
             app:srcCompat="@drawable/ic_v_for_contact"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
 
         <LinearLayout

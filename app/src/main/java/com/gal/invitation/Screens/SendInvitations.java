@@ -75,7 +75,7 @@ public class SendInvitations extends Activity {
             e.printStackTrace();
         }
 
-        sendBtn = (Button) findViewById(R.id.btnSendSMS);
+        sendBtn = findViewById(R.id.btnSendSMS);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -88,8 +88,8 @@ public class SendInvitations extends Activity {
             }
         });
 
-        messageTypes = (Spinner) findViewById(R.id.message_type_spinner);
-        textMessage = (EditText) findViewById(R.id.edit_message);
+        messageTypes = findViewById(R.id.message_type_spinner);
+        textMessage = findViewById(R.id.edit_message);
 
         createMessageTypes();
     }

@@ -1,10 +1,11 @@
 package com.gal.invitation.Screens;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.AnimationDrawable;
-import android.support.constraint.ConstraintLayout;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -40,45 +41,57 @@ public class LoadingActivity extends AppCompatActivity {
 
 
 
-        myLogo =(ImageView)findViewById(R.id.my_logo_loading);
+        myLogo = findViewById(R.id.my_logo_loading);
 
 
         Animation expand = AnimationUtils.loadAnimation(this, R.anim.expand_logo);
         myLogo.startAnimation(expand);
 
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.wave);
+        ProgressBar progressBar = findViewById(R.id.wave);
         Wave wave = new Wave();
         progressBar.setIndeterminateDrawable(wave);
 
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.activity_loading_background);
+        LinearLayout linearLayout = findViewById(R.id.activity_loading_background);
         AnimationDrawable animationDrawable = (AnimationDrawable) linearLayout.getBackground();
         animationDrawable.setEnterFadeDuration(2000);
         animationDrawable.setExitFadeDuration(4000);
         animationDrawable.start();
 
-        NetworkUtil.getVersion(LoadingActivity.this, url_get_version, getString(R.string.app_version),
-                new VersionRequestCallbacks() {
-                    @Override
-                    public void onSuccess(String currentVersion) {
-                        try {
-                            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-//                            if(pInfo.versionCode>2);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                        if(!(currentVersion.equals(getString(R.string.app_version)))){
-//                            Toast.makeText(LoadingActivity.this,
-//                                    "need to update", Toast.LENGTH_LONG).show();
-                        }else{
-                            getSharedPreference();
-                        }
 
-                    }
-                    @Override
-                    public void onError(String errorMessage) {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
-                    }
-                });
+//                NetworkUtil.getVersion(LoadingActivity.this, url_get_version, getString(R.string.app_version),
+//                        new VersionRequestCallbacks() {
+//                            @Override
+//                            public void onSuccess(String currentVersion) {
+//                                try {
+//                                    PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+////                            if(pInfo.versionCode>2);
+//                                }catch (Exception e){
+//                                    e.printStackTrace();
+//                                }
+//                                if(!(currentVersion.equals(getString(R.string.app_version)))){
+////                            Toast.makeText(LoadingActivity.this,
+////                                    "need to update", Toast.LENGTH_LONG).show();
+//                                }else{
+//                                    getSharedPreference();
+//                                }
+//
+//                            }
+//                            @Override
+//                            public void onError(String errorMessage) {
+//
+//                            }
+//                        });
+                getSharedPreference();
+
+
+            }
+        }, 3000);
+
 
 
 
@@ -124,7 +137,12 @@ public class LoadingActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
 
                                 Intent loginIntent = new Intent(LoadingActivity.this , Login.class);
-                                LoadingActivity.this.startActivity(loginIntent);
+                                String transitionName = getString(R.string.loadingTransitionName);
+
+                                ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(LoadingActivity.this, myLogo, transitionName);
+                                startActivity(loginIntent, transitionActivityOptions.toBundle());
+
+
 
                             }
 

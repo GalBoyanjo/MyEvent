@@ -25,8 +25,18 @@
         <item name="tabSelectedTextColor">@android:color/white</item>
     </style>
 
-    <style name="MaterialAnimations" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowContentTransitions">true</item>
-    </style>
+    <!--<style name="MaterialAnimations" parent="@style/Theme.AppCompat.Light.NoActionBar">-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="Widget.Shrine.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlineBox">-->
+        <!--<item name="hintTextAppearance">@style/TextAppearance.Shrine.TextInputLayout.HintText</item>-->
+        <!--<item name="android:paddingBottom">8dp</item>-->
+    <!--</style>-->
+
+    <!--<style name="TextAppearance.Shrine.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">-->
+        <!--<item name="android:textColor">?android:attr/textColorPrimary</item>-->
+    <!--</style>-->
+
 
 </resources>
