@@ -70,9 +70,9 @@ public class CreateInvitationPic extends AppCompatActivity {
 
     public static String systemLanguage;
     private RequestQueue netRequestQueue;
-    private final static String url_update_invitation_pic = "http://master1590.a2hosted.com/invitations/updateInvitationPic.php";
-    private final static String url_get_invitation_pic = "http://master1590.a2hosted.com/invitations/getUserInvitationPic.php";
-    private final static String url_get_invitation_pic_address = "http://master1590.a2hosted.com/invitations/images/";
+    private final static String url_update_invitation_pic = "";
+    private final static String url_get_invitation_pic = "";
+    private final static String url_get_invitation_pic_address = "";
     private final static String TAG_SUCCESS = "success";
     private User user = null;
     private String userType = null;
