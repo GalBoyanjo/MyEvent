@@ -80,9 +80,9 @@ public class Profile extends AppCompatActivity{
 
     public static String systemLanguage;
     private RequestQueue netRequestQueue;
-    private final static String url_get_contacts = "http://master1590.a2hosted.com/invitations/getUserContacts.php";
-    private final static String url_get_invitation = "http://master1590.a2hosted.com/invitations/getUserInvitation.php";
-    private final static String url_get_invitation_pic = "http://master1590.a2hosted.com/invitations/getUserInvitationPic.php";
+    private final static String url_get_contacts = "";
+    private final static String url_get_invitation = "";
+    private final static String url_get_invitation_pic = "";
 
     private InvitationPic userInvitationPic;
     private Invitation userInvitation;
