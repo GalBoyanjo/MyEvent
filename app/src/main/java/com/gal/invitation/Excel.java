@@ -54,7 +54,7 @@ import java.util.TreeSet;
 
 public class Excel extends AppCompatActivity {
 
-    private final static String url_get_contacts = "http://master1590.a2hosted.com/invitations/getUserContacts.php";
+    private final static String url_get_contacts = "";
     private final static String TAG_SUCCESS = "success";
 
     private ArrayList<Contact> excelContacts = new ArrayList<>();
