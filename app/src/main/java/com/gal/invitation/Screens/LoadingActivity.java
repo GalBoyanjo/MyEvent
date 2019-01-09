@@ -27,8 +27,8 @@ import com.github.ybq.android.spinkit.style.Wave;
 
 public class LoadingActivity extends AppCompatActivity {
 
-    private final static String url_get_user = "http://master1590.a2hosted.com/invitations/getUser.php";
-    private final static String url_get_version = "http://master1590.a2hosted.com/invitations/getVersion.php";
+    private final static String url_get_user = "";
+    private final static String url_get_version = "";
     private User user;
 
     ImageView myLogo;
