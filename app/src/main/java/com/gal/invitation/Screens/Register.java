@@ -42,7 +42,7 @@ public class Register extends AppCompatActivity {
 
     public static String systemLanguage;
     private JSONParser jsonParser;
-    private final static String url_create_user = "http://master1590.a2hosted.com/invitations/createUser.php";
+    private final static String url_create_user = "";
     private final static String TAG_SUCCESS = "success";
 
     private User user;
