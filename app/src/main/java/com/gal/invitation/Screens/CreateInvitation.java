@@ -60,8 +60,8 @@ public class CreateInvitation extends AppCompatActivity {
 
     public static String systemLanguage;
     private RequestQueue netRequestQueue;
-    private final static String url_update_invitation = "http://master1590.a2hosted.com/invitations/updateInvitation.php";
-    private final static String url_get_invitation = "http://master1590.a2hosted.com/invitations/getUserInvitation.php";
+    private final static String url_update_invitation = "";
+    private final static String url_get_invitation = "";
     private final static String TAG_SUCCESS = "success";
     private User user = null;
     private String userType = null;
