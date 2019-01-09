@@ -76,9 +76,9 @@ public class ManageGuestList extends AppCompatActivity {
 
     private static final int CONTACTS_PERMISSIONS_REQUEST = 123;
     private final static String TAG_SUCCESS = "success";
-    private final static String url_get_contacts = "http://master1590.a2hosted.com/invitations/getUserContacts.php";
-    private final static String url_edit_contact = "http://master1590.a2hosted.com/invitations/editContact.php";
-    private final static String url_delete_contact = "http://master1590.a2hosted.com/invitations/deleteContact.php";
+    private final static String url_get_contacts = "";
+    private final static String url_edit_contact = "";
+    private final static String url_delete_contact = "";
 
     private TreeSet<Contact> userContacts = new TreeSet<>(new Comparator<Contact>() {
         @Override
